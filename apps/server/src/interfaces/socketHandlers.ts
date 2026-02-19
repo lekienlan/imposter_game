@@ -5,6 +5,7 @@ import {
   JoinRoomRequest,
   ResetGameRequest,
   ReconnectRequest,
+  RoomPreviewRequest,
   ServerToClientEvents,
   StartGameRequest,
   StartVotingRequest,
@@ -15,6 +16,7 @@ import { Server, Socket } from "socket.io";
 import { CreateRoomUseCase } from "../application/CreateRoomUseCase";
 import { EliminatePlayerUseCase } from "../application/EliminatePlayerUseCase";
 import { JoinRoomUseCase } from "../application/JoinRoomUseCase";
+import { PreviewRoomUseCase } from "../application/PreviewRoomUseCase";
 import { ResetGameUseCase } from "../application/ResetGameUseCase";
 import { ReconnectPlayerUseCase } from "../application/ReconnectPlayerUseCase";
 import { StartGameUseCase } from "../application/StartGameUseCase";
@@ -26,6 +28,7 @@ import { sanitizeGameStateForViewer } from "../domain/gameRules";
 interface UseCases {
   createRoom: CreateRoomUseCase;
   joinRoom: JoinRoomUseCase;
+  previewRoom: PreviewRoomUseCase;
   resetGame: ResetGameUseCase;
   startGame: StartGameUseCase;
   submitStatement: SubmitStatementUseCase;
@@ -66,6 +69,15 @@ export const registerSocketHandlers = (
         gameState: sanitizeGameStateForViewer(gameState, playerId)
       });
       broadcastState(io, gameState.roomId, gameState);
+    } catch (error) {
+      sendError((error as Error).message);
+    }
+  });
+
+  socket.on("room:preview", async (payload: RoomPreviewRequest) => {
+    try {
+      const result = await useCases.previewRoom.execute(payload);
+      socket.emit("room:previewed", result);
     } catch (error) {
       sendError((error as Error).message);
     }

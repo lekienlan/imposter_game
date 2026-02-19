@@ -1,6 +1,5 @@
 export interface ShareInvite {
   roomId: string;
-  hostName: string;
 }
 
 const LOCALHOST_HOSTS = new Set(["localhost", "127.0.0.1", "::1"]);
@@ -24,10 +23,7 @@ export const resolveShareOrigin = (
 
   const configuredOrigin = shareOriginEnv?.trim();
   if (!configuredOrigin) {
-    return {
-      origin: currentOrigin,
-      error: "Thiếu VITE_SHARE_ORIGIN để share sang máy khác khi chạy localhost."
-    };
+    return { origin: currentOrigin };
   }
 
   try {
@@ -41,20 +37,17 @@ export const resolveShareOrigin = (
   }
 };
 
-export const buildShareUrl = (origin: string, roomId: string, hostName: string): string => {
+export const buildShareUrl = (origin: string, roomId: string): string => {
   const url = new URL("/", origin);
-  url.searchParams.set("roomId", roomId.toUpperCase());
-  url.searchParams.set("hostName", hostName);
+  url.searchParams.set("code", roomId.toUpperCase());
   return url.toString();
 };
 
 export const parseShareInvite = (search: string): ShareInvite | null => {
   const params = new URLSearchParams(search);
-  const roomId = params.get("roomId")?.trim().toUpperCase();
-  if (!roomId) {
+  const code = params.get("code")?.trim().toUpperCase();
+  if (!code) {
     return null;
   }
-
-  const hostName = params.get("hostName")?.trim() ?? "";
-  return { roomId, hostName };
+  return { roomId: code };
 };

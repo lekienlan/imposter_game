@@ -5,6 +5,7 @@ import { ClientToServerEvents, ServerToClientEvents } from "@imposter/shared";
 import { CreateRoomUseCase } from "../application/CreateRoomUseCase";
 import { EliminatePlayerUseCase } from "../application/EliminatePlayerUseCase";
 import { JoinRoomUseCase } from "../application/JoinRoomUseCase";
+import { PreviewRoomUseCase } from "../application/PreviewRoomUseCase";
 import { ResetGameUseCase } from "../application/ResetGameUseCase";
 import { ReconnectPlayerUseCase } from "../application/ReconnectPlayerUseCase";
 import { StartGameUseCase } from "../application/StartGameUseCase";
@@ -28,6 +29,7 @@ export const bootstrapSocketServer = (port: number, redisUrl: string) => {
   const useCases = {
     createRoom: new CreateRoomUseCase(repository),
     joinRoom: new JoinRoomUseCase(repository),
+    previewRoom: new PreviewRoomUseCase(repository),
     resetGame: new ResetGameUseCase(repository),
     startGame: new StartGameUseCase(repository),
     submitStatement: new SubmitStatementUseCase(repository),

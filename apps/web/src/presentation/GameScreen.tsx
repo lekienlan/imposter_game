@@ -1,9 +1,9 @@
 import { FormEvent } from "react";
+import { Button, Card } from "pixel-retroui";
 import { GameMode, GameState, Phase, Player } from "@imposter/shared";
 import { canViewerVote, isHost } from "../domain/gameSelectors";
 import { phaseGuide, phaseTone } from "./phasePresentation";
 import { WordRevealPopup } from "./WordRevealPopup";
-
 interface Props {
   roomId: string;
   playerId: string;
@@ -50,158 +50,240 @@ export const GameScreen = ({
 }: Props) => {
   const currentSpeakerId = gameState.pendingSpeakerIds[0] ?? null;
   const currentSpeakerName = currentSpeakerId
-    ? gameState.players.find((player) => player.id === currentSpeakerId)?.name ?? "Unknown"
-    : "Completed";
-
+    ? gameState.players.find((player) => player.id === currentSpeakerId)?.name ?? "UNKNOWN"
+    : "COMPLETED";
+  const viewerHost = isHost(gameState, playerId);
   return (
     <>
       {isWordPopupOpen && viewer?.word && <WordRevealPopup word={viewer.word} role={viewer.role} onClose={onCloseWordPopup} />}
-      <main className="screen-wrap">
-        <header className="room-head panel">
-        <div>
-          <p className="panel-eyebrow">Room</p>
-          <h1 className="room-title">{gameState.roomId}</h1>
-        </div>
-        <div className="space-y-2 text-right">
-          <button className="btn btn-ghost btn-sm" onClick={onCopyRoomCode}>
-            {copied ? "Copied" : "Copy room code"}
-          </button>
-          {isHost(gameState, playerId) && gameState.phase === Phase.WAITING_FOR_PLAYERS && (
-            <button className="btn btn-ghost btn-sm" onClick={onShareGame}>
-              {shareCopied ? "Link copied" : "Share Game"}
-            </button>
-          )}
-          <p className={`status-badge ${phaseTone[gameState.phase]}`}>{gameState.phase}</p>
-          {gameState.phase === Phase.GAME_ENDED && <p className="status-badge text-phase-over">Winner: {gameState.winner}</p>}
-        </div>
-        </header>
-
-        {error && (
-          <p className="error-banner mt-4" role="alert" aria-live="polite">
-            {error}
-          </p>
-        )}
-
-        <div className="layout-grid game-grid">
-          <section className="panel compact-panel space-y-4">
-            <h2 className="panel-title">You</h2>
-            {viewer ? (
-              <div className="space-y-3 text-sm">
-                <p className="you-role-card">
-                  <span className="label">Role</span>
-                  <span className="role-value">{viewer.role ?? "Hidden"}</span>
-                </p>
-                <p>
-                  <span className="label">Name</span>
-                  <span>{viewer.name}</span>
-                </p>
-                <p>
-                  <span className="label">Keyword</span>
-                  <span>{viewer.word ?? "No keyword yet"}</span>
-                </p>
-              </div>
-            ) : (
-              <p className="muted">Viewer state unavailable.</p>
-            )}
-          </section>
-
-          <section className="panel players-panel space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="panel-title">Players</h2>
-              <p className="alive-pill">Alive: {alivePlayers.length}</p>
-            </div>
-            <div className="grid gap-2 sm:grid-cols-2">
-              {gameState.players.map((player) => (
-                <article key={player.id} className="player-card">
-                  <p className="player-name">{player.name}</p>
-                  <p className={`player-status ${player.isAlive ? "player-alive" : "player-out"}`}>
-                    {player.isAlive ? "Alive" : "Eliminated"}
-                  </p>
-                  <p className="mt-2 text-xs muted">Statement: {player.statement ?? "-"}</p>
-                </article>
-              ))}
-            </div>
-          </section>
-        </div>
-
-        <section className="panel mt-4 space-y-3">
-          <h2 className="panel-title">Actions</h2>
-          <div className="status-block">
-            <p className="panel-eyebrow">What to do now</p>
-            <p className="guide-title">{phaseGuide[gameState.phase].title}</p>
-            <p className="muted">{phaseGuide[gameState.phase].description}</p>
-            {gameState.phase === Phase.ROUND_DESCRIPTION && <p className="muted">Current speaker: {currentSpeakerName}</p>}
-            {gameState.phase === Phase.ROUND_VOTING && <p className="muted">Vote round: {gameState.voteRound}</p>}
+      <main className="arcade-screen">
+        <Card
+          className="arcade-card arcade-head"
+          bg="color-mix(in srgb, var(--surface-primary) 90%, var(--blue-900))"
+          textColor="var(--neutral-white)"
+          borderColor="var(--blue-500)"
+          shadowColor="var(--blue-900)"
+        >
+          <div className="arcade-head-main">
+            <p className="arcade-kicker">ROOM CODE</p>
+            <h1 className="arcade-room-id">{gameState.roomId}</h1>
           </div>
-
-          {isHost(gameState, playerId) &&
-            (gameState.phase === Phase.WAITING_FOR_PLAYERS || gameState.phase === Phase.GAME_CREATION) && (
-            <button className="btn btn-primary" onClick={onStartGame}>
-              Start Game
-            </button>
+          <div className="arcade-head-actions">
+            <Button
+              type="button"
+              className="arcade-btn"
+              onClick={onCopyRoomCode}
+              bg="var(--blue-400)"
+              textColor="var(--neutral-black)"
+              borderColor="var(--neutral-black)"
+              shadow="var(--blue-700)"
+            >
+              {copied ? "CODE COPIED" : "COPY CODE"}
+            </Button>
+            {viewerHost && gameState.phase === Phase.WAITING_FOR_PLAYERS && (
+              <Button
+                type="button"
+                className="arcade-btn"
+                onClick={onShareGame}
+                bg="var(--pink-500)"
+                textColor="var(--neutral-black)"
+                borderColor="var(--neutral-black)"
+                shadow="var(--pink-700)"
+              >
+                {shareCopied ? "LINK COPIED" : "SHARE ROOM"}
+              </Button>
             )}
+            <p className={`arcade-phase-tag ${phaseTone[gameState.phase]}`}>PHASE: {gameState.phase}</p>
+            {gameState.phase === Phase.GAME_ENDED && <p className="arcade-phase-tag text-phase-over">WINNER: {gameState.winner}</p>}
+          </div>
+        </Card>
 
-          {isHost(gameState, playerId) && (
-            <button className="btn btn-ghost" onClick={onResetGame}>
-              Reset Game
-            </button>
-          )}
-
-          {gameState.phase === Phase.ROUND_DESCRIPTION && viewer?.isAlive && currentSpeakerId === viewer.id && (
-            <form className="stack" onSubmit={onSubmitStatement}>
-              <label className="field">
-                <span>Your statement</span>
-                <input
-                  placeholder="Say one sentence without the exact keyword"
-                  value={statement}
-                  onChange={(e) => onStatementChange(e.target.value)}
-                  required
-                />
-              </label>
-              <button className="btn btn-secondary">Send statement</button>
-            </form>
-          )}
-
-          {gameState.phase === Phase.ROUND_DISCUSSION && isHost(gameState, playerId) && (
-            <button className="btn btn-primary" onClick={onStartVoting}>
-              Start Voting
-            </button>
-          )}
-
-          {gameState.phase === Phase.ROUND_VOTING && viewer?.isAlive && (
-            <div className="stack">
-              {canViewerVote(gameState, viewer.id) ? (
-                <>
-                  <p className="muted">Cast your vote. You can change it until all required votes are in.</p>
-                  {viewerVotedForName && <p className="muted">Current vote: {viewerVotedForName}</p>}
-                  <div className="grid gap-2 sm:grid-cols-3">
-                    {alivePlayers
-                      .filter((player) => player.id !== playerId)
-                      .map((player) => (
-                        <button key={player.id} className="btn btn-ghost text-left" onClick={() => onSubmitVote(player.id)}>
-                          {player.name}
-                        </button>
-                      ))}
-                    {gameState.settings.mode === GameMode.CLASSIC && (
-                      <button className="btn btn-ghost text-left" onClick={() => onSubmitVote(null)}>
-                        Skip
-                      </button>
-                    )}
+        {error && <p className="arcade-error" role="alert" aria-live="polite">{error}</p>}
+        <div className="arcade-grid arcade-grid-game">
+          <Card
+            className="arcade-card"
+            bg="color-mix(in srgb, var(--surface-primary) 90%, var(--blue-900))"
+            textColor="var(--neutral-white)"
+            borderColor="var(--blue-500)"
+            shadowColor="var(--blue-900)"
+          >
+            <div className="arcade-stack">
+              <h2 className="arcade-panel-title">YOU</h2>
+              {viewer ? (
+                <dl className="arcade-dl">
+                  <div>
+                    <dt>ROLE</dt>
+                    <dd>{viewer.role ?? "HIDDEN"}</dd>
                   </div>
-                </>
+                  <div>
+                    <dt>NAME</dt>
+                    <dd>{viewer.name}</dd>
+                  </div>
+                  <div>
+                    <dt>WORD</dt>
+                    <dd>{viewer.word ?? "LOCKED"}</dd>
+                  </div>
+                </dl>
               ) : (
-                <p className="muted">In HARDCORE, only citizens cast real votes.</p>
+                <p className="arcade-muted">VIEWER STATE UNAVAILABLE.</p>
               )}
             </div>
-          )}
-
-          {gameState.phase === Phase.GAME_ENDED && (
-            <div className="status-block">
-              <p className="panel-eyebrow">Final reason</p>
-              <p className="guide-title">{gameState.winnerReason ?? "No reason provided"}</p>
+          </Card>
+          <Card
+            className="arcade-card"
+            bg="color-mix(in srgb, var(--surface-primary) 90%, var(--blue-900))"
+            textColor="var(--neutral-white)"
+            borderColor="var(--blue-500)"
+            shadowColor="var(--blue-900)"
+          >
+            <div className="arcade-stack">
+              <div className="arcade-inline-head">
+                <h2 className="arcade-panel-title">PLAYERS</h2>
+                <p className="arcade-counter">ALIVE {alivePlayers.length}</p>
+              </div>
+              <ul className="arcade-player-list">
+                {gameState.players.map((player) => (
+                  <li key={player.id} className="arcade-player-item">
+                    <p className="arcade-player-name">{player.name}</p>
+                    <p className={player.isAlive ? "arcade-alive" : "arcade-out"}>{player.isAlive ? "ALIVE" : "OUT"}</p>
+                    <p className="arcade-muted">STATEMENT: {player.statement ?? "-"}</p>
+                  </li>
+                ))}
+              </ul>
             </div>
-          )}
-        </section>
+          </Card>
+        </div>
+        <Card
+          className="arcade-card"
+          bg="color-mix(in srgb, var(--surface-primary) 90%, var(--blue-900))"
+          textColor="var(--neutral-white)"
+          borderColor="var(--blue-500)"
+          shadowColor="var(--blue-900)"
+        >
+          <section className="arcade-stack">
+            <h2 className="arcade-panel-title">ACTION BOARD</h2>
+            <div className="arcade-status-box">
+              <p className="arcade-kicker">NEXT MOVE</p>
+              <p className="arcade-guide-title">{phaseGuide[gameState.phase].title.toUpperCase()}</p>
+              <p className="arcade-muted">{phaseGuide[gameState.phase].description.toUpperCase()}</p>
+              {gameState.phase === Phase.ROUND_DESCRIPTION && <p className="arcade-muted">SPEAKER: {currentSpeakerName}</p>}
+              {gameState.phase === Phase.ROUND_VOTING && <p className="arcade-muted">VOTE ROUND: {gameState.voteRound}</p>}
+            </div>
+            {viewerHost &&
+              (gameState.phase === Phase.WAITING_FOR_PLAYERS || gameState.phase === Phase.GAME_CREATION) && (
+                <Button
+                  type="button"
+                  className="arcade-btn arcade-btn-primary"
+                  onClick={onStartGame}
+                  bg="var(--yellow-400)"
+                  textColor="var(--neutral-black)"
+                  borderColor="var(--neutral-black)"
+                  shadow="var(--yellow-700)"
+                >
+                  START GAME
+                </Button>
+              )}
+            {viewerHost && (
+              <Button
+                type="button"
+                className="arcade-btn"
+                onClick={onResetGame}
+                bg="var(--red-400)"
+                textColor="var(--neutral-black)"
+                borderColor="var(--neutral-black)"
+                shadow="var(--red-700)"
+              >
+                RESET GAME
+              </Button>
+            )}
+            {gameState.phase === Phase.ROUND_DESCRIPTION && viewer?.isAlive && currentSpeakerId === viewer.id && (
+              <form className="arcade-stack" onSubmit={onSubmitStatement}>
+                <label className="arcade-field">
+                  <span className="arcade-label">YOUR STATEMENT</span>
+                  <input
+                    className="arcade-native-input"
+                    placeholder="ONE LINE. NO EXACT KEYWORD."
+                    value={statement}
+                    onChange={(event) => onStatementChange(event.target.value)}
+                    required
+                  />
+                </label>
+                <Button
+                  type="submit"
+                  className="arcade-btn"
+                  bg="var(--yellow-400)"
+                  textColor="var(--neutral-black)"
+                  borderColor="var(--neutral-black)"
+                  shadow="var(--yellow-700)"
+                >
+                  SEND STATEMENT
+                </Button>
+              </form>
+            )}
+            {gameState.phase === Phase.ROUND_DISCUSSION && viewerHost && (
+              <Button
+                type="button"
+                className="arcade-btn arcade-btn-primary"
+                onClick={onStartVoting}
+                bg="var(--pink-500)"
+                textColor="var(--neutral-black)"
+                borderColor="var(--neutral-black)"
+                shadow="var(--pink-700)"
+              >
+                START VOTING
+              </Button>
+            )}
+            {gameState.phase === Phase.ROUND_VOTING && viewer?.isAlive && (
+              <div className="arcade-stack">
+                {canViewerVote(gameState, viewer.id) ? (
+                  <>
+                    <p className="arcade-muted">CAST YOUR VOTE NOW.</p>
+                    {viewerVotedForName && <p className="arcade-muted">CURRENT VOTE: {viewerVotedForName}</p>}
+                    <div className="arcade-vote-grid">
+                      {alivePlayers
+                        .filter((player) => player.id !== playerId)
+                        .map((player) => (
+                          <Button
+                            key={player.id}
+                            type="button"
+                            className="arcade-btn"
+                            onClick={() => onSubmitVote(player.id)}
+                            bg="var(--blue-400)"
+                            textColor="var(--neutral-black)"
+                            borderColor="var(--neutral-black)"
+                            shadow="var(--blue-700)"
+                          >
+                            {player.name.toUpperCase()}
+                          </Button>
+                        ))}
+                      {gameState.settings.mode === GameMode.CLASSIC && (
+                        <Button
+                          type="button"
+                          className="arcade-btn"
+                          onClick={() => onSubmitVote(null)}
+                          bg="var(--blue-400)"
+                          textColor="var(--neutral-black)"
+                          borderColor="var(--neutral-black)"
+                          shadow="var(--blue-700)"
+                        >
+                          SKIP
+                        </Button>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <p className="arcade-muted">IN HARDCORE, ONLY CITIZENS CAST REAL VOTES.</p>
+                )}
+              </div>
+            )}
+            {gameState.phase === Phase.GAME_ENDED && (
+              <div className="arcade-status-box">
+                <p className="arcade-kicker">FINAL REASON</p>
+                <p className="arcade-guide-title">{(gameState.winnerReason ?? "NO REASON PROVIDED").toUpperCase()}</p>
+              </div>
+            )}
+          </section>
+        </Card>
       </main>
     </>
   );

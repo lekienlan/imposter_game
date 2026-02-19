@@ -40,6 +40,10 @@ Tài liệu này định nghĩa rule làm việc cho toàn bộ monorepo `impost
 - Không import ngược tầng (ví dụ `domain` không import từ `infrastructure`/`presentation`).
 - Hạn chế side-effect trong module khi import.
 
+## Quy tắc Package Manager
+- Luôn sử dụng `yarn` cho mọi thao tác cài dependency và chạy script.
+- Không sử dụng `npm` trong monorepo này.
+
 ## Quy tắc Design Token (Web)
 - `apps/web/src/design-system/AppColor.ts` là nguồn màu duy nhất (single source of truth).
 - Không hardcode mã màu trong `tailwind.config.ts` hoặc file CSS presentation nếu màu đã có trong design token.

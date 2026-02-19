@@ -3,6 +3,8 @@ import {
   JoinRoomRequest,
   ResetGameRequest,
   ReconnectRequest,
+  RoomPreviewRequest,
+  RoomPreviewResponse,
   StartGameRequest,
   StartVotingRequest,
   SubmitStatementRequest,
@@ -18,10 +20,12 @@ export interface GameGateway {
   onError(handler: (payload: ErrorPayload) => void): void;
   onRoomCreated(handler: (payload: CreateRoomResponse) => void): void;
   onRoomJoined(handler: (payload: JoinRoomResponse) => void): void;
+  onRoomPreviewed(handler: (payload: RoomPreviewResponse) => void): void;
   resetConnection(): void;
   createRoom(payload: CreateRoomRequest): void;
   joinRoom(payload: JoinRoomRequest): void;
   reconnect(payload: ReconnectRequest): void;
+  previewRoom(payload: RoomPreviewRequest): void;
   startGame(payload: StartGameRequest): void;
   resetGame(payload: ResetGameRequest): void;
   submitStatement(payload: SubmitStatementRequest): void;

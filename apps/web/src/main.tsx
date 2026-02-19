@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import "pixel-retroui/dist/index.css";
 import { App } from "./presentation/App";
 import "./design-system/colors.css";
 import "./presentation/index.css";

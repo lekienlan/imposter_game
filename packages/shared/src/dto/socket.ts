@@ -1,5 +1,6 @@
 import { GameState } from "../models/GameState";
 import { GameSettings } from "../models/GameSettings";
+import { Phase } from "../enums/Phase";
 
 export interface CreateRoomRequest {
   playerName: string;
@@ -14,6 +15,10 @@ export interface JoinRoomRequest {
 export interface ReconnectRequest {
   roomId: string;
   playerId: string;
+}
+
+export interface RoomPreviewRequest {
+  roomId: string;
 }
 
 export interface StartGameRequest {
@@ -64,9 +69,18 @@ export interface JoinRoomResponse {
   gameState: GameState;
 }
 
+export interface RoomPreviewResponse {
+  roomId: string;
+  hostName: string;
+  phase: Phase;
+  playerCount: number;
+  playerNames: string[];
+}
+
 export interface ServerToClientEvents {
   "room:created": (payload: CreateRoomResponse) => void;
   "room:joined": (payload: JoinRoomResponse) => void;
+  "room:previewed": (payload: RoomPreviewResponse) => void;
   "state:update": (payload: StateUpdatePayload) => void;
   "server:error": (payload: ErrorPayload) => void;
 }
@@ -74,6 +88,7 @@ export interface ServerToClientEvents {
 export interface ClientToServerEvents {
   "room:create": (payload: CreateRoomRequest) => void;
   "room:join": (payload: JoinRoomRequest) => void;
+  "room:preview": (payload: RoomPreviewRequest) => void;
   "player:reconnect": (payload: ReconnectRequest) => void;
   "game:start": (payload: StartGameRequest) => void;
   "game:reset": (payload: ResetGameRequest) => void;

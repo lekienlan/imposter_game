@@ -1,3 +1,5 @@
+import { Button, Popup } from "pixel-retroui";
+
 interface Props {
   word: string;
   role: string | null;
@@ -5,14 +7,32 @@ interface Props {
 }
 
 export const WordRevealPopup = ({ word, role, onClose }: Props) => (
-  <div className="word-popup-backdrop" role="dialog" aria-modal="true" aria-label="Your secret keyword">
-    <div className="word-popup-card">
-      <p className="word-popup-kicker">Secret Word</p>
-      <p className="word-popup-word">{word}</p>
-      <p className="word-popup-role">Role: {role ?? "Hidden"}</p>
-      <button className="btn btn-primary word-popup-close" onClick={onClose}>
-        Got it
-      </button>
+  <Popup
+    isOpen
+    onClose={onClose}
+    title="SECRET WORD"
+    closeButtonText="X"
+    className="arcade-word-popup"
+    bg="color-mix(in srgb, var(--surface-primary) 90%, var(--blue-900))"
+    baseBg="var(--blue-900)"
+    overlayBg="color-mix(in srgb, var(--neutral-black) 78%, transparent)"
+    textColor="var(--yellow-300)"
+    borderColor="var(--blue-500)"
+  >
+    <div className="arcade-popup-content">
+      <p className="arcade-popup-word">{word}</p>
+      <p className="arcade-popup-role">ROLE: {role ?? "HIDDEN"}</p>
+      <Button
+        type="button"
+        className="arcade-btn"
+        onClick={onClose}
+        bg="var(--yellow-400)"
+        textColor="var(--neutral-black)"
+        borderColor="var(--neutral-black)"
+        shadow="var(--yellow-700)"
+      >
+        READY
+      </Button>
     </div>
-  </div>
+  </Popup>
 );
