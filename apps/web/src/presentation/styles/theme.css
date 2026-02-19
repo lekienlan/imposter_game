@@ -1,0 +1,73 @@
+@import url("https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Manrope:wght@400;500;700&display=swap");
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: "Manrope", sans-serif;
+  background:
+    radial-gradient(circle at 8% 10%, color-mix(in srgb, var(--pink-400) 44%, transparent), transparent 28%),
+    radial-gradient(circle at 88% 82%, color-mix(in srgb, var(--pink-600) 30%, transparent), transparent 35%),
+    linear-gradient(155deg, var(--bg-0), var(--bg-1));
+  background-attachment: fixed;
+  font-size: 17px;
+  line-height: 1.45;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.hero-kicker,
+.panel-eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.hero-title,
+.panel-title,
+.room-title {
+  margin: 0.2rem 0;
+  font-family: "Syne", sans-serif;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+}
+
+.hero-title {
+  font-size: clamp(2rem, 7.8vw, 4rem);
+}
+
+.hero-subtitle {
+  margin: 0;
+  color: var(--muted);
+  max-width: 46ch;
+  font-size: 1.05rem;
+}
+
+.room-title {
+  font-size: clamp(2rem, 6vw, 3.25rem);
+}
+
+.player-name {
+  margin: 0;
+  font-size: 1.03rem;
+  font-weight: 700;
+}
+
+.guide-title {
+  margin: 0.3rem 0;
+  font-size: 1.12rem;
+  font-weight: 700;
+}
+
+.muted {
+  color: var(--muted);
+}
