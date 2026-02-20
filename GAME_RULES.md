@@ -96,11 +96,11 @@ _(OPTIONAL – chỉ dùng trong Mode CLASSIC nếu host chọn)_
 
 ### 🟢 DÂN THẮNG KHI
 
-- **Số DÂN còn sống > số GIÁN ĐIỆP còn sống**
+- **Tất cả GIÁN ĐIỆP đã bị loại** (số GIÁN ĐIỆP còn sống = 0)
 
 ### 🔴 GIÁN ĐIỆP THẮNG KHI
 
-- **Số DÂN còn sống ≤ số GIÁN ĐIỆP còn sống**
+- **Số GIÁN ĐIỆP còn sống ≥ số DÂN còn sống**
 - **HOẶC**
 - Dân thua ngay do **loại nhầm Ẩn số ở vòng 1–2**
 

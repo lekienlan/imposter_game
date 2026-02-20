@@ -1,3 +1,26 @@
+.arcade-label-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.arcade-toggle-text {
+  background: none;
+  border: none;
+  color: var(--blue-200);
+  font-family: inherit;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.arcade-toggle-text:hover {
+  color: var(--neutral-white);
+}
+
 .arcade-mode-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

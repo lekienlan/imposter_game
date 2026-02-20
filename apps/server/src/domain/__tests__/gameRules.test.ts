@@ -97,4 +97,40 @@ describe("advanceAfterRound", () => {
     expect(state.winner).toBe(Winner.SPIES);
     expect(state.phase).toBe(Phase.GAME_ENDED);
   });
+
+  test("classic citizens win when all spies eliminated", () => {
+    const state = baseState(GameMode.CLASSIC);
+    // eliminate the spy (p2)
+    const eliminatedRole = applyRoundResult(state, "p2");
+    advanceAfterRound(state, eliminatedRole, () => 0.2);
+
+    expect(state.winner).toBe(Winner.CITIZENS);
+    expect(state.winnerReason).toBe("ALL_SPIES_ELIMINATED");
+    expect(state.phase).toBe(Phase.GAME_ENDED);
+  });
+
+  test("classic spies win when they reach parity", () => {
+    const state = baseState(GameMode.CLASSIC);
+    // eliminate p3 (WHITE) in round >= 3 so white-elimination early-exit does NOT fire
+    state.round = 3;
+    state.players[2].role = Role.CITIZEN;
+    state.players[2].word = "Cat";
+    // p1 (CITIZEN) eliminated → spyCount(1) >= citizenCount(1)
+    const eliminatedRole = applyRoundResult(state, "p1");
+    advanceAfterRound(state, eliminatedRole, () => 0.2);
+
+    expect(state.winner).toBe(Winner.SPIES);
+    expect(state.phase).toBe(Phase.GAME_ENDED);
+  });
+
+  test("classic game continues when spy alive but outnumbered", () => {
+    // 2 citizens (p1, p3 after white transition), 1 spy (p2) — spy < citizen
+    const state = baseState(GameMode.CLASSIC);
+    // no elimination this round
+    const eliminatedRole = applyRoundResult(state, null);
+    advanceAfterRound(state, eliminatedRole, () => 0.2);
+
+    expect(state.winner).toBe(Winner.NONE);
+    expect(state.phase).not.toBe(Phase.GAME_ENDED);
+  });
 });

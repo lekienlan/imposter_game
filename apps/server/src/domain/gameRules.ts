@@ -80,12 +80,13 @@ const summarizeVotes = (votes: Vote[]) => {
 
 export const sanitizeGameStateForViewer = (gameState: GameState, viewerPlayerId: string): GameState => ({
   ...gameState,
+  activeWordPair: gameState.phase === Phase.GAME_ENDED ? gameState.activeWordPair : null,
   players: gameState.players.map((player) => {
     if (player.id === viewerPlayerId || gameState.phase === Phase.GAME_ENDED) {
       return player;
     }
     return { ...player, role: null, word: null };
-  })
+  }),
 });
 
 export const assignRoles = (players: Player[], settings: GameSettings, random: () => number): Role[] => {
@@ -246,9 +247,13 @@ const evaluateWinner = (gameState: GameState, eliminatedRole: Role | null): Post
   const spyCount = countAliveSpies(gameState.players);
 
   if (gameState.settings.mode === GameMode.CLASSIC) {
-    return citizenCount > spyCount
-      ? { winner: Winner.CITIZENS, winnerReason: "CITIZENS_OUTNUMBER_SPIES" }
-      : { winner: Winner.SPIES, winnerReason: "SPIES_PARITY_OR_CONTROL" };
+    if (spyCount === 0) {
+      return { winner: Winner.CITIZENS, winnerReason: "ALL_SPIES_ELIMINATED" };
+    }
+    if (spyCount >= citizenCount) {
+      return { winner: Winner.SPIES, winnerReason: "SPIES_PARITY_OR_CONTROL" };
+    }
+    return { winner: Winner.NONE, winnerReason: null };
   }
 
   if (citizenCount >= spyCount) {

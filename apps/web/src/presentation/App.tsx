@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { GameMode, GameState, Phase, RoomPreviewResponse } from "@imposter/shared";
 import { JoinRoom } from "../application/JoinRoom";
 import { PreviewRoom } from "../application/PreviewRoom";
@@ -6,10 +7,12 @@ import { SubmitStatement } from "../application/SubmitStatement";
 import { SubmitVote } from "../application/SubmitVote";
 import { HandlePhaseUpdate } from "../application/HandlePhaseUpdate";
 import { parseWordPairs } from "../application/parseWordPairs";
+import { generateWordPairs } from "../application/wordPairBank";
 import { alivePlayers, getViewer } from "../domain/gameSelectors";
 import { buildShareUrl, parseShareInvite, resolveShareOrigin } from "../domain/ShareLink";
 import { SocketGateway } from "../infrastructure/socketGateway";
 import { GameScreen } from "./GameScreen";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { LobbyScreen } from "./LobbyScreen";
 
 const gateway = new SocketGateway(import.meta.env.VITE_SERVER_URL ?? "http://localhost:3001");
@@ -27,13 +30,14 @@ const consumeCodeParam = () => {
 };
 
 export const App = () => {
+  const { i18n } = useTranslation();
   const [roomId, setRoomId] = useState("");
   const [playerId, setPlayerId] = useState("");
   const [name, setName] = useState(() => localStorage.getItem("playerNameDraft") ?? "");
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [error, setError] = useState("");
   const [statement, setStatement] = useState("");
-  const [pairsInput, setPairsInput] = useState("Apple | Pear\nDoctor | Nurse\nCat | Tiger");
+  const [pairsInput, setPairsInput] = useState(() => generateWordPairs(i18n.language));
   const [mode, setMode] = useState<GameMode>(GameMode.CLASSIC);
   const [whiteEnabled, setWhiteEnabled] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -41,6 +45,7 @@ export const App = () => {
   const [isWordPopupOpen, setIsWordPopupOpen] = useState(false);
   const [entryMode, setEntryMode] = useState<EntryMode>("CREATE_ONLY");
   const [previewData, setPreviewData] = useState<RoomPreviewResponse | null>(null);
+  const [isLobbyLoading, setIsLobbyLoading] = useState(false);
   const shownWordMarkerRef = useRef("");
   const inviteHandledRef = useRef(false);
 
@@ -49,6 +54,10 @@ export const App = () => {
   const submitStatementUseCase = useMemo(() => new SubmitStatement(gateway), []);
   const submitVoteUseCase = useMemo(() => new SubmitVote(gateway), []);
   const handlePhaseUpdate = useMemo(() => new HandlePhaseUpdate(), []);
+
+  useEffect(() => {
+    setPairsInput(generateWordPairs(i18n.language));
+  }, [i18n.language]);
 
   const clearSessionState = () => {
     localStorage.removeItem("roomId");
@@ -63,6 +72,7 @@ export const App = () => {
 
   useEffect(() => {
     gateway.onRoomCreated((payload) => {
+      setIsLobbyLoading(false);
       setRoomId(payload.roomId);
       setPlayerId(payload.playerId);
       setGameState(payload.gameState);
@@ -74,6 +84,7 @@ export const App = () => {
     });
 
     gateway.onRoomJoined((payload) => {
+      setIsLobbyLoading(false);
       setRoomId(payload.roomId);
       setPlayerId(payload.playerId);
       setGameState(payload.gameState);
@@ -110,6 +121,7 @@ export const App = () => {
     });
 
     gateway.onError((payload) => {
+      setIsLobbyLoading(false);
       setError(payload.message);
     });
 
@@ -142,6 +154,7 @@ export const App = () => {
 
   const createRoom = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsLobbyLoading(true);
     gateway.createRoom({
       playerName: name,
       settings: {
@@ -154,6 +167,7 @@ export const App = () => {
 
   const joinRoom = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsLobbyLoading(true);
     joinRoomUseCase.execute({ roomId, playerName: name });
   };
 
@@ -204,6 +218,8 @@ export const App = () => {
 
   if (!gameState || gameState.phase === Phase.GAME_CREATION) {
     return (
+      <>
+      <LanguageSwitcher />
       <LobbyScreen
         error={error}
         name={name}
@@ -212,6 +228,7 @@ export const App = () => {
         mode={mode}
         whiteEnabled={whiteEnabled}
         entryMode={entryMode}
+        isLoading={isLobbyLoading}
         previewData={previewData}
         onNameChange={handleNameChange}
         onRoomIdChange={setRoomId}
@@ -221,6 +238,7 @@ export const App = () => {
         onCreateRoom={createRoom}
         onJoinRoom={joinRoom}
       />
+      </>
     );
   }
 
@@ -229,7 +247,15 @@ export const App = () => {
   const viewerVotedForName =
     viewer?.votedFor ? gameState.players.find((player) => player.id === viewer.votedFor)?.name : undefined;
 
+  const { origin: shareOrigin } = resolveShareOrigin(
+    window.location.origin,
+    import.meta.env.VITE_SHARE_ORIGIN as string | undefined
+  );
+  const shareUrl = buildShareUrl(shareOrigin, gameState.roomId);
+
   return (
+    <>
+    <LanguageSwitcher />
     <GameScreen
       roomId={roomId}
       playerId={playerId}
@@ -237,6 +263,7 @@ export const App = () => {
       error={error}
       copied={copied}
       shareCopied={shareCopied}
+      shareUrl={shareUrl}
       isWordPopupOpen={isWordPopupOpen}
       statement={statement}
       alivePlayers={alive}
@@ -252,5 +279,6 @@ export const App = () => {
       onStartVoting={() => gateway.startVoting({ roomId, playerId })}
       onSubmitVote={(targetPlayerId) => submitVoteUseCase.execute({ roomId, playerId, targetPlayerId })}
     />
+    </>
   );
 };

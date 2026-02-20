@@ -1,0 +1,70 @@
+/* Speaker highlight */
+.arcade-speaker {
+  border-color: var(--yellow-400);
+  box-shadow: 0 0 0 2px var(--yellow-400);
+}
+
+/* Eliminated player dim */
+.arcade-player-eliminated {
+  opacity: 0.4;
+}
+
+/* Action board phase enter animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.arcade-action-enter {
+  animation: fadeIn 0.3s ease;
+}
+
+/* Word popup fade-in */
+.arcade-popup-fade-in {
+  animation: fadeIn 0.3s ease;
+}
+
+/* Countdown text in word popup */
+.arcade-countdown {
+  margin: 0;
+  font-size: clamp(2rem, 10vw, 5rem);
+  letter-spacing: 0.1em;
+  color: var(--pink-300);
+  text-align: center;
+}
+
+/* Inline validation error */
+.arcade-inline-error {
+  margin: 4px 0 0;
+  font-size: 0.78rem;
+  color: var(--red-300);
+  letter-spacing: 0.04em;
+}
+
+/* Character counter */
+.arcade-char-counter {
+  margin: 4px 0 0;
+  font-size: 0.74rem;
+  color: var(--blue-200);
+  letter-spacing: 0.04em;
+  text-align: right;
+}
+
+/* Tip text */
+.arcade-tip {
+  font-style: italic;
+  color: var(--pink-200);
+}
+
+/* Disabled vote button styling */
+.arcade-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Vote grid layout */
+.arcade-vote-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}

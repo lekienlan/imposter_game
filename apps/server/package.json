@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc -p tsconfig.json",
+    "build": "esbuild src/index.ts --bundle --platform=node --external:ioredis --external:socket.io --external:nanoid --outfile=dist/index.js",
+    "start": "node dist/index.js",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run"
   },
@@ -17,6 +18,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.13.8",
+    "esbuild": "^0.25.0",
     "tsx": "^4.19.3",
     "vitest": "^3.0.8"
   }

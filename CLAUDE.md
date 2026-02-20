@@ -70,7 +70,7 @@ Tài liệu này định nghĩa rule làm việc cho toàn bộ monorepo `impost
 - Khi thêm tính năng mới, ưu tiên mở rộng theo layer hiện có thay vì thêm nhanh vào `App.tsx`.
 - Không trộn refactor lớn cùng PR fix nhỏ nếu không cần thiết.
 - Giữ hàm ngắn gọn, ưu tiên pure function cho phần tính toán.
-- Mỗi lần phát sinh thay đổi rule của project, phải hỏi user: có muốn cập nhật `AGENTS.md` theo rule mới hay không, trước khi chỉnh sửa file rule.
+- Mỗi lần phát sinh thay đổi rule của project, phải hỏi user: có muốn cập nhật `CLAUDE.md` theo rule mới hay không, trước khi chỉnh sửa file rule.
 - Rule reset game:
   - UI chỉ hiển thị nút `Reset Game` cho host, ở tất cả phase trong màn game.
   - Chỉ host được phép thực thi reset.

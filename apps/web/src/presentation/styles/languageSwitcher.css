@@ -1,0 +1,37 @@
+.language-switcher {
+  position: fixed;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 9999;
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+  background: var(--panel);
+  border: 2px solid var(--line);
+  box-shadow: 4px 4px 0 var(--neutral-black);
+}
+
+.language-switcher__btn {
+  padding: 0.25rem 0.625rem;
+  border: 2px solid transparent;
+  border-radius: 0.375rem;
+  background: transparent;
+  color: var(--muted);
+  font-family: "Press Start 2P", monospace;
+  font-size: 0.625rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1.4;
+}
+
+.language-switcher__btn:hover {
+  color: var(--ink);
+  background: var(--panel-soft);
+}
+
+.language-switcher__btn--active {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--panel-soft);
+}

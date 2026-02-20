@@ -20,5 +20,26 @@
 
   .arcade-btn {
     width: 100%;
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .arcade-vote-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .arcade-vote-grid .arcade-btn {
+    flex: 1 1 calc(50% - 6px);
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .arcade-btn {
+    min-height: 44px;
+    min-width: 44px;
   }
 }
