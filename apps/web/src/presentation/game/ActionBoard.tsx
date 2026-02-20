@@ -1,10 +1,12 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Card } from "pixel-retroui";
-import { GameMode, GameState, Phase, Player } from "@imposter/shared";
-import { canViewerVote } from "../domain/gameSelectors";
-import { phaseGuide, phaseTone } from "./phasePresentation";
-import { ShareButton } from "./ShareButton";
+import { GameState, Phase, Player } from "@imposter/shared";
+import { phaseGuide, phaseTone } from "../shared/phasePresentation";
+import { ShareButton } from "../shared/ShareButton";
+import { RoundActionPanel } from "../round/RoundActionPanel";
+import { VotingPanel } from "../voting/VotingPanel";
+import { GameOverPanel } from "../game-over/GameOverPanel";
 
 interface Props {
   gameState: GameState;
@@ -56,7 +58,6 @@ export const ActionBoard = ({
   const currentSpeakerName = currentSpeakerId
     ? gameState.players.find((p) => p.id === currentSpeakerId)?.name ?? "UNKNOWN"
     : "COMPLETED";
-  const hasVoted = viewerVotedForName !== undefined;
   const guide = phaseGuide[gameState.phase];
 
   useEffect(() => {
@@ -164,101 +165,31 @@ export const ActionBoard = ({
             </Button>
           )}
 
-          {gameState.phase === Phase.ROUND_DESCRIPTION && viewer?.isAlive && currentSpeakerId === viewer.id && (
-            <form className="arcade-stack" onSubmit={onSubmitStatement}>
-              <label className="arcade-field">
-                <span className="arcade-label">{t("game.yourStatement").toUpperCase()}</span>
-                <input
-                  className="arcade-native-input"
-                  placeholder={t("game.statementPlaceholder")}
-                  value={statement}
-                  onChange={(event) => onStatementChange(event.target.value)}
-                  required
-                />
-              </label>
-              <Button
-                type="submit"
-                className="arcade-btn"
-                bg="var(--yellow-400)"
-                textColor="var(--neutral-black)"
-                borderColor="var(--neutral-black)"
-                shadow="var(--yellow-700)"
-              >
-                {t("game.sendStatement").toUpperCase()}
-              </Button>
-            </form>
+          {(gameState.phase === Phase.ROUND_DESCRIPTION || gameState.phase === Phase.ROUND_DISCUSSION) && (
+            <RoundActionPanel
+              gameState={gameState}
+              playerId={playerId}
+              viewerHost={viewerHost}
+              viewer={viewer}
+              statement={statement}
+              onStatementChange={onStatementChange}
+              onSubmitStatement={onSubmitStatement}
+              onStartVoting={onStartVoting}
+            />
           )}
 
-          {gameState.phase === Phase.ROUND_DISCUSSION && viewerHost && (
-            <Button
-              type="button"
-              className="arcade-btn arcade-btn-primary"
-              onClick={onStartVoting}
-              bg="var(--pink-500)"
-              textColor="var(--neutral-black)"
-              borderColor="var(--neutral-black)"
-              shadow="var(--pink-700)"
-            >
-              {t("game.startVoting").toUpperCase()}
-            </Button>
+          {gameState.phase === Phase.ROUND_VOTING && (
+            <VotingPanel
+              gameState={gameState}
+              playerId={playerId}
+              viewer={viewer}
+              alivePlayers={alivePlayers}
+              viewerVotedForName={viewerVotedForName}
+              onSubmitVote={onSubmitVote}
+            />
           )}
 
-          {gameState.phase === Phase.ROUND_VOTING && viewer?.isAlive && (
-            <div className="arcade-stack">
-              {canViewerVote(gameState, viewer.id) ? (
-                <>
-                  <p className="arcade-muted">{t("game.castVote").toUpperCase()}</p>
-                  {viewerVotedForName && (
-                    <p className="arcade-muted">{t("game.currentVote").toUpperCase()}: {viewerVotedForName}</p>
-                  )}
-                  <div className="arcade-vote-grid">
-                    {alivePlayers
-                      .filter((player) => player.id !== playerId)
-                      .map((player) => (
-                        <Button
-                          key={player.id}
-                          type="button"
-                          className="arcade-btn"
-                          onClick={() => onSubmitVote(player.id)}
-                          disabled={hasVoted}
-                          bg="var(--blue-400)"
-                          textColor="var(--neutral-black)"
-                          borderColor="var(--neutral-black)"
-                          shadow="var(--blue-700)"
-                        >
-                          {player.name.toUpperCase()}
-                        </Button>
-                      ))}
-                    {gameState.settings.mode === GameMode.CLASSIC && (
-                      <Button
-                        type="button"
-                        className="arcade-btn"
-                        onClick={() => onSubmitVote(null)}
-                        disabled={hasVoted}
-                        bg="var(--blue-400)"
-                        textColor="var(--neutral-black)"
-                        borderColor="var(--neutral-black)"
-                        shadow="var(--blue-700)"
-                      >
-                        {t("game.skip").toUpperCase()}
-                      </Button>
-                    )}
-                  </div>
-                </>
-              ) : (
-                <p className="arcade-muted">{t("game.hardcoreVoteNotice").toUpperCase()}</p>
-              )}
-            </div>
-          )}
-
-          {gameState.phase === Phase.GAME_ENDED && (
-            <div className="arcade-status-box">
-              <p className="arcade-kicker">{t("game.finalReason").toUpperCase()}</p>
-              <p className="arcade-guide-title">
-                {(gameState.winnerReason ?? "NO REASON PROVIDED").toUpperCase()}
-              </p>
-            </div>
-          )}
+          {gameState.phase === Phase.GAME_ENDED && <GameOverPanel winnerReason={gameState.winnerReason} />}
         </section>
       </Card>
     </>

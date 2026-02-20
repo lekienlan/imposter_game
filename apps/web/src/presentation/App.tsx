@@ -11,9 +11,9 @@ import { generateWordPairs } from "../application/wordPairBank";
 import { alivePlayers, getViewer } from "../domain/gameSelectors";
 import { buildShareUrl, parseShareInvite, resolveShareOrigin } from "../domain/ShareLink";
 import { SocketGateway } from "../infrastructure/socketGateway";
-import { GameScreen } from "./GameScreen";
-import { LanguageSwitcher } from "./LanguageSwitcher";
-import { LobbyScreen } from "./LobbyScreen";
+import { GameScreen } from "./game/GameScreen";
+import { LobbyScreen } from "./lobby/LobbyScreen";
+import { LanguageSwitcher } from "./shared/LanguageSwitcher";
 
 const gateway = new SocketGateway(import.meta.env.VITE_SERVER_URL ?? "http://localhost:3001");
 

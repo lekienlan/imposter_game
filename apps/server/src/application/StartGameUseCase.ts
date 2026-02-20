@@ -1,6 +1,11 @@
-import { Phase, Winner } from "@imposter/shared";
-import { GameStateRepository } from "./GameStateRepository";
-import { applyRolesAndWords, assignRoles, beginRoundDescription, pickWordPair } from "../domain/gameRules";
+import { Phase, Winner } from '@imposter/shared';
+import { GameStateRepository } from './GameStateRepository';
+import {
+  applyRolesAndWords,
+  assignRoles,
+  beginRoundDescription,
+  pickWordPair,
+} from '../domain/gameRules';
 
 interface Input {
   roomId: string;
@@ -10,25 +15,29 @@ interface Input {
 export class StartGameUseCase {
   constructor(
     private readonly repository: GameStateRepository,
-    private readonly random: () => number = Math.random
+    private readonly random: () => number = Math.random,
   ) {}
 
   async execute(input: Input) {
     const gameState = await this.repository.getByRoomId(input.roomId);
     if (!gameState) {
-      throw new Error("Room not found");
+      throw new Error('Room not found');
     }
 
     if (gameState.hostPlayerId !== input.playerId) {
-      throw new Error("Only host can start");
+      throw new Error('Only host can start');
     }
 
     if (gameState.players.length < 3) {
-      throw new Error("Need at least 3 players");
+      throw new Error('Need at least 3 players');
     }
 
     gameState.phase = Phase.LOBBY_READY;
-    const roles = assignRoles(gameState.players, gameState.settings, this.random);
+    const roles = assignRoles(
+      gameState.players,
+      gameState.settings,
+      this.random,
+    );
     const wordPair = pickWordPair(gameState.settings.wordPairs, this.random);
 
     gameState.players = applyRolesAndWords(gameState.players, roles, wordPair);
