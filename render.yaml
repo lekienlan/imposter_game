@@ -12,8 +12,6 @@ services:
           type: redis
           name: imposter-game-redis
           property: connectionString
-
-databases:
-  - name: imposter-game-redis
-    type: redis
+  - type: redis
+    name: imposter-game-redis
     plan: free
