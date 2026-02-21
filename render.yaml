@@ -1,6 +1,7 @@
 services:
   - type: web
     name: imposter-game-server
+    plan: free
     runtime: node
     buildCommand: yarn install && yarn workspace @imposter/server build
     startCommand: node apps/server/dist/index.js
