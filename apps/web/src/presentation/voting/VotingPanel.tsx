@@ -8,7 +8,7 @@ interface Props {
   playerId: string;
   viewer: Player | undefined;
   alivePlayers: Player[];
-  viewerVotedForName: string | undefined;
+  viewerVotedForId: string | null | undefined;
   onSubmitVote: (targetPlayerId: string | null) => void;
 }
 
@@ -17,11 +17,15 @@ export const VotingPanel = ({
   playerId,
   viewer,
   alivePlayers,
-  viewerVotedForName,
+  viewerVotedForId,
   onSubmitVote,
 }: Props) => {
   const { t } = useTranslation();
-  const hasVoted = viewerVotedForName !== undefined;
+  const hasVoted = viewerVotedForId !== undefined;
+  const votedForName =
+    typeof viewerVotedForId === "string"
+      ? alivePlayers.find((p) => p.id === viewerVotedForId)?.name
+      : undefined;
 
   if (!viewer?.isAlive) {
     return null;
@@ -32,43 +36,48 @@ export const VotingPanel = ({
       {canViewerVote(gameState, viewer.id) ? (
         <>
           <p className="arcade-muted">{t("game.castVote").toUpperCase()}</p>
-          {viewerVotedForName && (
+          {hasVoted && (
             <p className="arcade-muted">
-              {t("game.currentVote").toUpperCase()}: {viewerVotedForName}
+              {t("game.currentVote").toUpperCase()}:{" "}
+              {votedForName ?? t("game.skip").toUpperCase()}
             </p>
           )}
           <div className="arcade-vote-grid">
             {alivePlayers
               .filter((player) => player.id !== playerId)
-              .map((player) => (
+              .map((player) => {
+                const isSelected = viewerVotedForId === player.id;
+                return (
+                  <Button
+                    key={player.id}
+                    type="button"
+                    className="arcade-btn"
+                    onClick={() => onSubmitVote(player.id)}
+                    bg={isSelected ? "var(--yellow-400)" : "var(--blue-400)"}
+                    textColor="var(--neutral-black)"
+                    borderColor="var(--neutral-black)"
+                    shadow={isSelected ? "var(--yellow-700)" : "var(--blue-700)"}
+                  >
+                    {player.name.toUpperCase()}
+                  </Button>
+                );
+              })}
+            {gameState.settings.mode === GameMode.CLASSIC && (() => {
+              const isSkipSelected = viewerVotedForId === null;
+              return (
                 <Button
-                  key={player.id}
                   type="button"
                   className="arcade-btn"
-                  onClick={() => onSubmitVote(player.id)}
-                  disabled={hasVoted}
-                  bg="var(--blue-400)"
+                  onClick={() => onSubmitVote(null)}
+                  bg={isSkipSelected ? "var(--yellow-400)" : "var(--blue-400)"}
                   textColor="var(--neutral-black)"
                   borderColor="var(--neutral-black)"
-                  shadow="var(--blue-700)"
+                  shadow={isSkipSelected ? "var(--yellow-700)" : "var(--blue-700)"}
                 >
-                  {player.name.toUpperCase()}
+                  {t("game.skip").toUpperCase()}
                 </Button>
-              ))}
-            {gameState.settings.mode === GameMode.CLASSIC && (
-              <Button
-                type="button"
-                className="arcade-btn"
-                onClick={() => onSubmitVote(null)}
-                disabled={hasVoted}
-                bg="var(--blue-400)"
-                textColor="var(--neutral-black)"
-                borderColor="var(--neutral-black)"
-                shadow="var(--blue-700)"
-              >
-                {t("game.skip").toUpperCase()}
-              </Button>
-            )}
+              );
+            })()}
           </div>
         </>
       ) : (

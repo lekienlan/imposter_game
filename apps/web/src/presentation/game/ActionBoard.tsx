@@ -6,7 +6,7 @@ import { phaseGuide, phaseTone } from "../shared/phasePresentation";
 import { ShareButton } from "../shared/ShareButton";
 import { RoundActionPanel } from "../round/RoundActionPanel";
 import { VotingPanel } from "../voting/VotingPanel";
-import { GameOverPanel } from "../game-over/GameOverPanel";
+import { GameOverModal } from "../game-over/GameOverModal";
 
 interface Props {
   gameState: GameState;
@@ -14,7 +14,7 @@ interface Props {
   viewerHost: boolean;
   viewer: Player | undefined;
   alivePlayers: Player[];
-  viewerVotedForName: string | undefined;
+  viewerVotedForId: string | null | undefined;
   statement: string;
   copied: boolean;
   shareCopied: boolean;
@@ -36,7 +36,7 @@ export const ActionBoard = ({
   viewerHost,
   viewer,
   alivePlayers,
-  viewerVotedForName,
+  viewerVotedForId,
   statement,
   copied,
   shareCopied,
@@ -184,12 +184,12 @@ export const ActionBoard = ({
               playerId={playerId}
               viewer={viewer}
               alivePlayers={alivePlayers}
-              viewerVotedForName={viewerVotedForName}
+              viewerVotedForId={viewerVotedForId}
               onSubmitVote={onSubmitVote}
             />
           )}
 
-          {gameState.phase === Phase.GAME_ENDED && <GameOverPanel winnerReason={gameState.winnerReason} />}
+          {gameState.phase === Phase.GAME_ENDED && <GameOverModal gameState={gameState} />}
         </section>
       </Card>
     </>

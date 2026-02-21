@@ -1,13 +1,13 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { GameMode, GameState, Phase, RoomPreviewResponse } from "@imposter/shared";
-import { JoinRoom } from "../application/JoinRoom";
-import { PreviewRoom } from "../application/PreviewRoom";
-import { SubmitStatement } from "../application/SubmitStatement";
-import { SubmitVote } from "../application/SubmitVote";
-import { HandlePhaseUpdate } from "../application/HandlePhaseUpdate";
-import { parseWordPairs } from "../application/parseWordPairs";
-import { generateWordPairs } from "../application/wordPairBank";
+import { JoinRoom } from "../application/usecases/JoinRoom";
+import { PreviewRoom } from "../application/usecases/PreviewRoom";
+import { SubmitStatement } from "../application/usecases/SubmitStatement";
+import { SubmitVote } from "../application/usecases/SubmitVote";
+import { HandlePhaseUpdate } from "../application/usecases/HandlePhaseUpdate";
+import { parseWordPairs } from "../application/utils/parseWordPairs";
+import { generateWordPairs } from "../application/utils/wordPairBank";
 import { alivePlayers, getViewer } from "../domain/gameSelectors";
 import { buildShareUrl, parseShareInvite, resolveShareOrigin } from "../domain/ShareLink";
 import { SocketGateway } from "../infrastructure/socketGateway";
@@ -244,8 +244,9 @@ export const App = () => {
 
   const viewer = getViewer(gameState, playerId);
   const alive = alivePlayers(gameState);
-  const viewerVotedForName =
-    viewer?.votedFor ? gameState.players.find((player) => player.id === viewer.votedFor)?.name : undefined;
+  const viewerVoteEntry = gameState.votes.find((v) => v.voterId === playerId);
+  const viewerVotedForId: string | null | undefined =
+    viewerVoteEntry !== undefined ? viewerVoteEntry.targetPlayerId : undefined;
 
   const { origin: shareOrigin } = resolveShareOrigin(
     window.location.origin,
@@ -268,7 +269,7 @@ export const App = () => {
       statement={statement}
       alivePlayers={alive}
       viewer={viewer}
-      viewerVotedForName={viewerVotedForName}
+      viewerVotedForId={viewerVotedForId}
       onCopyRoomCode={copyRoomCode}
       onShareGame={shareGame}
       onCloseWordPopup={() => setIsWordPopupOpen(false)}

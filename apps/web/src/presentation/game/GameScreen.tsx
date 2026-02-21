@@ -18,7 +18,7 @@ interface Props {
   statement: string;
   alivePlayers: Player[];
   viewer: Player | undefined;
-  viewerVotedForName: string | undefined;
+  viewerVotedForId: string | null | undefined;
   onCopyRoomCode: () => Promise<void>;
   onShareGame: () => void;
   onCloseWordPopup: () => void;
@@ -41,7 +41,7 @@ export const GameScreen = ({
   statement,
   alivePlayers,
   viewer,
-  viewerVotedForName,
+  viewerVotedForId,
   onCopyRoomCode,
   onShareGame,
   onCloseWordPopup,
@@ -72,7 +72,7 @@ export const GameScreen = ({
             viewerHost={viewerHost}
             viewer={viewer}
             alivePlayers={alivePlayers}
-            viewerVotedForName={viewerVotedForName}
+            viewerVotedForId={viewerVotedForId}
             statement={statement}
             copied={copied}
             shareCopied={shareCopied}
