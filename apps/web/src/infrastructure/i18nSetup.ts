@@ -6,7 +6,7 @@ import ko from "../presentation/locales/ko.json";
 
 const LOCALE_STORAGE_KEY = "imposter_locale";
 
-const savedLocale = localStorage.getItem(LOCALE_STORAGE_KEY) ?? "en";
+const savedLocale = localStorage.getItem(LOCALE_STORAGE_KEY) ?? "vi";
 
 i18n.use(initReactI18next).init({
   resources: {
@@ -15,7 +15,7 @@ i18n.use(initReactI18next).init({
     ko: { translation: ko },
   },
   lng: savedLocale,
-  fallbackLng: "en",
+  fallbackLng: "vi",
   defaultNS: "translation",
   interpolation: {
     escapeValue: false,
