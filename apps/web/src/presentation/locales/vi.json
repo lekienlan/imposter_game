@@ -53,6 +53,7 @@
     "voteRound": "Lượt Bỏ Phiếu",
     "startGame": "Bắt Đầu",
     "resetGame": "Chơi Lại",
+    "statementFor": "Nhập lời cho",
     "yourStatement": "Phát Biểu Của Bạn",
     "statementPlaceholder": "Nhập phát biểu của bạn...",
     "sendStatement": "Gửi Phát Biểu",
@@ -72,6 +73,9 @@
     "playAgain": "Chơi Lại",
     "noStatement": "Không Có Phát Biểu",
     "waitingForHostVote": "Đang chờ host chốt vote..."
+  },
+  "app": {
+    "reconnecting": "Đang kết nối lại..."
   },
   "wordPopup": {
     "ready": "Sẵn Sàng!"

@@ -21,6 +21,8 @@ export interface GameGateway {
   onRoomCreated(handler: (payload: CreateRoomResponse) => void): void;
   onRoomJoined(handler: (payload: JoinRoomResponse) => void): void;
   onRoomPreviewed(handler: (payload: RoomPreviewResponse) => void): void;
+  onDisconnect(handler: () => void): void;
+  onReconnected(handler: () => void): void;
   resetConnection(): void;
   createRoom(payload: CreateRoomRequest): void;
   joinRoom(payload: JoinRoomRequest): void;

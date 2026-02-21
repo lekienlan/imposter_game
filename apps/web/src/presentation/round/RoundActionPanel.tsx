@@ -5,9 +5,8 @@ import { GameState, Phase, Player } from "@imposter/shared";
 
 interface Props {
   gameState: GameState;
-  playerId: string;
   viewerHost: boolean;
-  viewer: Player | undefined;
+  currentSpeaker: Player | undefined;
   statement: string;
   onStatementChange: (value: string) => void;
   onSubmitStatement: (event: FormEvent<HTMLFormElement>) => void;
@@ -16,23 +15,23 @@ interface Props {
 
 export const RoundActionPanel = ({
   gameState,
-  playerId,
   viewerHost,
-  viewer,
+  currentSpeaker,
   statement,
   onStatementChange,
   onSubmitStatement,
   onStartVoting,
 }: Props) => {
   const { t } = useTranslation();
-  const currentSpeakerId = gameState.pendingSpeakerIds[0] ?? null;
 
   return (
     <>
-      {viewer?.isAlive && currentSpeakerId === viewer.id && (
+      {viewerHost && currentSpeaker && gameState.phase === Phase.ROUND_DESCRIPTION && (
         <form className="arcade-stack" onSubmit={onSubmitStatement}>
           <label className="arcade-field">
-            <span className="arcade-label">{t("game.yourStatement").toUpperCase()}</span>
+            <span className="arcade-label">
+              {t("game.statementFor").toUpperCase()}: {currentSpeaker.name.toUpperCase()}
+            </span>
             <input
               className="arcade-native-input"
               placeholder={t("game.statementPlaceholder")}

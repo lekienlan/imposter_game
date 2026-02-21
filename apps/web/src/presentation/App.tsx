@@ -9,12 +9,14 @@ import { HandlePhaseUpdate } from "../application/usecases/HandlePhaseUpdate";
 import { parseWordPairs } from "../application/utils/parseWordPairs";
 import { generateWordPairs } from "../application/utils/wordPairBank";
 import { alivePlayers, getViewer } from "../domain/gameSelectors";
-import { buildShareUrl, parseShareInvite, resolveShareOrigin } from "../domain/ShareLink";
+import { buildShareUrl, resolveShareOrigin } from "../domain/ShareLink";
 import { SocketGateway } from "../infrastructure/socketGateway";
+import { useGatewayEvents } from "../application/hooks/useGatewayEvents";
 import { GameScreen } from "./game/GameScreen";
 import { GameOverModal } from "./game-over/GameOverModal";
 import { LobbyScreen } from "./lobby/LobbyScreen";
 import { LanguageSwitcher } from "./shared/LanguageSwitcher";
+import { WordRevealPopup } from "./role-reveal/WordRevealPopup";
 
 const gateway = new SocketGateway(import.meta.env.VITE_SERVER_URL ?? "http://localhost:3001");
 
@@ -22,16 +24,13 @@ type EntryMode = "CREATE_ONLY" | "JOIN_ONLY";
 
 const consumeCodeParam = () => {
   const url = new URL(window.location.href);
-  if (!url.searchParams.has("code")) {
-    return;
-  }
+  if (!url.searchParams.has("code")) return;
   url.searchParams.delete("code");
-  const nextUrl = `${url.pathname}${url.search}${url.hash}`;
-  window.history.replaceState({}, "", nextUrl);
+  window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
 };
 
 export const App = () => {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [roomId, setRoomId] = useState("");
   const [playerId, setPlayerId] = useState("");
   const [name, setName] = useState(() => localStorage.getItem("playerNameDraft") ?? "");
@@ -44,11 +43,14 @@ export const App = () => {
   const [copied, setCopied] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
   const [isWordPopupOpen, setIsWordPopupOpen] = useState(false);
+  const [isRoleRevealOpen, setIsRoleRevealOpen] = useState(false);
+  const [isReconnecting, setIsReconnecting] = useState(false);
   const [entryMode, setEntryMode] = useState<EntryMode>("CREATE_ONLY");
   const [previewData, setPreviewData] = useState<RoomPreviewResponse | null>(null);
   const [isLobbyLoading, setIsLobbyLoading] = useState(false);
   const shownWordMarkerRef = useRef("");
   const inviteHandledRef = useRef(false);
+  const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const joinRoomUseCase = useMemo(() => new JoinRoom(gateway), []);
   const previewRoomUseCase = useMemo(() => new PreviewRoom(gateway), []);
@@ -68,102 +70,40 @@ export const App = () => {
     setGameState(null);
     setStatement("");
     setIsWordPopupOpen(false);
+    setIsRoleRevealOpen(false);
     shownWordMarkerRef.current = "";
   };
 
-  useEffect(() => {
-    gateway.onRoomCreated((payload) => {
-      setIsLobbyLoading(false);
-      setRoomId(payload.roomId);
-      setPlayerId(payload.playerId);
-      setGameState(payload.gameState);
-      setIsWordPopupOpen(false);
-      shownWordMarkerRef.current = "";
-      localStorage.setItem("roomId", payload.roomId);
-      localStorage.setItem("playerId", payload.playerId);
-      setError("");
-    });
-
-    gateway.onRoomJoined((payload) => {
-      setIsLobbyLoading(false);
-      setRoomId(payload.roomId);
-      setPlayerId(payload.playerId);
-      setGameState(payload.gameState);
-      setIsWordPopupOpen(false);
-      shownWordMarkerRef.current = "";
-      localStorage.setItem("roomId", payload.roomId);
-      localStorage.setItem("playerId", payload.playerId);
-      setError("");
-    });
-
-    gateway.onRoomPreviewed((payload) => {
-      setPreviewData(payload);
-      setError("");
-    });
-
-    gateway.onStateUpdate((payload) => {
-      const updated = handlePhaseUpdate.execute(payload);
-      const viewer = updated.gameState.players.find((player) => player.id === payload.viewerPlayerId);
-      const wordMarker = viewer?.word ? `${payload.viewerPlayerId}:${updated.gameState.round}:${viewer.word}` : "";
-      setRoomId(payload.gameState.roomId);
-      setPlayerId(payload.viewerPlayerId);
-      localStorage.setItem("roomId", payload.gameState.roomId);
-      localStorage.setItem("playerId", payload.viewerPlayerId);
-      setGameState(updated.gameState);
-      if (wordMarker && shownWordMarkerRef.current !== wordMarker) {
-        shownWordMarkerRef.current = wordMarker;
-        setIsWordPopupOpen(true);
-      }
-      if (updated.gameState.phase === Phase.WAITING_FOR_PLAYERS || updated.gameState.phase === Phase.GAME_CREATION) {
-        setStatement("");
-        setIsWordPopupOpen(false);
-        shownWordMarkerRef.current = "";
-      }
-    });
-
-    gateway.onError((payload) => {
-      setIsLobbyLoading(false);
-      setError(payload.message);
-    });
-
-    const invite = parseShareInvite(window.location.search);
-    if (invite && !inviteHandledRef.current) {
-      inviteHandledRef.current = true;
-      consumeCodeParam();
-      clearSessionState();
-      gateway.resetConnection();
-      setRoomId(invite.roomId);
-      setEntryMode("JOIN_ONLY");
-      previewRoomUseCase.execute({ roomId: invite.roomId });
-      return;
-    }
-
-    const storedRoomId = localStorage.getItem("roomId");
-    const storedPlayerId = localStorage.getItem("playerId");
-
-    if (storedRoomId && storedPlayerId) {
-      setRoomId(storedRoomId);
-      setPlayerId(storedPlayerId);
-      gateway.reconnect({ roomId: storedRoomId, playerId: storedPlayerId });
-    }
-  }, [handlePhaseUpdate, joinRoomUseCase, previewRoomUseCase]);
+  useGatewayEvents(gateway, handlePhaseUpdate, previewRoomUseCase, {
+    setIsLobbyLoading,
+    setRoomId,
+    setPlayerId,
+    setGameState: setGameState as (updater: ((prev: GameState | null) => GameState) | GameState) => void,
+    setIsWordPopupOpen,
+    setIsRoleRevealOpen,
+    setError,
+    setStatement,
+    setPreviewData,
+    setEntryMode,
+    setIsReconnecting,
+    clearSessionState,
+    shownWordMarkerRef,
+    inviteHandledRef,
+    reconnectTimeoutRef,
+    consumeCodeParam,
+  });
 
   const handleNameChange = (value: string) => {
     setName(value);
     localStorage.setItem("playerNameDraft", value);
   };
 
+  const handlePairsInputChange = (value: string) => setPairsInput(value);
+
   const createRoom = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLobbyLoading(true);
-    gateway.createRoom({
-      playerName: name,
-      settings: {
-        mode,
-        whiteEnabled,
-        wordPairs: parseWordPairs(pairsInput)
-      }
-    });
+    gateway.createRoom({ playerName: name, settings: { mode, whiteEnabled, wordPairs: parseWordPairs(pairsInput) } });
   };
 
   const joinRoom = (event: FormEvent<HTMLFormElement>) => {
@@ -174,14 +114,15 @@ export const App = () => {
 
   const submitStatement = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!roomId || !playerId) return;
-    submitStatementUseCase.execute({ roomId, playerId, statement });
+    if (!roomId || !playerId || !gameState) return;
+    const targetSpeakerId = gameState.pendingSpeakerIds[0];
+    if (!targetSpeakerId) return;
+    submitStatementUseCase.execute({ roomId, playerId, targetSpeakerId, statement });
     setStatement("");
   };
 
   const copyRoomCode = async () => {
     if (!gameState) return;
-
     try {
       await navigator.clipboard.writeText(gameState.roomId);
       setCopied(true);
@@ -193,18 +134,15 @@ export const App = () => {
 
   const shareGame = async () => {
     if (!gameState) return;
-
     const { origin, error: shareOriginError } = resolveShareOrigin(
       window.location.origin,
       import.meta.env.VITE_SHARE_ORIGIN as string | undefined
     );
-
     if (shareOriginError) {
       setError(shareOriginError);
       setShareCopied(false);
       return;
     }
-
     const shareUrl = buildShareUrl(origin, gameState.roomId);
     try {
       await navigator.clipboard.writeText(shareUrl);
@@ -220,25 +158,25 @@ export const App = () => {
   if (!gameState || gameState.phase === Phase.GAME_CREATION) {
     return (
       <>
-      <LanguageSwitcher />
-      <LobbyScreen
-        error={error}
-        name={name}
-        roomId={roomId}
-        pairsInput={pairsInput}
-        mode={mode}
-        whiteEnabled={whiteEnabled}
-        entryMode={entryMode}
-        isLoading={isLobbyLoading}
-        previewData={previewData}
-        onNameChange={handleNameChange}
-        onRoomIdChange={setRoomId}
-        onPairsInputChange={setPairsInput}
-        onModeChange={setMode}
-        onWhiteEnabledChange={setWhiteEnabled}
-        onCreateRoom={createRoom}
-        onJoinRoom={joinRoom}
-      />
+        <LanguageSwitcher />
+        <LobbyScreen
+          error={error}
+          name={name}
+          roomId={roomId}
+          pairsInput={pairsInput}
+          mode={mode}
+          whiteEnabled={whiteEnabled}
+          entryMode={entryMode}
+          isLoading={isLobbyLoading}
+          previewData={previewData}
+          onNameChange={handleNameChange}
+          onRoomIdChange={setRoomId}
+          onPairsInputChange={handlePairsInputChange}
+          onModeChange={setMode}
+          onWhiteEnabledChange={setWhiteEnabled}
+          onCreateRoom={createRoom}
+          onJoinRoom={joinRoom}
+        />
       </>
     );
   }
@@ -248,7 +186,6 @@ export const App = () => {
   const viewerVoteEntry = gameState.votes.find((v) => v.voterId === playerId);
   const viewerVotedForId: string | null | undefined =
     viewerVoteEntry !== undefined ? viewerVoteEntry.targetPlayerId : undefined;
-
   const { origin: shareOrigin } = resolveShareOrigin(
     window.location.origin,
     import.meta.env.VITE_SHARE_ORIGIN as string | undefined
@@ -257,36 +194,48 @@ export const App = () => {
 
   return (
     <>
-    <LanguageSwitcher />
-    <GameScreen
-      roomId={roomId}
-      playerId={playerId}
-      gameState={gameState}
-      error={error}
-      copied={copied}
-      shareCopied={shareCopied}
-      shareUrl={shareUrl}
-      isWordPopupOpen={isWordPopupOpen}
-      statement={statement}
-      alivePlayers={alive}
-      viewer={viewer}
-      viewerVotedForId={viewerVotedForId}
-      onCopyRoomCode={copyRoomCode}
-      onShareGame={shareGame}
-      onCloseWordPopup={() => setIsWordPopupOpen(false)}
-      onStatementChange={setStatement}
-      onSubmitStatement={submitStatement}
-      onStartGame={() => gateway.startGame({ roomId, playerId })}
-      onResetGame={() => gateway.resetGame({ roomId, playerId })}
-      onStartVoting={() => gateway.startVoting({ roomId, playerId })}
-      onSubmitVote={(targetPlayerId) => submitVoteUseCase.execute({ roomId, playerId, targetPlayerId })}
-    />
-    {gameState?.phase === Phase.GAME_ENDED && (
-      <GameOverModal
+      <LanguageSwitcher />
+      {isReconnecting && (
+        <div className="arcade-reconnect-banner" role="status" aria-live="polite">
+          {t("app.reconnecting")}
+        </div>
+      )}
+      <GameScreen
+        roomId={roomId}
+        playerId={playerId}
         gameState={gameState}
-        onRestart={() => gateway.resetGame({ roomId, playerId })}
+        error={error}
+        copied={copied}
+        shareCopied={shareCopied}
+        shareUrl={shareUrl}
+        isWordPopupOpen={isWordPopupOpen}
+        statement={statement}
+        alivePlayers={alive}
+        viewer={viewer}
+        viewerVotedForId={viewerVotedForId}
+        onCopyRoomCode={copyRoomCode}
+        onShareGame={shareGame}
+        onCloseWordPopup={() => setIsWordPopupOpen(false)}
+        onStatementChange={setStatement}
+        onSubmitStatement={submitStatement}
+        onStartGame={() => gateway.startGame({ roomId, playerId })}
+        onResetGame={() => gateway.resetGame({ roomId, playerId })}
+        onStartVoting={() => gateway.startVoting({ roomId, playerId })}
+        onSubmitVote={(targetPlayerId) => submitVoteUseCase.execute({ roomId, playerId, targetPlayerId })}
       />
-    )}
+      {gameState?.phase === Phase.GAME_ENDED && isRoleRevealOpen && viewer?.word && (
+        <WordRevealPopup
+          word={viewer.word}
+          role={viewer.role}
+          onClose={() => setIsRoleRevealOpen(false)}
+        />
+      )}
+      {gameState?.phase === Phase.GAME_ENDED && !isRoleRevealOpen && (
+        <GameOverModal
+          gameState={gameState}
+          onRestart={() => gateway.resetGame({ roomId, playerId })}
+        />
+      )}
     </>
   );
 };

@@ -167,9 +167,8 @@ export const ActionBoard = ({
           {(gameState.phase === Phase.ROUND_DESCRIPTION || gameState.phase === Phase.ROUND_DISCUSSION) && (
             <RoundActionPanel
               gameState={gameState}
-              playerId={playerId}
               viewerHost={viewerHost}
-              viewer={viewer}
+              currentSpeaker={gameState.players.find((p) => p.id === gameState.pendingSpeakerIds[0])}
               statement={statement}
               onStatementChange={onStatementChange}
               onSubmitStatement={onSubmitStatement}

@@ -53,6 +53,7 @@
     "voteRound": "Vote Round",
     "startGame": "Start Game",
     "resetGame": "Reset Game",
+    "statementFor": "Statement for",
     "yourStatement": "Your Statement",
     "statementPlaceholder": "Type your statement here...",
     "sendStatement": "Send Statement",
@@ -72,6 +73,9 @@
     "playAgain": "Play Again",
     "noStatement": "No Statement",
     "waitingForHostVote": "Waiting for host to vote..."
+  },
+  "app": {
+    "reconnecting": "Reconnecting..."
   },
   "wordPopup": {
     "ready": "Ready!"

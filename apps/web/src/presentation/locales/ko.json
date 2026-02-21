@@ -53,6 +53,7 @@
     "voteRound": "투표 라운드",
     "startGame": "게임 시작",
     "resetGame": "게임 초기화",
+    "statementFor": "발언 입력 대상",
     "yourStatement": "내 발언",
     "statementPlaceholder": "발언을 입력하세요...",
     "sendStatement": "발언 전송",
@@ -71,6 +72,9 @@
     "defeat": "패배",
     "playAgain": "다시 시작",
     "waitingForHostVote": "호스트가 투표 중입니다..."
+  },
+  "app": {
+    "reconnecting": "재연결 중..."
   },
   "wordPopup": {
     "ready": "준비 완료!"

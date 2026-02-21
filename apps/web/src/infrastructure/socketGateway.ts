@@ -64,6 +64,14 @@ export class SocketGateway implements GameGateway {
     this.socket.on("room:previewed", handler);
   }
 
+  onDisconnect(handler: () => void): void {
+    this.socket.on("disconnect", handler);
+  }
+
+  onReconnected(handler: () => void): void {
+    this.socket.on("connect", handler);
+  }
+
   resetConnection(): void {
     this.socket.removeAllListeners();
     this.socket.disconnect();
