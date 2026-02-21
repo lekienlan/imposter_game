@@ -69,7 +69,8 @@
     "status": "상태",
     "victory": "승리",
     "defeat": "패배",
-    "playAgain": "다시 시작"
+    "playAgain": "다시 시작",
+    "waitingForHostVote": "호스트가 투표 중입니다..."
   },
   "wordPopup": {
     "ready": "준비 완료!"

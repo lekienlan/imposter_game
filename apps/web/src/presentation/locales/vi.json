@@ -70,7 +70,8 @@
     "victory": "CHIẾN THẮNG",
     "defeat": "THẤT BẠI",
     "playAgain": "Chơi Lại",
-    "noStatement": "Không Có Phát Biểu"
+    "noStatement": "Không Có Phát Biểu",
+    "waitingForHostVote": "Đang chờ host chốt vote..."
   },
   "wordPopup": {
     "ready": "Sẵn Sàng!"

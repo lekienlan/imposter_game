@@ -70,7 +70,8 @@
     "victory": "VICTORY",
     "defeat": "DEFEAT",
     "playAgain": "Play Again",
-    "noStatement": "No Statement"
+    "noStatement": "No Statement",
+    "waitingForHostVote": "Waiting for host to vote..."
   },
   "wordPopup": {
     "ready": "Ready!"
