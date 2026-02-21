@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { GameMode, Phase, Role, Winner, type GameState } from "@imposter/shared";
-import { advanceAfterRound, applyRoundResult, resolveVoting } from "../gameRules";
+import { advanceAfterRound, applyRoundResult, resolveVoting, retractVote, upsertVote } from "../gameRules";
 
 const baseState = (mode: GameMode): GameState => ({
   roomId: "ROOM1",
@@ -132,5 +132,41 @@ describe("advanceAfterRound", () => {
 
     expect(state.winner).toBe(Winner.NONE);
     expect(state.phase).not.toBe(Phase.GAME_ENDED);
+  });
+});
+
+describe("retractVote", () => {
+  test("removes the vote from votes array", () => {
+    const state = baseState(GameMode.CLASSIC);
+    upsertVote(state, { voterId: "p1", targetPlayerId: "p2", submittedAt: 1 });
+    expect(state.votes).toHaveLength(1);
+
+    retractVote(state, "p1");
+    expect(state.votes).toHaveLength(0);
+  });
+
+  test("resets the player votedFor to null", () => {
+    const state = baseState(GameMode.CLASSIC);
+    state.players[0].votedFor = "p2";
+    upsertVote(state, { voterId: "p1", targetPlayerId: "p2", submittedAt: 1 });
+
+    retractVote(state, "p1");
+    expect(state.players[0].votedFor).toBeNull();
+  });
+
+  test("does nothing if voter has no vote", () => {
+    const state = baseState(GameMode.CLASSIC);
+    expect(() => retractVote(state, "p1")).not.toThrow();
+    expect(state.votes).toHaveLength(0);
+  });
+
+  test("only removes the matching voter's vote, leaves others", () => {
+    const state = baseState(GameMode.CLASSIC);
+    upsertVote(state, { voterId: "p1", targetPlayerId: "p2", submittedAt: 1 });
+    upsertVote(state, { voterId: "p2", targetPlayerId: "p1", submittedAt: 2 });
+
+    retractVote(state, "p1");
+    expect(state.votes).toHaveLength(1);
+    expect(state.votes[0].voterId).toBe("p2");
   });
 });

@@ -266,6 +266,16 @@ export const upsertVote = (gameState: GameState, vote: Vote): void => {
   gameState.votes.push(vote);
 };
 
+export const retractVote = (gameState: GameState, voterId: string): void => {
+  const voteIndex = gameState.votes.findIndex((v) => v.voterId === voterId);
+  if (voteIndex < 0) return;
+  gameState.votes.splice(voteIndex, 1);
+  const player = gameState.players.find((p) => p.id === voterId);
+  if (player) {
+    player.votedFor = null;
+  }
+};
+
 export const resolveVoting = (gameState: GameState): VoteResolution => {
   if (!allRequiredVoted(gameState)) {
     return { status: 'PENDING', eliminatedPlayerId: null };
