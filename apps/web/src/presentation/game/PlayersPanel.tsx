@@ -41,7 +41,7 @@ export const PlayersPanel = ({ players, aliveCount, phase, currentSpeakerId }: P
                 <p className={player.isAlive ? "arcade-alive" : "arcade-out"}>
                   {player.isAlive ? t("game.alive").toUpperCase() : t("game.out").toUpperCase()}
                 </p>
-                <p className="arcade-muted">{t("game.statement").toUpperCase()}: {player.statement ?? "-"}</p>
+                <p className="arcade-muted">{t("game.statement").toUpperCase()}: {player.statement == null ? "-" : player.statement || t("game.noStatement")}</p>
               </li>
             );
           })}

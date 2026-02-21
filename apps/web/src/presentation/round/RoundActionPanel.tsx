@@ -38,7 +38,6 @@ export const RoundActionPanel = ({
               placeholder={t("game.statementPlaceholder")}
               value={statement}
               onChange={(event) => onStatementChange(event.target.value)}
-              required
             />
           </label>
           <Button

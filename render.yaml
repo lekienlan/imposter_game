@@ -15,3 +15,4 @@ services:
   - type: redis
     name: imposter-game-redis
     plan: free
+    ipAllowList: []

@@ -69,7 +69,8 @@
     "status": "Status",
     "victory": "VICTORY",
     "defeat": "DEFEAT",
-    "playAgain": "Play Again"
+    "playAgain": "Play Again",
+    "noStatement": "No Statement"
   },
   "wordPopup": {
     "ready": "Ready!"

@@ -69,7 +69,8 @@
     "status": "Trạng Thái",
     "victory": "CHIẾN THẮNG",
     "defeat": "THẤT BẠI",
-    "playAgain": "Chơi Lại"
+    "playAgain": "Chơi Lại",
+    "noStatement": "Không Có Phát Biểu"
   },
   "wordPopup": {
     "ready": "Sẵn Sàng!"
