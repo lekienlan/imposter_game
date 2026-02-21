@@ -1,4 +1,4 @@
-import { GameMode, Phase, Role, Vote } from "@imposter/shared";
+import { Phase, Vote } from "@imposter/shared";
 import { resolveVoting, upsertVote, retractVote } from "../../domain/gameRules";
 import { GameStateRepository } from "../model/GameStateRepository";
 
@@ -21,18 +21,13 @@ export class SubmitVoteUseCase {
       throw new Error("Not voting phase");
     }
 
+    if (gameState.hostPlayerId !== input.playerId) {
+      throw new Error("Only host can submit votes");
+    }
+
     const voter = gameState.players.find((player) => player.id === input.playerId);
     if (!voter || !voter.isAlive) {
       throw new Error("Invalid voter");
-    }
-
-    if (gameState.settings.mode === GameMode.HARDCORE) {
-      if (voter.role !== Role.CITIZEN) {
-        throw new Error("Only citizens can cast real votes in HARDCORE");
-      }
-      if (!input.targetPlayerId) {
-        throw new Error("Skip is not allowed in HARDCORE");
-      }
     }
 
     const target = input.targetPlayerId ? gameState.players.find((player) => player.id === input.targetPlayerId) : null;
