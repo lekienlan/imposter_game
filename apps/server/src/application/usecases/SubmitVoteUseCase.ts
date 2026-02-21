@@ -1,6 +1,6 @@
 import { GameMode, Phase, Role, Vote } from "@imposter/shared";
-import { resolveVoting, upsertVote } from "../domain/gameRules";
-import { GameStateRepository } from "./GameStateRepository";
+import { resolveVoting, upsertVote, retractVote } from "../../domain/gameRules";
+import { GameStateRepository } from "../model/GameStateRepository";
 
 interface Input {
   roomId: string;
@@ -40,14 +40,20 @@ export class SubmitVoteUseCase {
       throw new Error("Invalid vote target");
     }
 
-    const vote: Vote = {
-      voterId: input.playerId,
-      targetPlayerId: input.targetPlayerId,
-      submittedAt: Date.now()
-    };
+    const existingVote = gameState.votes.find((v) => v.voterId === input.playerId);
+    const isSameTarget = existingVote?.targetPlayerId === input.targetPlayerId;
 
-    upsertVote(gameState, vote);
-    voter.votedFor = input.targetPlayerId;
+    if (isSameTarget) {
+      retractVote(gameState, input.playerId);
+    } else {
+      const vote: Vote = {
+        voterId: input.playerId,
+        targetPlayerId: input.targetPlayerId,
+        submittedAt: Date.now()
+      };
+      upsertVote(gameState, vote);
+      voter.votedFor = input.targetPlayerId;
+    }
     const resolution = resolveVoting(gameState);
     gameState.updatedAt = Date.now();
     await this.repository.save(gameState);
