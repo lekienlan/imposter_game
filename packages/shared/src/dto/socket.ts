@@ -29,6 +29,7 @@ export interface StartGameRequest {
 export interface SubmitStatementRequest {
   roomId: string;
   playerId: string;
+  targetSpeakerId: string;
   statement: string;
 }
 
