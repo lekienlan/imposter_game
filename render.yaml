@@ -3,7 +3,7 @@ services:
     name: imposter-game-server
     plan: free
     runtime: node
-    buildCommand: yarn install && yarn workspace @imposter/server build
+    buildCommand: yarn install --production=false && yarn workspace @imposter/server build
     startCommand: node apps/server/dist/index.js
     envVars:
       - key: NODE_ENV

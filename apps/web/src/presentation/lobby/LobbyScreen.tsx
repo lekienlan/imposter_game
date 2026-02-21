@@ -1,6 +1,5 @@
 import { FormEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { Card } from "pixel-retroui";
 import { GameMode, RoomPreviewResponse } from "@imposter/shared";
 import { RoomPreviewPanel } from "./RoomPreviewPanel";
 import { CreateRoomForm } from "./CreateRoomForm";
@@ -102,24 +101,6 @@ export const LobbyScreen = ({
           onCreateRoom={onCreateRoom}
         />
 
-        <Card
-          className="arcade-card"
-          bg="color-mix(in srgb, var(--surface-primary) 90%, var(--blue-900))"
-          textColor="var(--neutral-white)"
-          borderColor="var(--blue-500)"
-          shadowColor="var(--blue-900)"
-        >
-          <div className="arcade-stack">
-            <p className="arcade-kicker">{t("lobby.rulePanel").toUpperCase()}</p>
-            <h2 className="arcade-panel-title">{t("lobby.howToPlay").toUpperCase()}</h2>
-            <ol className="arcade-list">
-              <li>{t("lobby.rule1").toUpperCase()}</li>
-              <li>{t("lobby.rule2").toUpperCase()}</li>
-              <li>{t("lobby.rule3").toUpperCase()}</li>
-              <li>{t("lobby.rule4").toUpperCase()}</li>
-            </ol>
-          </div>
-        </Card>
       </div>
     </main>
   );
