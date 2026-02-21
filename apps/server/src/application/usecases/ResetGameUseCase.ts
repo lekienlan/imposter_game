@@ -1,5 +1,5 @@
-import { GameStateRepository } from "./GameStateRepository";
-import { resetGameState } from "../domain/resetGameState";
+import { GameStateRepository } from "../model/GameStateRepository";
+import { resetGameState } from "../../domain/resetGameState";
 
 interface Input {
   roomId: string;
@@ -13,10 +13,6 @@ export class ResetGameUseCase {
     const gameState = await this.repository.getByRoomId(input.roomId);
     if (!gameState) {
       throw new Error("Room not found");
-    }
-
-    if (gameState.hostPlayerId !== input.playerId) {
-      throw new Error("Only host can reset");
     }
 
     const resetState = resetGameState(gameState);

@@ -61,7 +61,15 @@
     "currentVote": "Current Vote",
     "skip": "Skip",
     "hardcoreVoteNotice": "Hardcore mode: voting starts immediately",
-    "finalReason": "Final Reason"
+    "finalReason": "Final Reason",
+    "citizensWin": "CITIZENS WIN!",
+    "spiesWin": "SPIES WIN!",
+    "noWinner": "DRAW!",
+    "player": "Player",
+    "status": "Status",
+    "victory": "VICTORY",
+    "defeat": "DEFEAT",
+    "playAgain": "Play Again"
   },
   "wordPopup": {
     "ready": "Ready!"
@@ -70,5 +78,11 @@
     "host": "Host",
     "phase": "Phase",
     "players": "Players"
+  },
+  "role": {
+    "citizen": "Citizen",
+    "spy": "Spy",
+    "white": "White Role",
+    "unknown": "Unknown"
   }
 }

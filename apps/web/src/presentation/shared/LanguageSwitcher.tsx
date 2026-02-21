@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocale, type Locale } from "../../application/useLocale";
+import { useLocale, type Locale } from "../../application/utils/useLocale";
 
 const LOCALE_OPTIONS: { value: Locale; label: string }[] = [
   { value: "en", label: "EN" },

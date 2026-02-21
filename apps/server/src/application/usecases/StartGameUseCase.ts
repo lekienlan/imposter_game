@@ -1,11 +1,11 @@
 import { Phase, Winner } from '@imposter/shared';
-import { GameStateRepository } from './GameStateRepository';
+import { GameStateRepository } from '../model/GameStateRepository';
 import {
   applyRolesAndWords,
   assignRoles,
   beginRoundDescription,
   pickWordPair,
-} from '../domain/gameRules';
+} from '../../domain/gameRules';
 
 interface Input {
   roomId: string;

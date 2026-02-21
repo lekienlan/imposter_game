@@ -13,16 +13,16 @@ import {
   SubmitVoteRequest
 } from "@imposter/shared";
 import { Server, Socket } from "socket.io";
-import { CreateRoomUseCase } from "../application/CreateRoomUseCase";
-import { EliminatePlayerUseCase } from "../application/EliminatePlayerUseCase";
-import { JoinRoomUseCase } from "../application/JoinRoomUseCase";
-import { PreviewRoomUseCase } from "../application/PreviewRoomUseCase";
-import { ResetGameUseCase } from "../application/ResetGameUseCase";
-import { ReconnectPlayerUseCase } from "../application/ReconnectPlayerUseCase";
-import { StartGameUseCase } from "../application/StartGameUseCase";
-import { StartVotingUseCase } from "../application/StartVotingUseCase";
-import { SubmitStatementUseCase } from "../application/SubmitStatementUseCase";
-import { SubmitVoteUseCase } from "../application/SubmitVoteUseCase";
+import { CreateRoomUseCase } from "../application/usecases/CreateRoomUseCase";
+import { EliminatePlayerUseCase } from "../application/usecases/EliminatePlayerUseCase";
+import { JoinRoomUseCase } from "../application/usecases/JoinRoomUseCase";
+import { PreviewRoomUseCase } from "../application/usecases/PreviewRoomUseCase";
+import { ResetGameUseCase } from "../application/usecases/ResetGameUseCase";
+import { ReconnectPlayerUseCase } from "../application/usecases/ReconnectPlayerUseCase";
+import { StartGameUseCase } from "../application/usecases/StartGameUseCase";
+import { StartVotingUseCase } from "../application/usecases/StartVotingUseCase";
+import { SubmitStatementUseCase } from "../application/usecases/SubmitStatementUseCase";
+import { SubmitVoteUseCase } from "../application/usecases/SubmitVoteUseCase";
 import { sanitizeGameStateForViewer } from "../domain/gameRules";
 
 interface UseCases {

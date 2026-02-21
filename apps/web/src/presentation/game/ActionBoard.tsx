@@ -6,7 +6,6 @@ import { phaseGuide, phaseTone } from "../shared/phasePresentation";
 import { ShareButton } from "../shared/ShareButton";
 import { RoundActionPanel } from "../round/RoundActionPanel";
 import { VotingPanel } from "../voting/VotingPanel";
-import { GameOverModal } from "../game-over/GameOverModal";
 
 interface Props {
   gameState: GameState;
@@ -189,7 +188,7 @@ export const ActionBoard = ({
             />
           )}
 
-          {gameState.phase === Phase.GAME_ENDED && <GameOverModal gameState={gameState} />}
+
         </section>
       </Card>
     </>

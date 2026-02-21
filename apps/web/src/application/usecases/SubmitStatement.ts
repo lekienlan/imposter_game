@@ -1,5 +1,5 @@
 import { SubmitStatementRequest } from "@imposter/shared";
-import { GameGateway } from "./GameGateway";
+import { GameGateway } from "../model/GameGateway";
 
 export class SubmitStatement {
   constructor(private readonly gateway: GameGateway) {}

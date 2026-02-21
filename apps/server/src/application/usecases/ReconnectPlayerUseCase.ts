@@ -1,4 +1,4 @@
-import { GameStateRepository } from "./GameStateRepository";
+import { GameStateRepository } from "../model/GameStateRepository";
 
 interface Input {
   roomId: string;

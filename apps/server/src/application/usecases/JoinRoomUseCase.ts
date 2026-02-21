@@ -1,7 +1,7 @@
 import { GameState, Phase } from "@imposter/shared";
 import { nanoid } from "nanoid";
-import { GameStateRepository } from "./GameStateRepository";
-import { normalizePlayerName, resolvePlayerName } from "./resolvePlayerName";
+import { GameStateRepository } from "../model/GameStateRepository";
+import { normalizePlayerName, resolvePlayerName } from "../utils/resolvePlayerName";
 
 interface Input {
   roomId: string;

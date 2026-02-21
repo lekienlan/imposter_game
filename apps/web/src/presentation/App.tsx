@@ -12,6 +12,7 @@ import { alivePlayers, getViewer } from "../domain/gameSelectors";
 import { buildShareUrl, parseShareInvite, resolveShareOrigin } from "../domain/ShareLink";
 import { SocketGateway } from "../infrastructure/socketGateway";
 import { GameScreen } from "./game/GameScreen";
+import { GameOverModal } from "./game-over/GameOverModal";
 import { LobbyScreen } from "./lobby/LobbyScreen";
 import { LanguageSwitcher } from "./shared/LanguageSwitcher";
 
@@ -280,6 +281,12 @@ export const App = () => {
       onStartVoting={() => gateway.startVoting({ roomId, playerId })}
       onSubmitVote={(targetPlayerId) => submitVoteUseCase.execute({ roomId, playerId, targetPlayerId })}
     />
+    {gameState?.phase === Phase.GAME_ENDED && (
+      <GameOverModal
+        gameState={gameState}
+        onRestart={() => gateway.resetGame({ roomId, playerId })}
+      />
+    )}
     </>
   );
 };

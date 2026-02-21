@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { GameMode, GameState, Phase, Winner } from "@imposter/shared";
-import { GameStateRepository } from "../GameStateRepository";
-import { PreviewRoomUseCase } from "../PreviewRoomUseCase";
+import { GameStateRepository } from "../model/GameStateRepository";
+import { PreviewRoomUseCase } from "../usecases/PreviewRoomUseCase";
 
 class InMemoryGameStateRepository implements GameStateRepository {
   private readonly store = new Map<string, GameState>();

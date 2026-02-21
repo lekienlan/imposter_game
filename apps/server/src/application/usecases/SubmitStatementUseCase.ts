@@ -1,5 +1,5 @@
-import { canSubmitStatement, markStatementSubmitted } from "../domain/gameRules";
-import { GameStateRepository } from "./GameStateRepository";
+import { canSubmitStatement, markStatementSubmitted } from "../../domain/gameRules";
+import { GameStateRepository } from "../model/GameStateRepository";
 
 interface Input {
   roomId: string;

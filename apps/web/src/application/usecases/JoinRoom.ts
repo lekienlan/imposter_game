@@ -1,4 +1,4 @@
-import { GameGateway } from "./GameGateway";
+import { GameGateway } from "../model/GameGateway";
 import { JoinRoomRequest } from "@imposter/shared";
 
 export class JoinRoom {

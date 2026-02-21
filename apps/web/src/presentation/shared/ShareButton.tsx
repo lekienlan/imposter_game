@@ -1,5 +1,5 @@
 import { Button } from "pixel-retroui";
-import { useShareModal } from "../../application/useShareModal";
+import { useShareModal } from "../../application/utils/useShareModal";
 import { ShareModal } from "./ShareModal";
 
 interface Props {

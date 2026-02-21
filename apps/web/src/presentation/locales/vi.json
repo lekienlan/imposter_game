@@ -61,7 +61,15 @@
     "currentVote": "Phiếu Hiện Tại",
     "skip": "Bỏ Qua",
     "hardcoreVoteNotice": "Chế độ khó: bỏ phiếu bắt đầu ngay lập tức",
-    "finalReason": "Lý Do Cuối"
+    "finalReason": "Lý Do Cuối",
+    "citizensWin": "DÂN THƯỜNG THẮNG!",
+    "spiesWin": "GIÁN ĐIỆP THẮNG!",
+    "noWinner": "HÒA!",
+    "player": "Người Chơi",
+    "status": "Trạng Thái",
+    "victory": "CHIẾN THẮNG",
+    "defeat": "THẤT BẠI",
+    "playAgain": "Chơi Lại"
   },
   "wordPopup": {
     "ready": "Sẵn Sàng!"
@@ -70,5 +78,11 @@
     "host": "Chủ Trò",
     "phase": "Giai Đoạn",
     "players": "Người Chơi"
+  },
+  "role": {
+    "citizen": "Dân Thường",
+    "spy": "Gián Điệp",
+    "white": "Vai Trắng",
+    "unknown": "Không Rõ"
   }
 }

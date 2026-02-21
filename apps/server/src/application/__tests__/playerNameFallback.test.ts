@@ -1,8 +1,8 @@
 import { describe, expect, test } from "vitest";
 import { GameMode, GameState } from "@imposter/shared";
-import { CreateRoomUseCase } from "../CreateRoomUseCase";
-import { GameStateRepository } from "../GameStateRepository";
-import { JoinRoomUseCase } from "../JoinRoomUseCase";
+import { CreateRoomUseCase } from "../usecases/CreateRoomUseCase";
+import { GameStateRepository } from "../model/GameStateRepository";
+import { JoinRoomUseCase } from "../usecases/JoinRoomUseCase";
 
 class InMemoryGameStateRepository implements GameStateRepository {
   private readonly store = new Map<string, GameState>();
