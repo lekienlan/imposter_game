@@ -59,6 +59,7 @@
     "sendStatement": "발언 전송",
     "startVoting": "투표 시작",
     "castVote": "투표하기",
+    "submitVote": "투표 확인",
     "currentVote": "현재 투표",
     "skip": "건너뛰기",
     "hardcoreVoteNotice": "하드코어 모드: 즉시 투표 시작",
@@ -71,10 +72,14 @@
     "victory": "승리",
     "defeat": "패배",
     "playAgain": "다시 시작",
-    "waitingForHostVote": "호스트가 투표 중입니다..."
+    "waitingForHostVote": "호스트가 투표 중입니다...",
+    "exitGame": "게임 종료"
   },
   "app": {
     "reconnecting": "재연결 중..."
+  },
+  "room": {
+    "disbanded": "호스트가 방을 종료했습니다"
   },
   "wordPopup": {
     "ready": "준비 완료!"

@@ -11,12 +11,12 @@ interface GatewayEventCallbacks {
   setPlayerId: (v: string) => void;
   setGameState: (updater: ((prev: GameState | null) => GameState) | GameState) => void;
   setIsWordPopupOpen: (v: boolean) => void;
-  setIsRoleRevealOpen: (v: boolean) => void;
   setError: (v: string) => void;
   setStatement: (v: string) => void;
   setPreviewData: (v: RoomPreviewResponse | null) => void;
   setEntryMode: (v: "CREATE_ONLY" | "JOIN_ONLY") => void;
   setIsReconnecting: (v: boolean) => void;
+  setIsDisbanded: (v: boolean) => void;
   clearSessionState: () => void;
   shownWordMarkerRef: MutableRefObject<string>;
   inviteHandledRef: MutableRefObject<boolean>;
@@ -32,8 +32,8 @@ export const useGatewayEvents = (
 ) => {
   const {
     setIsLobbyLoading, setRoomId, setPlayerId, setGameState,
-    setIsWordPopupOpen, setIsRoleRevealOpen, setError, setStatement,
-    setPreviewData, setEntryMode, setIsReconnecting, clearSessionState,
+    setIsWordPopupOpen, setError, setStatement,
+    setPreviewData, setEntryMode, setIsReconnecting, setIsDisbanded, clearSessionState,
     shownWordMarkerRef, inviteHandledRef, reconnectTimeoutRef, consumeCodeParam,
   } = callbacks;
 
@@ -78,12 +78,7 @@ export const useGatewayEvents = (
       setPlayerId(payload.viewerPlayerId);
       localStorage.setItem("roomId", payload.gameState.roomId);
       localStorage.setItem("playerId", payload.viewerPlayerId);
-      setGameState((prevState) => {
-        if (updated.gameState.phase === Phase.GAME_ENDED && prevState?.phase !== Phase.GAME_ENDED) {
-          setIsRoleRevealOpen(true);
-        }
-        return updated.gameState;
-      });
+      setGameState(updated.gameState);
       if (wordMarker && shownWordMarkerRef.current !== wordMarker) {
         shownWordMarkerRef.current = wordMarker;
         setIsWordPopupOpen(true);
@@ -91,7 +86,6 @@ export const useGatewayEvents = (
       if (updated.gameState.phase === Phase.WAITING_FOR_PLAYERS || updated.gameState.phase === Phase.GAME_CREATION) {
         setStatement("");
         setIsWordPopupOpen(false);
-        setIsRoleRevealOpen(false);
         shownWordMarkerRef.current = "";
       }
     });
@@ -99,6 +93,10 @@ export const useGatewayEvents = (
     gateway.onError((payload) => {
       setIsLobbyLoading(false);
       setError(payload.message);
+    });
+
+    gateway.onRoomDisbanded(() => {
+      setIsDisbanded(true);
     });
 
     gateway.onDisconnect(() => {

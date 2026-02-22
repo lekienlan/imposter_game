@@ -8,6 +8,7 @@ class InMemoryRepo implements GameStateRepository {
   async getByRoomId(roomId: string) { return this.store.get(roomId) ?? null; }
   async save(gameState: GameState) { this.store.set(gameState.roomId, gameState); }
   async touch(_roomId: string) {}
+  async delete(_roomId: string) {}
 }
 
 const makeVotingState = (): GameState => ({
@@ -27,12 +28,14 @@ const makeVotingState = (): GameState => ({
 });
 
 describe("SubmitVoteUseCase – host authorization", () => {
-  test("host can cast vote on behalf of all players", async () => {
+  test("host vote resolves immediately to ELIMINATED", async () => {
     const repo = new InMemoryRepo();
     await repo.save(makeVotingState());
     const useCase = new SubmitVoteUseCase(repo);
-    const { gameState } = await useCase.execute({ roomId: "R1", playerId: "host", targetPlayerId: "p2" });
+    const { gameState, resolution } = await useCase.execute({ roomId: "R1", playerId: "host", targetPlayerId: "p2" });
     expect(gameState.votes.some(v => v.voterId === "host" && v.targetPlayerId === "p2")).toBe(true);
+    expect(resolution.status).toBe("ELIMINATED");
+    expect(resolution.eliminatedPlayerId).toBe("p2");
   });
 
   test("non-host cannot cast vote", async () => {

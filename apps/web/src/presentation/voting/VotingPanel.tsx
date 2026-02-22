@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "pixel-retroui";
 import { GameMode, GameState, Player } from "@imposter/shared";
@@ -22,6 +23,8 @@ export const VotingPanel = ({
 }: Props) => {
   const { t } = useTranslation();
   const viewerIsHost = isHost(gameState, playerId);
+  const [selectedTarget, setSelectedTarget] = useState<string | null | undefined>(undefined);
+
   const hasVoted = viewerVotedForId !== undefined;
   const votedForName =
     typeof viewerVotedForId === "string"
@@ -36,6 +39,12 @@ export const VotingPanel = ({
     );
   }
 
+  const handleSubmit = () => {
+    if (selectedTarget === undefined) return;
+    onSubmitVote(selectedTarget);
+    setSelectedTarget(undefined);
+  };
+
   return (
     <div className="arcade-stack">
       <p className="arcade-muted">{t("game.castVote").toUpperCase()}</p>
@@ -47,13 +56,13 @@ export const VotingPanel = ({
       )}
       <div className="arcade-vote-grid">
         {alivePlayers.map((player) => {
-          const isSelected = viewerVotedForId === player.id;
+          const isSelected = selectedTarget === player.id;
           return (
             <Button
               key={player.id}
               type="button"
               className="arcade-btn"
-              onClick={() => onSubmitVote(player.id)}
+              onClick={() => setSelectedTarget(player.id)}
               bg={isSelected ? "var(--yellow-400)" : "var(--blue-400)"}
               textColor="var(--neutral-black)"
               borderColor="var(--neutral-black)"
@@ -64,12 +73,12 @@ export const VotingPanel = ({
           );
         })}
         {gameState.settings.mode === GameMode.CLASSIC && (() => {
-          const isSkipSelected = viewerVotedForId === null;
+          const isSkipSelected = selectedTarget === null;
           return (
             <Button
               type="button"
               className="arcade-btn"
-              onClick={() => onSubmitVote(null)}
+              onClick={() => setSelectedTarget(null)}
               bg={isSkipSelected ? "var(--yellow-400)" : "var(--blue-400)"}
               textColor="var(--neutral-black)"
               borderColor="var(--neutral-black)"
@@ -80,6 +89,18 @@ export const VotingPanel = ({
           );
         })()}
       </div>
+      <Button
+        type="button"
+        className="arcade-btn"
+        onClick={handleSubmit}
+        disabled={selectedTarget === undefined}
+        bg="var(--green-400)"
+        textColor="var(--neutral-black)"
+        borderColor="var(--neutral-black)"
+        shadow="var(--green-700)"
+      >
+        {t("game.submitVote").toUpperCase()}
+      </Button>
     </div>
   );
 };

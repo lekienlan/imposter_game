@@ -8,6 +8,7 @@ class InMemoryRepo implements GameStateRepository {
   async getByRoomId(roomId: string) { return this.store.get(roomId) ?? null; }
   async save(gameState: GameState) { this.store.set(gameState.roomId, gameState); }
   async touch(_roomId: string) {}
+  async delete(_roomId: string) {}
 }
 
 const makeState = (overrides: Partial<GameState> = {}): GameState => ({

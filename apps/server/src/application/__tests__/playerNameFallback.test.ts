@@ -18,6 +18,10 @@ class InMemoryGameStateRepository implements GameStateRepository {
   async touch(_roomId: string): Promise<void> {
     return Promise.resolve();
   }
+
+  async delete(_roomId: string): Promise<void> {
+    return Promise.resolve();
+  }
 }
 
 const settings: GameState["settings"] = {

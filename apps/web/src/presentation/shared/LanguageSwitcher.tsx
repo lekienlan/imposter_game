@@ -5,6 +5,7 @@ const LOCALE_OPTIONS: { value: Locale; label: string }[] = [
   { value: "vi", label: "VI" },
   { value: "en", label: "EN" },
   { value: "ko", label: "KO" },
+  { value: "zh", label: "ZH" },
 ];
 
 export function LanguageSwitcher() {

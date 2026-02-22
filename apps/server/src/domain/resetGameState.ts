@@ -2,7 +2,7 @@ import { GameState, Phase, Winner } from "@imposter/shared";
 
 export const resetGameState = (gameState: GameState): GameState => ({
   ...gameState,
-  phase: Phase.GAME_CREATION,
+  phase: Phase.WAITING_FOR_PLAYERS,
   players: gameState.players.map((player) => ({
     ...player,
     isAlive: true,

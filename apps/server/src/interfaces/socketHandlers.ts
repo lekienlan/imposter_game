@@ -1,6 +1,7 @@
 import {
   ClientToServerEvents,
   CreateRoomRequest,
+  DisbandRoomRequest,
   GameState,
   JoinRoomRequest,
   ResetGameRequest,
@@ -18,6 +19,7 @@ import { EliminatePlayerUseCase } from "../application/usecases/EliminatePlayerU
 import { JoinRoomUseCase } from "../application/usecases/JoinRoomUseCase";
 import { PreviewRoomUseCase } from "../application/usecases/PreviewRoomUseCase";
 import { ResetGameUseCase } from "../application/usecases/ResetGameUseCase";
+import { DisbandRoomUseCase } from "../application/usecases/DisbandRoomUseCase";
 import { ReconnectPlayerUseCase } from "../application/usecases/ReconnectPlayerUseCase";
 import { StartGameUseCase } from "../application/usecases/StartGameUseCase";
 import { StartVotingUseCase } from "../application/usecases/StartVotingUseCase";
@@ -30,6 +32,7 @@ interface UseCases {
   joinRoom: JoinRoomUseCase;
   previewRoom: PreviewRoomUseCase;
   resetGame: ResetGameUseCase;
+  disbandRoom: DisbandRoomUseCase;
   startGame: StartGameUseCase;
   submitStatement: SubmitStatementUseCase;
   startVoting: StartVotingUseCase;
@@ -162,6 +165,15 @@ export const registerSocketHandlers = (
         eliminatedPlayerId: voteResult.resolution.eliminatedPlayerId
       });
       broadcastState(io, roundState.roomId, roundState);
+    } catch (error) {
+      sendError((error as Error).message);
+    }
+  });
+
+  socket.on("room:disband", async (payload: DisbandRoomRequest) => {
+    try {
+      await useCases.disbandRoom.execute(payload);
+      io.to(payload.roomId).emit("room:disbanded", { roomId: payload.roomId });
     } catch (error) {
       sendError((error as Error).message);
     }

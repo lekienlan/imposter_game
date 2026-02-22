@@ -57,13 +57,7 @@ const pickTieBreakCandidate = (
 };
 
 const requiredVoterIds = (gameState: GameState): string[] => {
-  const alive = alivePlayers(gameState.players);
-  if (gameState.settings.mode === GameMode.HARDCORE) {
-    return alive
-      .filter((player) => player.role === Role.CITIZEN)
-      .map((player) => player.id);
-  }
-  return alive.map((player) => player.id);
+  return [gameState.hostPlayerId];
 };
 
 const allRequiredVoted = (gameState: GameState): boolean => {

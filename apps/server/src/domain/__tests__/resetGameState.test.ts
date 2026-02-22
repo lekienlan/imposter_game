@@ -61,12 +61,12 @@ const baseState = (): GameState => ({
 });
 
 describe("resetGameState", () => {
-  test("returns game to creation phase and clears round state", () => {
+  test("returns game to waiting phase and clears round state", () => {
     const state = baseState();
 
     const reset = resetGameState(state);
 
-    expect(reset.phase).toBe(Phase.GAME_CREATION);
+    expect(reset.phase).toBe(Phase.WAITING_FOR_PLAYERS);
     expect(reset.round).toBe(0);
     expect(reset.activeWordPair).toBeNull();
     expect(reset.speakingOrder).toEqual([]);

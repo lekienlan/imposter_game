@@ -59,6 +59,7 @@
     "sendStatement": "Send Statement",
     "startVoting": "Start Voting",
     "castVote": "Cast Vote",
+    "submitVote": "Submit Vote",
     "currentVote": "Current Vote",
     "skip": "Skip",
     "hardcoreVoteNotice": "Hardcore mode: voting starts immediately",
@@ -72,10 +73,14 @@
     "defeat": "DEFEAT",
     "playAgain": "Play Again",
     "noStatement": "No Statement",
-    "waitingForHostVote": "Waiting for host to vote..."
+    "waitingForHostVote": "Waiting for host to vote...",
+    "exitGame": "Exit Game"
   },
   "app": {
     "reconnecting": "Reconnecting..."
+  },
+  "room": {
+    "disbanded": "The host has ended the room"
   },
   "wordPopup": {
     "ready": "Ready!"

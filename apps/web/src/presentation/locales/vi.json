@@ -59,6 +59,7 @@
     "sendStatement": "Gửi Phát Biểu",
     "startVoting": "Bắt Đầu Bỏ Phiếu",
     "castVote": "Bỏ Phiếu",
+    "submitVote": "Xác Nhận Vote",
     "currentVote": "Phiếu Hiện Tại",
     "skip": "Bỏ Qua",
     "hardcoreVoteNotice": "Chế độ khó: bỏ phiếu bắt đầu ngay lập tức",
@@ -72,10 +73,14 @@
     "defeat": "THẤT BẠI",
     "playAgain": "Chơi Lại",
     "noStatement": "Không Có Phát Biểu",
-    "waitingForHostVote": "Đang chờ host chốt vote..."
+    "waitingForHostVote": "Đang chờ host chốt vote...",
+    "exitGame": "Thoát game"
   },
   "app": {
     "reconnecting": "Đang kết nối lại..."
+  },
+  "room": {
+    "disbanded": "Host đã kết thúc phòng"
   },
   "wordPopup": {
     "ready": "Sẵn Sàng!"

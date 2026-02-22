@@ -3,6 +3,7 @@ import {
   ClientToServerEvents,
   ServerToClientEvents,
   CreateRoomRequest,
+  DisbandRoomRequest,
   JoinRoomRequest,
   ResetGameRequest,
   ReconnectRequest,
@@ -22,6 +23,7 @@ export class SocketGateway implements GameGateway {
   private readonly roomCreatedHandlers: ServerToClientEvents["room:created"][] = [];
   private readonly roomJoinedHandlers: ServerToClientEvents["room:joined"][] = [];
   private readonly roomPreviewedHandlers: ServerToClientEvents["room:previewed"][] = [];
+  private readonly roomDisbandedHandlers: Array<() => void> = [];
 
   constructor(serverUrl: string) {
     // Infrastructure adapter: no business logic, only transport concerns.
@@ -36,6 +38,7 @@ export class SocketGateway implements GameGateway {
     this.roomCreatedHandlers.forEach((handler) => socket.on("room:created", handler));
     this.roomJoinedHandlers.forEach((handler) => socket.on("room:joined", handler));
     this.roomPreviewedHandlers.forEach((handler) => socket.on("room:previewed", handler));
+    this.roomDisbandedHandlers.forEach((handler) => socket.on("room:disbanded", handler));
     return socket;
   }
 
@@ -62,6 +65,11 @@ export class SocketGateway implements GameGateway {
   onRoomPreviewed(handler: ServerToClientEvents["room:previewed"]): void {
     this.roomPreviewedHandlers.push(handler);
     this.socket.on("room:previewed", handler);
+  }
+
+  onRoomDisbanded(handler: () => void): void {
+    this.roomDisbandedHandlers.push(handler);
+    this.socket.on("room:disbanded", handler);
   }
 
   onDisconnect(handler: () => void): void {
@@ -100,6 +108,10 @@ export class SocketGateway implements GameGateway {
 
   resetGame(payload: ResetGameRequest): void {
     this.socket.emit("game:reset", payload);
+  }
+
+  disbandRoom(payload: DisbandRoomRequest): void {
+    this.socket.emit("room:disband", payload);
   }
 
   submitStatement(payload: SubmitStatementRequest): void {

@@ -71,10 +71,19 @@ Tài liệu này định nghĩa rule làm việc cho toàn bộ monorepo `impost
 - Không trộn refactor lớn cùng PR fix nhỏ nếu không cần thiết.
 - Giữ hàm ngắn gọn, ưu tiên pure function cho phần tính toán.
 - Mỗi lần phát sinh thay đổi rule của project, phải hỏi user: có muốn cập nhật `CLAUDE.md` theo rule mới hay không, trước khi chỉnh sửa file rule.
+- **Không tự động build hoặc commit code** sau mỗi lần chỉnh sửa. Chỉ build/commit khi user yêu cầu rõ ràng.
 - Rule reset game:
   - UI chỉ hiển thị nút `Reset Game` cho host, ở tất cả phase trong màn game.
   - Chỉ host được phép thực thi reset.
   - Reset đưa game về `GAME_CREATION` và xóa toàn bộ state theo round/vote/role để bắt đầu ván mới.
+- Rule hiển thị role:
+  - **Không hiện role name trong bất kỳ UI nào** khi game chưa kết thúc. Hiển thị `???` thay thế.
+  - Role chỉ được reveal ở phase `GAME_ENDED` (trong `ViewerCard` và `GameOverModal`).
+  - `WordRevealPopup` chỉ hiển thị từ bí mật, **không** hiển thị role.
+- Rule vote:
+  - **Chỉ host được vote** – server và UI đều guard, non-host không được gửi vote.
+  - Không có cơ chế hòa phiếu vì host là người vote duy nhất.
+  - UI vote phải là **two-step**: chọn mục tiêu (highlight local state) → nhấn Submit mới gửi lên server.
 
 ## Checklist trước khi hoàn thành task
 - Có vi phạm rule `>300 dòng` ở file source code không?

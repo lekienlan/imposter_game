@@ -49,6 +49,15 @@ export interface ResetGameRequest {
   playerId: string;
 }
 
+export interface DisbandRoomRequest {
+  roomId: string;
+  playerId: string;
+}
+
+export interface RoomDisbandedPayload {
+  roomId: string;
+}
+
 export interface StateUpdatePayload {
   gameState: GameState;
   viewerPlayerId: string;
@@ -82,6 +91,7 @@ export interface ServerToClientEvents {
   "room:created": (payload: CreateRoomResponse) => void;
   "room:joined": (payload: JoinRoomResponse) => void;
   "room:previewed": (payload: RoomPreviewResponse) => void;
+  "room:disbanded": (payload: RoomDisbandedPayload) => void;
   "state:update": (payload: StateUpdatePayload) => void;
   "server:error": (payload: ErrorPayload) => void;
 }
@@ -90,6 +100,7 @@ export interface ClientToServerEvents {
   "room:create": (payload: CreateRoomRequest) => void;
   "room:join": (payload: JoinRoomRequest) => void;
   "room:preview": (payload: RoomPreviewRequest) => void;
+  "room:disband": (payload: DisbandRoomRequest) => void;
   "player:reconnect": (payload: ReconnectRequest) => void;
   "game:start": (payload: StartGameRequest) => void;
   "game:reset": (payload: ResetGameRequest) => void;

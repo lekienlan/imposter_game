@@ -14,9 +14,11 @@ import { SocketGateway } from "../infrastructure/socketGateway";
 import { useGatewayEvents } from "../application/hooks/useGatewayEvents";
 import { GameScreen } from "./game/GameScreen";
 import { GameOverModal } from "./game-over/GameOverModal";
+import { GameEndRoleRevealModal } from "./game-over/GameEndRoleRevealModal";
 import { LobbyScreen } from "./lobby/LobbyScreen";
 import { LanguageSwitcher } from "./shared/LanguageSwitcher";
 import { WordRevealPopup } from "./role-reveal/WordRevealPopup";
+import { RoomDisbandedBanner } from "./shared/RoomDisbandedBanner";
 
 const gateway = new SocketGateway(import.meta.env.VITE_SERVER_URL ?? "http://localhost:3001");
 
@@ -45,6 +47,7 @@ export const App = () => {
   const [isWordPopupOpen, setIsWordPopupOpen] = useState(false);
   const [isRoleRevealOpen, setIsRoleRevealOpen] = useState(false);
   const [isReconnecting, setIsReconnecting] = useState(false);
+  const [isDisbanded, setIsDisbanded] = useState(false);
   const [entryMode, setEntryMode] = useState<EntryMode>("CREATE_ONLY");
   const [previewData, setPreviewData] = useState<RoomPreviewResponse | null>(null);
   const [isLobbyLoading, setIsLobbyLoading] = useState(false);
@@ -58,9 +61,38 @@ export const App = () => {
   const submitVoteUseCase = useMemo(() => new SubmitVote(gateway), []);
   const handlePhaseUpdate = useMemo(() => new HandlePhaseUpdate(), []);
 
+  const previousPhaseRef = useRef<Phase | null>(null);
+
   useEffect(() => {
     setPairsInput(generateWordPairs(i18n.language));
   }, [i18n.language]);
+
+  useEffect(() => {
+    if (gameState?.phase === Phase.GAME_ENDED && previousPhaseRef.current !== Phase.GAME_ENDED) {
+      setIsRoleRevealOpen(true);
+    }
+    previousPhaseRef.current = gameState?.phase ?? null;
+  }, [gameState?.phase]);
+
+  const isViewerHost = gameState?.players.find((p) => p.id === playerId)?.isHost ?? false;
+
+  useEffect(() => {
+    if (!isDisbanded) return;
+    const delay = isViewerHost ? 0 : 3000;
+    const timer = setTimeout(() => {
+      setIsDisbanded(false);
+      localStorage.removeItem("roomId");
+      localStorage.removeItem("playerId");
+      setRoomId("");
+      setPlayerId("");
+      setGameState(null);
+      setStatement("");
+      setIsWordPopupOpen(false);
+      setIsRoleRevealOpen(false);
+      shownWordMarkerRef.current = "";
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [isDisbanded, isViewerHost]);
 
   const clearSessionState = () => {
     localStorage.removeItem("roomId");
@@ -80,12 +112,12 @@ export const App = () => {
     setPlayerId,
     setGameState: setGameState as (updater: ((prev: GameState | null) => GameState) | GameState) => void,
     setIsWordPopupOpen,
-    setIsRoleRevealOpen,
     setError,
     setStatement,
     setPreviewData,
     setEntryMode,
     setIsReconnecting,
+    setIsDisbanded,
     clearSessionState,
     shownWordMarkerRef,
     inviteHandledRef,
@@ -200,6 +232,7 @@ export const App = () => {
           {t("app.reconnecting")}
         </div>
       )}
+      {isDisbanded && <RoomDisbandedBanner />}
       <GameScreen
         roomId={roomId}
         playerId={playerId}
@@ -220,13 +253,13 @@ export const App = () => {
         onSubmitStatement={submitStatement}
         onStartGame={() => gateway.startGame({ roomId, playerId })}
         onResetGame={() => gateway.resetGame({ roomId, playerId })}
+        onExitGame={() => gateway.disbandRoom({ roomId, playerId })}
         onStartVoting={() => gateway.startVoting({ roomId, playerId })}
         onSubmitVote={(targetPlayerId) => submitVoteUseCase.execute({ roomId, playerId, targetPlayerId })}
       />
-      {gameState?.phase === Phase.GAME_ENDED && isRoleRevealOpen && viewer?.word && (
-        <WordRevealPopup
-          word={viewer.word}
-          role={viewer.role}
+      {gameState?.phase === Phase.GAME_ENDED && isRoleRevealOpen && (
+        <GameEndRoleRevealModal
+          gameState={gameState}
           onClose={() => setIsRoleRevealOpen(false)}
         />
       )}

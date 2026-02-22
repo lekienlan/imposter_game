@@ -26,4 +26,8 @@ export class RedisGameStateRepository implements GameStateRepository {
   async touch(roomId: string): Promise<void> {
     await this.redis.expire(this.key(roomId), this.ttlSeconds);
   }
+
+  async delete(roomId: string): Promise<void> {
+    await this.redis.del(this.key(roomId));
+  }
 }

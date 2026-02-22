@@ -1,5 +1,5 @@
 import { FormEvent } from 'react';
-import { GameState, Player } from '@imposter/shared';
+import { GameState, Phase, Player } from '@imposter/shared';
 import { isHost } from '../../domain/gameSelectors';
 import { WordRevealPopup } from '../role-reveal/WordRevealPopup';
 import { PlayersPanel } from './PlayersPanel';
@@ -26,6 +26,7 @@ interface Props {
   onSubmitStatement: (event: FormEvent<HTMLFormElement>) => void;
   onStartGame: () => void;
   onResetGame: () => void;
+  onExitGame: () => void;
   onStartVoting: () => void;
   onSubmitVote: (targetPlayerId: string | null) => void;
 }
@@ -49,18 +50,19 @@ export const GameScreen = ({
   onSubmitStatement,
   onStartGame,
   onResetGame,
+  onExitGame,
   onStartVoting,
   onSubmitVote,
 }: Props) => {
   const currentSpeakerId = gameState.pendingSpeakerIds[0] ?? null;
   const viewerHost = isHost(gameState, playerId);
+  const isGameOver = gameState.phase === Phase.GAME_ENDED;
 
   return (
     <>
       {isWordPopupOpen && viewer?.word && gameState.round === 1 && (
         <WordRevealPopup
           word={viewer.word}
-          role={viewer.role}
           onClose={onCloseWordPopup}
         />
       )}
@@ -84,10 +86,11 @@ export const GameScreen = ({
             onSubmitStatement={onSubmitStatement}
             onStartGame={onStartGame}
             onResetGame={onResetGame}
+            onExitGame={onExitGame}
             onStartVoting={onStartVoting}
             onSubmitVote={onSubmitVote}
           />
-          <ViewerCard viewer={viewer} />
+          <ViewerCard viewer={viewer} isGameOver={isGameOver} />
 
           <PlayersPanel
             players={gameState.players}

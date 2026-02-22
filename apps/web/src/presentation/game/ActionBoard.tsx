@@ -25,6 +25,7 @@ interface Props {
   onSubmitStatement: (event: FormEvent<HTMLFormElement>) => void;
   onStartGame: () => void;
   onResetGame: () => void;
+  onExitGame: () => void;
   onStartVoting: () => void;
   onSubmitVote: (targetPlayerId: string | null) => void;
 }
@@ -47,6 +48,7 @@ export const ActionBoard = ({
   onSubmitStatement,
   onStartGame,
   onResetGame,
+  onExitGame,
   onStartVoting,
   onSubmitVote,
 }: Props) => {
@@ -161,6 +163,20 @@ export const ActionBoard = ({
               shadow="var(--red-700)"
             >
               {t("game.resetGame").toUpperCase()}
+            </Button>
+          )}
+
+          {viewerHost && (
+            <Button
+              type="button"
+              className="arcade-btn"
+              onClick={onExitGame}
+              bg="var(--neutral-400)"
+              textColor="var(--neutral-black)"
+              borderColor="var(--neutral-black)"
+              shadow="var(--neutral-700)"
+            >
+              {t("game.exitGame").toUpperCase()}
             </Button>
           )}
 

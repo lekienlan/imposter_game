@@ -1,5 +1,6 @@
 import {
   CreateRoomRequest,
+  DisbandRoomRequest,
   JoinRoomRequest,
   ResetGameRequest,
   ReconnectRequest,
@@ -23,8 +24,10 @@ export interface GameGateway {
   onRoomPreviewed(handler: (payload: RoomPreviewResponse) => void): void;
   onDisconnect(handler: () => void): void;
   onReconnected(handler: () => void): void;
+  onRoomDisbanded(handler: () => void): void;
   resetConnection(): void;
   createRoom(payload: CreateRoomRequest): void;
+  disbandRoom(payload: DisbandRoomRequest): void;
   joinRoom(payload: JoinRoomRequest): void;
   reconnect(payload: ReconnectRequest): void;
   previewRoom(payload: RoomPreviewRequest): void;

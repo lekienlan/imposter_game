@@ -4,17 +4,10 @@ import { Button, Popup } from 'pixel-retroui';
 
 interface Props {
   word: string;
-  role: string | null;
   onClose: () => void;
 }
 
-const getRoleClass = (role: string | null): string => {
-  if (role === 'SPY') return 'spy';
-  if (role === 'WHITE') return 'white';
-  return 'citizen';
-};
-
-export const WordRevealPopup = ({ word, role, onClose }: Props) => {
+export const WordRevealPopup = ({ word, onClose }: Props) => {
   const { t } = useTranslation();
   const [preCountdown, setPreCountdown] = useState(3);
 
@@ -34,8 +27,6 @@ export const WordRevealPopup = ({ word, role, onClose }: Props) => {
     );
   }
 
-  const roleClass = getRoleClass(role);
-
   return (
     <Popup
       isOpen
@@ -49,11 +40,6 @@ export const WordRevealPopup = ({ word, role, onClose }: Props) => {
       borderColor='var(--blue-500)'
     >
       <div className='arcade-popup-content'>
-        <div className='arcade-popup-role-section'>
-          <p className={`arcade-role-badge arcade-role-${roleClass}`}>
-            {role?.toUpperCase() ?? t('game.roleLocked').toUpperCase()}
-          </p>
-        </div>
         <p className='arcade-popup-word'>{word}</p>
         <Button
           type='button'

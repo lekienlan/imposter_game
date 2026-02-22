@@ -60,10 +60,10 @@ _(OPTIONAL – chỉ dùng trong Mode CLASSIC nếu host chọn)_
    - Tranh luận, đặt nghi vấn, bảo vệ quan điểm
 
 3. **Bỏ phiếu**
-   - Người chơi **có thể chọn skip (không loại ai)**
-   - Nếu vote:
-     - Mỗi người **chỉ được vote 1 người**
-     - Có thể đổi ý trong thời gian vote (có countdown)
+   - **Chỉ host vote thay mặt cả nhóm**
+   - Host chọn mục tiêu (highlight), sau đó nhấn **Submit Vote** để xác nhận
+   - Host **có thể chọn skip (không loại ai)**
+   - Non-host xem danh sách player nhưng không thể vote
 
 4. **Kết quả**
    - Nếu skip → **không ai bị loại**
@@ -166,15 +166,6 @@ _(OPTIONAL – chỉ dùng trong Mode CLASSIC nếu host chọn)_
 - Ngay sau khi game bắt đầu và người chơi nhận role/word, client hiển thị popup `Word Reveal` cho từng người chơi.
 - Popup dùng để highlight keyword (font lớn, dễ đọc), chỉ hiển thị keyword của chính người chơi đó.
 - Đây là hành vi giao diện (presentation), **không tạo thêm phase gameplay mới** và không thay đổi state machine của server.
-
-## 🗳️ Cơ chế xử lý hòa phiếu (áp dụng cho mọi mode)
-
-- Nếu kết quả vote **bị hòa**, tiến hành **vote lại ngay trong cùng vòng**
-- Nếu vote lại **vẫn hòa**:
-  - Người bị loại là người nằm trong  
-    **danh sách những người có số phiếu cao nhất ở LẦN VOTE ĐẦU TIÊN**
-
----
 
 ## 🗣️ Luật phát biểu
 

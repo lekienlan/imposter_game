@@ -1,5 +1,6 @@
 import { FormEvent } from "react";
 import { useTranslation } from "react-i18next";
+import { Card } from "pixel-retroui";
 import { GameMode, RoomPreviewResponse } from "@imposter/shared";
 import { RoomPreviewPanel } from "./RoomPreviewPanel";
 import { CreateRoomForm } from "./CreateRoomForm";

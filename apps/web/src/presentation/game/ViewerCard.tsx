@@ -4,6 +4,7 @@ import { Player, Role } from "@imposter/shared";
 
 interface Props {
   viewer: Player | undefined;
+  isGameOver: boolean;
 }
 
 const getRoleClass = (role: Role | null): string => {
@@ -12,7 +13,7 @@ const getRoleClass = (role: Role | null): string => {
   return "citizen";
 };
 
-export const ViewerCard = ({ viewer }: Props) => {
+export const ViewerCard = ({ viewer, isGameOver }: Props) => {
   const { t } = useTranslation();
   const wordDisplay = viewer?.word ?? t("game.wordLocked");
   const roleClass = viewer?.role ? getRoleClass(viewer.role) : null;
@@ -34,12 +35,12 @@ export const ViewerCard = ({ viewer }: Props) => {
                 <span className="arcade-viewer-label">{t("game.role").toUpperCase()}</span>
                 <span
                   className={
-                    roleClass
+                    isGameOver && roleClass
                       ? `arcade-viewer-value arcade-role-badge arcade-role-${roleClass}`
                       : "arcade-viewer-value"
                   }
                 >
-                  {viewer.role ?? t("game.roleLocked")}
+                  {isGameOver ? (viewer.role ?? t("game.roleLocked")) : "???"}
                 </span>
               </span>
               <span className="arcade-viewer-chip arcade-viewer-chip-name">
