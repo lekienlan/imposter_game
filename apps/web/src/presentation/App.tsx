@@ -260,6 +260,7 @@ export const App = () => {
       {gameState?.phase === Phase.GAME_ENDED && isRoleRevealOpen && (
         <GameEndRoleRevealModal
           gameState={gameState}
+          viewer={viewer}
           onClose={() => setIsRoleRevealOpen(false)}
         />
       )}

@@ -4,33 +4,12 @@ import { Card, Button } from "pixel-retroui";
 
 interface Props {
   gameState: GameState;
+  viewer: Player | undefined;
   onClose: () => void;
 }
 
-export const GameEndRoleRevealModal = ({ gameState, onClose }: Props) => {
+export const GameEndRoleRevealModal = ({ gameState, viewer, onClose }: Props) => {
   const { t } = useTranslation();
-
-  const getWinnerTitle = () => {
-    switch (gameState.winner) {
-      case Winner.CITIZENS:
-        return t("game.citizensWin", "CITIZENS WIN!");
-      case Winner.SPIES:
-        return t("game.spiesWin", "SPIES WIN!");
-      default:
-        return t("game.noWinner", "DRAW!");
-    }
-  };
-
-  const getWinnerColor = () => {
-    switch (gameState.winner) {
-      case Winner.CITIZENS:
-        return "var(--blue-400)";
-      case Winner.SPIES:
-        return "var(--red-400)";
-      default:
-        return "var(--neutral-400)";
-    }
-  };
 
   const didPlayerWin = (player: Player) => {
     if (gameState.winner === Winner.CITIZENS && (player.role === Role.CITIZEN || player.role === Role.WHITE)) {
@@ -68,54 +47,29 @@ export const GameEndRoleRevealModal = ({ gameState, onClose }: Props) => {
     }
   };
 
+  const viewerWon = viewer ? didPlayerWin(viewer) : false;
+
   return (
     <div className="arcade-modal-backdrop" style={{ zIndex: 1000 }}>
       <Card
-        className="arcade-modal-content arcade-game-over-modal"
+        className="arcade-modal-content arcade-game-over-modal role-reveal-modal"
         bg="color-mix(in srgb, var(--surface-primary) 95%, var(--neutral-black))"
         textColor="var(--neutral-white)"
-        borderColor={getWinnerColor()}
+        borderColor="var(--blue-400)"
         shadowColor="var(--neutral-black)"
       >
-        <div className="game-over-header">
-          <h1 className="game-over-title blinking-text" style={{ color: getWinnerColor() }}>
-            {getWinnerTitle().toUpperCase()}
-          </h1>
-          <p className="game-over-reason">
-            {(gameState.winnerReason ?? "").toUpperCase()}
+        <div className="game-over-header role-reveal-header">
+          <p className="role-reveal-label">{t("game.role", "ROLE").toUpperCase()}</p>
+          <p className={`role-reveal-role ${getRoleColorClass(viewer?.role ?? null)}`}>
+            {getRoleLabel(viewer?.role ?? null).toUpperCase()}
           </p>
         </div>
 
-        <div className="game-over-players">
-          <table className="arcade-table">
-            <thead>
-              <tr>
-                <th>{t("game.player", "PLAYER").toUpperCase()}</th>
-                <th>{t("game.role", "ROLE").toUpperCase()}</th>
-                <th>{t("game.status", "STATUS").toUpperCase()}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {gameState.players.map((player) => {
-                const isWinner = didPlayerWin(player);
-                return (
-                  <tr key={player.id} className={isWinner ? "row-winner" : "row-loser"}>
-                    <td className="player-name">{player.name}</td>
-                    <td className={`player-role ${getRoleColorClass(player.role)}`}>
-                      {getRoleLabel(player.role)}
-                    </td>
-                    <td className="player-status">
-                      {isWinner ? (
-                        <span className="status-badge victory-badge">{t("game.victory", "VICTORY")}</span>
-                      ) : (
-                        <span className="status-badge defeat-badge">{t("game.defeat", "DEFEAT")}</span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+        <div className="role-reveal-status-wrap">
+          <p className="role-reveal-label">{t("game.status", "STATUS").toUpperCase()}</p>
+          <span className={`status-badge ${viewerWon ? "victory-badge" : "defeat-badge"}`}>
+            {(viewerWon ? t("game.victory", "VICTORY") : t("game.defeat", "DEFEAT")).toUpperCase()}
+          </span>
         </div>
 
         <div className="game-over-actions">
