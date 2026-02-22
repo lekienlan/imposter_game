@@ -11,7 +11,7 @@
     "dev:host": "concurrently -n web,server \"npm run dev:host --workspace @imposter/web\" \"npm run dev --workspace @imposter/server\"",
     "build": "npm run build --workspaces",
     "build:web": "npm run build --workspace @imposter/web",
-    "build:staging": "npm run build --workspace @imposter/web -c \"vite build --mode staging\"",
+    "build:staging": "yarn workspace @imposter/web build:staging",
     "typecheck": "npm run typecheck --workspaces",
     "test": "npm run test --workspace @imposter/server",
     "deploy:web": "npm run build:web && firebase deploy --only hosting",
