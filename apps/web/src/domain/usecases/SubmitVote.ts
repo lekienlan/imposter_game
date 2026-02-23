@@ -1,5 +1,5 @@
 import { SubmitVoteRequest } from '@imposter/shared';
-import { GameGateway } from '../model/GameGateway';
+import { GameGateway } from '../../data/GameGateway';
 
 export class SubmitVote {
   constructor(private readonly gateway: GameGateway) {}

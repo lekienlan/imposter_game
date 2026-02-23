@@ -13,8 +13,8 @@ import { StartVotingUseCase } from '../application/usecases/StartVotingUseCase';
 import { SubmitStatementUseCase } from '../application/usecases/SubmitStatementUseCase';
 import { SubmitVoteUseCase } from '../application/usecases/SubmitVoteUseCase';
 import { DisbandRoomUseCase } from '../application/usecases/DisbandRoomUseCase';
-import { registerSocketHandlers } from '../interfaces/socketHandlers';
-import { RedisGameStateRepository } from './RedisGameStateRepository';
+import { registerSocketHandlers } from './socketHandlers';
+import { RedisGameStateRepository } from './model/RedisGameStateRepository';
 
 export const bootstrapSocketServer = (port: number, redisUrl: string) => {
   const httpServer = createServer();

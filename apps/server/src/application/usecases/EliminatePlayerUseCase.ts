@@ -1,5 +1,5 @@
-import { advanceAfterRound, applyRoundResult } from '../../domain/gameRules';
-import { GameStateRepository } from '../model/GameStateRepository';
+import { advanceAfterRound, applyRoundResult } from '../../utils/gameRules';
+import { GameStateRepository } from '../../infrastructure/model/GameStateRepository';
 
 interface Input {
   roomId: string;

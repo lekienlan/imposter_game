@@ -1,6 +1,6 @@
 import Redis from 'ioredis';
 import { GameState } from '@imposter/shared';
-import { GameStateRepository } from '../application/model/GameStateRepository';
+import { GameStateRepository } from './GameStateRepository';
 
 export class RedisGameStateRepository implements GameStateRepository {
   private readonly ttlSeconds = 60 * 60 * 4;

@@ -1,6 +1,6 @@
 import { FormEvent } from 'react';
 import { GameState, Phase, Player } from '@imposter/shared';
-import { isHost } from '../../domain/gameSelectors';
+import { isHost } from '../../domain/utils/gameSelectors';
 import { WordRevealPopup } from '../word-reveal/WordRevealPopup';
 import { PlayersPanel } from './PlayersPanel';
 import { ActionBoard } from './ActionBoard';

@@ -1,9 +1,9 @@
-import './infrastructure/i18nSetup';
+import './data/i18nSetup';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import 'pixel-retroui/dist/index.css';
 import { App } from './presentation/App';
-import './design-system/colors.css';
+import './presentation/design-system/colors.css';
 import './presentation/index.css';
 import './presentation/styles/theme.css';
 import './presentation/styles/layout.css';

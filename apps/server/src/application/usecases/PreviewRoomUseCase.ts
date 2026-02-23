@@ -1,5 +1,5 @@
 import { RoomPreviewResponse } from '@imposter/shared';
-import { GameStateRepository } from '../model/GameStateRepository';
+import { GameStateRepository } from '../../infrastructure/model/GameStateRepository';
 
 interface Input {
   roomId: string;

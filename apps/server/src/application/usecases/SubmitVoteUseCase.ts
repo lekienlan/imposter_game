@@ -1,6 +1,6 @@
 import { Phase, Vote } from '@imposter/shared';
-import { resolveVoting, upsertVote, retractVote } from '../../domain/gameRules';
-import { GameStateRepository } from '../model/GameStateRepository';
+import { resolveVoting, upsertVote, retractVote } from '../../utils/gameRules';
+import { GameStateRepository } from '../../infrastructure/model/GameStateRepository';
 
 interface Input {
   roomId: string;

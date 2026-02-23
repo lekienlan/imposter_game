@@ -13,7 +13,7 @@ import {
   StartVotingRequest,
   SubmitVoteRequest,
 } from '@imposter/shared';
-import { GameGateway } from '../application/model/GameGateway';
+import { GameGateway } from './GameGateway';
 
 export class SocketGateway implements GameGateway {
   private socket: Socket<ServerToClientEvents, ClientToServerEvents>;

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LOCALE_STORAGE_KEY } from '../../infrastructure/i18nSetup';
+import { LOCALE_STORAGE_KEY } from '../../data/i18nSetup';
 
 export type Locale = 'en' | 'vi' | 'ko' | 'zh';
 

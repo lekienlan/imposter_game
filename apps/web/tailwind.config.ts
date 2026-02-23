@@ -1,5 +1,5 @@
 import type { Config } from 'tailwindcss';
-import { appColor } from './src/design-system/AppColor';
+import { appColor } from './src/presentation/design-system/AppColor';
 
 const config: Config = {
   content: ['./index.html', './src/**/*.{ts,tsx}'],

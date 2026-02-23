@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'pixel-retroui';
 import { GameMode, GameState, Player } from '@imposter/shared';
-import { isHost } from '../../domain/gameSelectors';
+import { isHost } from '../../domain/utils/gameSelectors';
 
 interface Props {
   gameState: GameState;

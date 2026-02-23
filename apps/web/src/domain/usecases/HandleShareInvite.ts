@@ -1,5 +1,5 @@
 import { JoinRoomRequest } from '@imposter/shared';
-import { ShareInvite } from '../../domain/ShareLink';
+import { ShareInvite } from './ShareLink';
 
 export class HandleShareInvite {
   execute(invite: ShareInvite, localPlayerName: string): JoinRoomRequest {

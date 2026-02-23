@@ -5,8 +5,8 @@ import ts from 'typescript';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const appColorPath = resolve(__dirname, '../src/design-system/AppColor.ts');
-const outputPath = resolve(__dirname, '../src/design-system/colors.css');
+const appColorPath = resolve(__dirname, '../src/presentation/design-system/AppColor.ts');
+const outputPath = resolve(__dirname, '../src/presentation/design-system/colors.css');
 
 const source = readFileSync(appColorPath, 'utf8');
 const transpiled = ts.transpileModule(source, {

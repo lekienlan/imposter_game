@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocale, type Locale } from '../../application/utils/useLocale';
+import { useLocale, type Locale } from '../../domain/utils/useLocale';
 
 const LOCALE_OPTIONS: { value: Locale; label: string }[] = [
   { value: 'vi', label: 'VI' },

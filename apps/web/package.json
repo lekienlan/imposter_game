@@ -4,10 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "npm run design-system:generate && vite",
-    "dev:host": "npm run design-system:generate && vite --host",
-    "build": "npm run design-system:generate && tsc -p tsconfig.json && vite build",
-    "build:staging": "npm run design-system:generate && tsc -p tsconfig.json && vite build --mode staging",
+    "dev": "vite",
+    "dev:host": "vite --host",
+    "build": "tsc -p tsconfig.json && vite build",
+    "build:staging": "tsc -p tsconfig.json && vite build --mode staging",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
     "design-system:generate": "node ./scripts/generate-design-system-css.mjs"

@@ -1,6 +1,6 @@
 import { Phase } from '@imposter/shared';
-import { GameStateRepository } from '../model/GameStateRepository';
-import { canTransitionToVoting } from '../../domain/gameRules';
+import { GameStateRepository } from '../../infrastructure/model/GameStateRepository';
+import { canTransitionToVoting } from '../../utils/gameRules';
 
 interface Input {
   roomId: string;

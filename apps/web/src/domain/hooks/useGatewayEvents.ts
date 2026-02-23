@@ -1,9 +1,9 @@
 import { MutableRefObject, useEffect } from 'react';
 import { Phase, RoomPreviewResponse, GameState } from '@imposter/shared';
-import { GameGateway } from '../model/GameGateway';
+import { GameGateway } from '../../data/GameGateway';
 import { HandlePhaseUpdate } from '../usecases/HandlePhaseUpdate';
 import { PreviewRoom } from '../usecases/PreviewRoom';
-import { parseShareInvite } from '../../domain/ShareLink';
+import { parseShareInvite } from '../usecases/ShareLink';
 
 interface GatewayEventCallbacks {
   setIsLobbyLoading: (v: boolean) => void;

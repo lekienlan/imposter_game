@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { GameMode, GameState, Phase, Winner } from '@imposter/shared';
-import { GameStateRepository } from '../model/GameStateRepository';
+import { GameStateRepository } from '../../infrastructure/model/GameStateRepository';
 import { PreviewRoomUseCase } from '../usecases/PreviewRoomUseCase';
 
 class InMemoryGameStateRepository implements GameStateRepository {

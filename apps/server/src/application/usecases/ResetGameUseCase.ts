@@ -1,5 +1,5 @@
-import { GameStateRepository } from '../model/GameStateRepository';
-import { resetGameState } from '../../domain/resetGameState';
+import { GameStateRepository } from '../../infrastructure/model/GameStateRepository';
+import { resetGameState } from '../../utils/resetGameState';
 
 interface Input {
   roomId: string;

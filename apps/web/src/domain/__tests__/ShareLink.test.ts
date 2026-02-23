@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { buildShareUrl, parseShareInvite } from '../ShareLink';
+import { buildShareUrl, parseShareInvite } from '../usecases/ShareLink';
 
 describe('parseShareInvite', () => {
   test('parses ?code= param and uppercases it', () => {

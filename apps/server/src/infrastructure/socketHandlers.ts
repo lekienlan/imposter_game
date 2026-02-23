@@ -25,7 +25,7 @@ import { StartGameUseCase } from '../application/usecases/StartGameUseCase';
 import { StartVotingUseCase } from '../application/usecases/StartVotingUseCase';
 import { SubmitStatementUseCase } from '../application/usecases/SubmitStatementUseCase';
 import { SubmitVoteUseCase } from '../application/usecases/SubmitVoteUseCase';
-import { sanitizeGameStateForViewer } from '../domain/gameRules';
+import { sanitizeGameStateForViewer } from '../utils/gameRules';
 
 interface UseCases {
   createRoom: CreateRoomUseCase;
