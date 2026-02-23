@@ -1,4 +1,4 @@
-import { GameState, Phase, Winner } from "@imposter/shared";
+import { GameState, Phase, Winner } from '@imposter/shared';
 
 export const resetGameState = (gameState: GameState): GameState => ({
   ...gameState,
@@ -9,7 +9,7 @@ export const resetGameState = (gameState: GameState): GameState => ({
     role: null,
     word: null,
     statement: null,
-    votedFor: null
+    votedFor: null,
   })),
   round: 0,
   activeWordPair: null,
@@ -21,5 +21,5 @@ export const resetGameState = (gameState: GameState): GameState => ({
   eliminatedPlayerId: null,
   winner: Winner.NONE,
   winnerReason: null,
-  updatedAt: Date.now()
+  updatedAt: Date.now(),
 });

@@ -1,12 +1,12 @@
-import { FormEvent } from "react";
-import { useTranslation } from "react-i18next";
-import { Card } from "pixel-retroui";
-import { GameMode, RoomPreviewResponse } from "@imposter/shared";
-import { RoomPreviewPanel } from "./RoomPreviewPanel";
-import { CreateRoomForm } from "./CreateRoomForm";
-import { JoinRoomForm } from "./JoinRoomForm";
+import { FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Card } from 'pixel-retroui';
+import { GameMode, RoomPreviewResponse } from '@imposter/shared';
+import { RoomPreviewPanel } from './RoomPreviewPanel';
+import { CreateRoomForm } from './CreateRoomForm';
+import { JoinRoomForm } from './JoinRoomForm';
 
-type EntryMode = "CREATE_ONLY" | "JOIN_ONLY";
+type EntryMode = 'CREATE_ONLY' | 'JOIN_ONLY';
 
 interface Props {
   error: string;
@@ -46,12 +46,12 @@ export const LobbyScreen = ({
 }: Props) => {
   const { t } = useTranslation();
 
-  if (entryMode === "JOIN_ONLY") {
+  if (entryMode === 'JOIN_ONLY') {
     return (
       <main className="arcade-screen">
         <section className="arcade-header">
-          <h1 className="arcade-title">{t("lobby.title").toUpperCase()}</h1>
-          <p className="arcade-subtitle">{t("lobby.subtitle").toUpperCase()}</p>
+          <h1 className="arcade-title">{t('lobby.title').toUpperCase()}</h1>
+          <p className="arcade-subtitle">{t('lobby.subtitle').toUpperCase()}</p>
         </section>
 
         <div className="arcade-grid">
@@ -79,8 +79,8 @@ export const LobbyScreen = ({
   return (
     <main className="arcade-screen">
       <section className="arcade-header">
-        <h1 className="arcade-title">{t("lobby.title").toUpperCase()}</h1>
-        <p className="arcade-subtitle">{t("lobby.subtitle").toUpperCase()}</p>
+        <h1 className="arcade-title">{t('lobby.title').toUpperCase()}</h1>
+        <p className="arcade-subtitle">{t('lobby.subtitle').toUpperCase()}</p>
         {error && (
           <p className="arcade-error" role="alert" aria-live="polite">
             {error}
@@ -101,7 +101,6 @@ export const LobbyScreen = ({
           onWhiteEnabledChange={onWhiteEnabledChange}
           onCreateRoom={onCreateRoom}
         />
-
       </div>
     </main>
   );

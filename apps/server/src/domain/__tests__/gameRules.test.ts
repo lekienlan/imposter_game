@@ -1,21 +1,27 @@
-import { describe, expect, test } from "vitest";
-import { GameMode, Phase, Role, Winner, type GameState } from "@imposter/shared";
-import { advanceAfterRound, applyRoundResult, resolveVoting, retractVote, upsertVote } from "../gameRules";
+import { describe, expect, test } from 'vitest';
+import { GameMode, Phase, Role, Winner, type GameState } from '@imposter/shared';
+import {
+  advanceAfterRound,
+  applyRoundResult,
+  resolveVoting,
+  retractVote,
+  upsertVote,
+} from '../gameRules';
 
 const baseState = (mode: GameMode): GameState => ({
-  roomId: "ROOM1",
+  roomId: 'ROOM1',
   createdAt: 1,
   updatedAt: 1,
-  hostPlayerId: "p1",
+  hostPlayerId: 'p1',
   phase: Phase.ROUND_VOTING,
   settings: {
     mode,
     whiteEnabled: mode === GameMode.CLASSIC,
-    wordPairs: [{ citizen: "Cat", spy: "Tiger" }]
+    wordPairs: [{ citizen: 'Cat', spy: 'Tiger' }],
   },
   round: 2,
-  activeWordPair: { citizen: "Cat", spy: "Tiger" },
-  speakingOrder: ["p1", "p2", "p3"],
+  activeWordPair: { citizen: 'Cat', spy: 'Tiger' },
+  speakingOrder: ['p1', 'p2', 'p3'],
   pendingSpeakerIds: [],
   votes: [],
   voteRound: 1,
@@ -25,105 +31,105 @@ const baseState = (mode: GameMode): GameState => ({
   winnerReason: null,
   players: [
     {
-      id: "p1",
-      name: "A",
+      id: 'p1',
+      name: 'A',
       isHost: true,
       isAlive: true,
       joinedAt: 1,
       role: Role.CITIZEN,
-      word: "Cat",
+      word: 'Cat',
       statement: null,
-      votedFor: null
+      votedFor: null,
     },
     {
-      id: "p2",
-      name: "B",
+      id: 'p2',
+      name: 'B',
       isHost: false,
       isAlive: true,
       joinedAt: 2,
       role: Role.SPY,
-      word: "Tiger",
+      word: 'Tiger',
       statement: null,
-      votedFor: null
+      votedFor: null,
     },
     {
-      id: "p3",
-      name: "C",
+      id: 'p3',
+      name: 'C',
       isHost: false,
       isAlive: true,
       joinedAt: 3,
       role: mode === GameMode.CLASSIC ? Role.WHITE : Role.SPY,
       word: null,
       statement: null,
-      votedFor: null
-    }
-  ]
+      votedFor: null,
+    },
+  ],
 });
 
-describe("resolveVoting", () => {
-  test("starts a re-vote on first tie", () => {
+describe('resolveVoting', () => {
+  test('starts a re-vote on first tie', () => {
     const state = baseState(GameMode.CLASSIC);
     state.votes = [
-      { voterId: "p1", targetPlayerId: "p2", submittedAt: 1 },
-      { voterId: "p2", targetPlayerId: "p1", submittedAt: 1 },
-      { voterId: "p3", targetPlayerId: null, submittedAt: 1 }
+      { voterId: 'p1', targetPlayerId: 'p2', submittedAt: 1 },
+      { voterId: 'p2', targetPlayerId: 'p1', submittedAt: 1 },
+      { voterId: 'p3', targetPlayerId: null, submittedAt: 1 },
     ];
 
     const result = resolveVoting(state);
-    expect(result.status).toBe("REVOTE");
+    expect(result.status).toBe('REVOTE');
     expect(state.voteRound).toBe(2);
     expect(state.votes).toHaveLength(0);
   });
 });
 
-describe("advanceAfterRound", () => {
-  test("classic loses immediately when white is eliminated in round 1-2", () => {
+describe('advanceAfterRound', () => {
+  test('classic loses immediately when white is eliminated in round 1-2', () => {
     const state = baseState(GameMode.CLASSIC);
     state.round = 2;
 
-    const eliminatedRole = applyRoundResult(state, "p3");
+    const eliminatedRole = applyRoundResult(state, 'p3');
     advanceAfterRound(state, eliminatedRole, () => 0.2);
 
     expect(state.winner).toBe(Winner.SPIES);
     expect(state.phase).toBe(Phase.GAME_ENDED);
   });
 
-  test("hardcore loses immediately when citizen is eliminated", () => {
+  test('hardcore loses immediately when citizen is eliminated', () => {
     const state = baseState(GameMode.HARDCORE);
 
-    const eliminatedRole = applyRoundResult(state, "p1");
+    const eliminatedRole = applyRoundResult(state, 'p1');
     advanceAfterRound(state, eliminatedRole, () => 0.2);
 
     expect(state.winner).toBe(Winner.SPIES);
     expect(state.phase).toBe(Phase.GAME_ENDED);
   });
 
-  test("classic citizens win when all spies eliminated", () => {
+  test('classic citizens win when all spies eliminated', () => {
     const state = baseState(GameMode.CLASSIC);
     // eliminate the spy (p2)
-    const eliminatedRole = applyRoundResult(state, "p2");
+    const eliminatedRole = applyRoundResult(state, 'p2');
     advanceAfterRound(state, eliminatedRole, () => 0.2);
 
     expect(state.winner).toBe(Winner.CITIZENS);
-    expect(state.winnerReason).toBe("ALL_SPIES_ELIMINATED");
+    expect(state.winnerReason).toBe('ALL_SPIES_ELIMINATED');
     expect(state.phase).toBe(Phase.GAME_ENDED);
   });
 
-  test("classic spies win when they reach parity", () => {
+  test('classic spies win when they reach parity', () => {
     const state = baseState(GameMode.CLASSIC);
     // eliminate p3 (WHITE) in round >= 3 so white-elimination early-exit does NOT fire
     state.round = 3;
     state.players[2].role = Role.CITIZEN;
-    state.players[2].word = "Cat";
+    state.players[2].word = 'Cat';
     // p1 (CITIZEN) eliminated → spyCount(1) >= citizenCount(1)
-    const eliminatedRole = applyRoundResult(state, "p1");
+    const eliminatedRole = applyRoundResult(state, 'p1');
     advanceAfterRound(state, eliminatedRole, () => 0.2);
 
     expect(state.winner).toBe(Winner.SPIES);
     expect(state.phase).toBe(Phase.GAME_ENDED);
   });
 
-  test("classic game continues when spy alive but outnumbered", () => {
+  test('classic game continues when spy alive but outnumbered', () => {
     // 2 citizens (p1, p3 after white transition), 1 spy (p2) — spy < citizen
     const state = baseState(GameMode.CLASSIC);
     // no elimination this round
@@ -135,38 +141,38 @@ describe("advanceAfterRound", () => {
   });
 });
 
-describe("retractVote", () => {
-  test("removes the vote from votes array", () => {
+describe('retractVote', () => {
+  test('removes the vote from votes array', () => {
     const state = baseState(GameMode.CLASSIC);
-    upsertVote(state, { voterId: "p1", targetPlayerId: "p2", submittedAt: 1 });
+    upsertVote(state, { voterId: 'p1', targetPlayerId: 'p2', submittedAt: 1 });
     expect(state.votes).toHaveLength(1);
 
-    retractVote(state, "p1");
+    retractVote(state, 'p1');
     expect(state.votes).toHaveLength(0);
   });
 
-  test("resets the player votedFor to null", () => {
+  test('resets the player votedFor to null', () => {
     const state = baseState(GameMode.CLASSIC);
-    state.players[0].votedFor = "p2";
-    upsertVote(state, { voterId: "p1", targetPlayerId: "p2", submittedAt: 1 });
+    state.players[0].votedFor = 'p2';
+    upsertVote(state, { voterId: 'p1', targetPlayerId: 'p2', submittedAt: 1 });
 
-    retractVote(state, "p1");
+    retractVote(state, 'p1');
     expect(state.players[0].votedFor).toBeNull();
   });
 
-  test("does nothing if voter has no vote", () => {
+  test('does nothing if voter has no vote', () => {
     const state = baseState(GameMode.CLASSIC);
-    expect(() => retractVote(state, "p1")).not.toThrow();
+    expect(() => retractVote(state, 'p1')).not.toThrow();
     expect(state.votes).toHaveLength(0);
   });
 
   test("only removes the matching voter's vote, leaves others", () => {
     const state = baseState(GameMode.CLASSIC);
-    upsertVote(state, { voterId: "p1", targetPlayerId: "p2", submittedAt: 1 });
-    upsertVote(state, { voterId: "p2", targetPlayerId: "p1", submittedAt: 2 });
+    upsertVote(state, { voterId: 'p1', targetPlayerId: 'p2', submittedAt: 1 });
+    upsertVote(state, { voterId: 'p2', targetPlayerId: 'p1', submittedAt: 2 });
 
-    retractVote(state, "p1");
+    retractVote(state, 'p1');
     expect(state.votes).toHaveLength(1);
-    expect(state.votes[0].voterId).toBe("p2");
+    expect(state.votes[0].voterId).toBe('p2');
   });
 });

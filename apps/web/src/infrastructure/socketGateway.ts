@@ -1,4 +1,4 @@
-import { io, Socket } from "socket.io-client";
+import { io, Socket } from 'socket.io-client';
 import {
   ClientToServerEvents,
   ServerToClientEvents,
@@ -11,18 +11,18 @@ import {
   StartGameRequest,
   SubmitStatementRequest,
   StartVotingRequest,
-  SubmitVoteRequest
-} from "@imposter/shared";
-import { GameGateway } from "../application/model/GameGateway";
+  SubmitVoteRequest,
+} from '@imposter/shared';
+import { GameGateway } from '../application/model/GameGateway';
 
 export class SocketGateway implements GameGateway {
   private socket: Socket<ServerToClientEvents, ClientToServerEvents>;
   private readonly serverUrl: string;
-  private readonly stateUpdateHandlers: ServerToClientEvents["state:update"][] = [];
-  private readonly errorHandlers: ServerToClientEvents["server:error"][] = [];
-  private readonly roomCreatedHandlers: ServerToClientEvents["room:created"][] = [];
-  private readonly roomJoinedHandlers: ServerToClientEvents["room:joined"][] = [];
-  private readonly roomPreviewedHandlers: ServerToClientEvents["room:previewed"][] = [];
+  private readonly stateUpdateHandlers: ServerToClientEvents['state:update'][] = [];
+  private readonly errorHandlers: ServerToClientEvents['server:error'][] = [];
+  private readonly roomCreatedHandlers: ServerToClientEvents['room:created'][] = [];
+  private readonly roomJoinedHandlers: ServerToClientEvents['room:joined'][] = [];
+  private readonly roomPreviewedHandlers: ServerToClientEvents['room:previewed'][] = [];
   private readonly roomDisbandedHandlers: Array<() => void> = [];
 
   constructor(serverUrl: string) {
@@ -32,52 +32,52 @@ export class SocketGateway implements GameGateway {
   }
 
   private createSocket(): Socket<ServerToClientEvents, ClientToServerEvents> {
-    const socket = io(this.serverUrl, { transports: ["websocket"] });
-    this.stateUpdateHandlers.forEach((handler) => socket.on("state:update", handler));
-    this.errorHandlers.forEach((handler) => socket.on("server:error", handler));
-    this.roomCreatedHandlers.forEach((handler) => socket.on("room:created", handler));
-    this.roomJoinedHandlers.forEach((handler) => socket.on("room:joined", handler));
-    this.roomPreviewedHandlers.forEach((handler) => socket.on("room:previewed", handler));
-    this.roomDisbandedHandlers.forEach((handler) => socket.on("room:disbanded", handler));
+    const socket = io(this.serverUrl, { transports: ['websocket'] });
+    this.stateUpdateHandlers.forEach((handler) => socket.on('state:update', handler));
+    this.errorHandlers.forEach((handler) => socket.on('server:error', handler));
+    this.roomCreatedHandlers.forEach((handler) => socket.on('room:created', handler));
+    this.roomJoinedHandlers.forEach((handler) => socket.on('room:joined', handler));
+    this.roomPreviewedHandlers.forEach((handler) => socket.on('room:previewed', handler));
+    this.roomDisbandedHandlers.forEach((handler) => socket.on('room:disbanded', handler));
     return socket;
   }
 
-  onStateUpdate(handler: ServerToClientEvents["state:update"]): void {
+  onStateUpdate(handler: ServerToClientEvents['state:update']): void {
     this.stateUpdateHandlers.push(handler);
-    this.socket.on("state:update", handler);
+    this.socket.on('state:update', handler);
   }
 
-  onError(handler: ServerToClientEvents["server:error"]): void {
+  onError(handler: ServerToClientEvents['server:error']): void {
     this.errorHandlers.push(handler);
-    this.socket.on("server:error", handler);
+    this.socket.on('server:error', handler);
   }
 
-  onRoomCreated(handler: ServerToClientEvents["room:created"]): void {
+  onRoomCreated(handler: ServerToClientEvents['room:created']): void {
     this.roomCreatedHandlers.push(handler);
-    this.socket.on("room:created", handler);
+    this.socket.on('room:created', handler);
   }
 
-  onRoomJoined(handler: ServerToClientEvents["room:joined"]): void {
+  onRoomJoined(handler: ServerToClientEvents['room:joined']): void {
     this.roomJoinedHandlers.push(handler);
-    this.socket.on("room:joined", handler);
+    this.socket.on('room:joined', handler);
   }
 
-  onRoomPreviewed(handler: ServerToClientEvents["room:previewed"]): void {
+  onRoomPreviewed(handler: ServerToClientEvents['room:previewed']): void {
     this.roomPreviewedHandlers.push(handler);
-    this.socket.on("room:previewed", handler);
+    this.socket.on('room:previewed', handler);
   }
 
   onRoomDisbanded(handler: () => void): void {
     this.roomDisbandedHandlers.push(handler);
-    this.socket.on("room:disbanded", handler);
+    this.socket.on('room:disbanded', handler);
   }
 
   onDisconnect(handler: () => void): void {
-    this.socket.on("disconnect", handler);
+    this.socket.on('disconnect', handler);
   }
 
   onReconnected(handler: () => void): void {
-    this.socket.on("connect", handler);
+    this.socket.on('connect', handler);
   }
 
   resetConnection(): void {
@@ -87,42 +87,42 @@ export class SocketGateway implements GameGateway {
   }
 
   createRoom(payload: CreateRoomRequest): void {
-    this.socket.emit("room:create", payload);
+    this.socket.emit('room:create', payload);
   }
 
   joinRoom(payload: JoinRoomRequest): void {
-    this.socket.emit("room:join", payload);
+    this.socket.emit('room:join', payload);
   }
 
   reconnect(payload: ReconnectRequest): void {
-    this.socket.emit("player:reconnect", payload);
+    this.socket.emit('player:reconnect', payload);
   }
 
   previewRoom(payload: RoomPreviewRequest): void {
-    this.socket.emit("room:preview", payload);
+    this.socket.emit('room:preview', payload);
   }
 
   startGame(payload: StartGameRequest): void {
-    this.socket.emit("game:start", payload);
+    this.socket.emit('game:start', payload);
   }
 
   resetGame(payload: ResetGameRequest): void {
-    this.socket.emit("game:reset", payload);
+    this.socket.emit('game:reset', payload);
   }
 
   disbandRoom(payload: DisbandRoomRequest): void {
-    this.socket.emit("room:disband", payload);
+    this.socket.emit('room:disband', payload);
   }
 
   submitStatement(payload: SubmitStatementRequest): void {
-    this.socket.emit("statement:submit", payload);
+    this.socket.emit('statement:submit', payload);
   }
 
   startVoting(payload: StartVotingRequest): void {
-    this.socket.emit("voting:start", payload);
+    this.socket.emit('voting:start', payload);
   }
 
   submitVote(payload: SubmitVoteRequest): void {
-    this.socket.emit("vote:submit", payload);
+    this.socket.emit('vote:submit', payload);
   }
 }

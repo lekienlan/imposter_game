@@ -1,9 +1,9 @@
-import { Phase } from "../enums/Phase";
-import { Winner } from "../enums/Winner";
-import { Player } from "./Player";
-import { Vote } from "./Vote";
-import { GameSettings } from "./GameSettings";
-import { WordPair } from "./WordPair";
+import { Phase } from '../enums/Phase';
+import { Winner } from '../enums/Winner';
+import { Player } from './Player';
+import { Vote } from './Vote';
+import { GameSettings } from './GameSettings';
+import { WordPair } from './WordPair';
 
 export interface GameState {
   roomId: string;

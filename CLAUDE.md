@@ -1,14 +1,17 @@
 # AGENTS.md
 
 ## Mục tiêu
+
 Tài liệu này định nghĩa rule làm việc cho toàn bộ monorepo `imposter_game`, bám theo kiến trúc hiện tại và giúp code nhất quán, dễ review, dễ mở rộng.
 
 ## Cấu trúc dự án
+
 - `apps/server`: backend Socket.IO + use case game.
 - `apps/web`: frontend React + Tailwind.
 - `packages/shared`: model/enums/dto dùng chung cho cả web và server.
 
 ## Kiến trúc bắt buộc
+
 - Luôn giữ phân tầng rõ ràng: `domain -> application -> infrastructure -> interfaces/presentation`.
 - `domain` phải thuần logic, không phụ thuộc framework (không React, không Socket, không Redis).
 - `application` chỉ điều phối use case, gọi domain/repository/gateway qua interface.
@@ -17,6 +20,7 @@ Tài liệu này định nghĩa rule làm việc cho toàn bộ monorepo `impost
 - Không đặt game rule trực tiếp trong `presentation` hoặc `interfaces`.
 
 ## Rule tách Logic và UI
+
 - Logic và UI phải nằm ở file khác nhau.
 - Với frontend:
   - Logic nghiệp vụ/selector/use case: đặt ở `apps/web/src/domain` hoặc `apps/web/src/application`.
@@ -25,6 +29,7 @@ Tài liệu này định nghĩa rule làm việc cho toàn bộ monorepo `impost
 - Component UI không tự tính game rule phức tạp; chỉ gọi function từ layer logic.
 
 ## Rule giới hạn kích thước file
+
 - File source code không được vượt quá `300 dòng`.
 - Ngoại lệ (không áp dụng giới hạn 300 dòng):
   - File lock/generated: `yarn.lock`, `package-lock.json`, `pnpm-lock.yaml`.
@@ -36,21 +41,25 @@ Tài liệu này định nghĩa rule làm việc cho toàn bộ monorepo `impost
   - Tách constants/config ra module riêng.
 
 ## Quy tắc import và phụ thuộc
+
 - Dùng model/enums/dto từ `@imposter/shared`, không tự định nghĩa trùng lặp.
 - Không import ngược tầng (ví dụ `domain` không import từ `infrastructure`/`presentation`).
 - Hạn chế side-effect trong module khi import.
 
 ## Quy tắc Package Manager
+
 - Luôn sử dụng `yarn` cho mọi thao tác cài dependency và chạy script.
 - Không sử dụng `npm` trong monorepo này.
 
 ## Quy tắc Design Token (Web)
+
 - `apps/web/src/design-system/AppColor.ts` là nguồn màu duy nhất (single source of truth).
 - Không hardcode mã màu trong `tailwind.config.ts` hoặc file CSS presentation nếu màu đã có trong design token.
 - Tailwind color map phải lấy từ token TypeScript (import từ `AppColor.ts`) thay vì lặp lại object màu.
 - CSS variable trong `design-system/colors.css` phải ưu tiên đọc qua `theme("colors...")` để đồng bộ với Tailwind token.
 
 ## Naming convention
+
 - Tên file TypeScript/TSX dùng `PascalCase` cho class/use-case/model:
   - `CreateRoomUseCase.ts`, `SubmitVoteUseCase.ts`, `GameStateRepository.ts`.
 - Tên hàm/biến dùng `camelCase`:
@@ -62,11 +71,13 @@ Tài liệu này định nghĩa rule làm việc cho toàn bộ monorepo `impost
   - `getViewer`, `alivePlayers`, `isHost`.
 
 ## Testing và chất lượng
+
 - Domain rule quan trọng cần có unit test (ưu tiên `apps/server/src/domain/__tests__`).
 - Mỗi thay đổi rule game phải cập nhật test tương ứng.
 - Tránh để logic quan trọng chỉ được kiểm thử qua UI thủ công.
 
 ## Quy tắc cập nhật code
+
 - Khi thêm tính năng mới, ưu tiên mở rộng theo layer hiện có thay vì thêm nhanh vào `App.tsx`.
 - Không trộn refactor lớn cùng PR fix nhỏ nếu không cần thiết.
 - Giữ hàm ngắn gọn, ưu tiên pure function cho phần tính toán.
@@ -86,6 +97,7 @@ Tài liệu này định nghĩa rule làm việc cho toàn bộ monorepo `impost
   - UI vote phải là **two-step**: chọn mục tiêu (highlight local state) → nhấn Submit mới gửi lên server.
 
 ## Checklist trước khi hoàn thành task
+
 - Có vi phạm rule `>300 dòng` ở file source code không?
 - Logic và UI đã tách file chưa?
 - Có vi phạm hướng phụ thuộc giữa các layer không?

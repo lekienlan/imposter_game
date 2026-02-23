@@ -1,7 +1,7 @@
 import { FormEvent } from 'react';
 import { GameState, Phase, Player } from '@imposter/shared';
 import { isHost } from '../../domain/gameSelectors';
-import { WordRevealPopup } from '../role-reveal/WordRevealPopup';
+import { WordRevealPopup } from '../word-reveal/WordRevealPopup';
 import { PlayersPanel } from './PlayersPanel';
 import { ActionBoard } from './ActionBoard';
 import { ViewerCard } from './ViewerCard';
@@ -61,13 +61,10 @@ export const GameScreen = ({
   return (
     <>
       {isWordPopupOpen && viewer?.word && gameState.round === 1 && (
-        <WordRevealPopup
-          word={viewer.word}
-          onClose={onCloseWordPopup}
-        />
+        <WordRevealPopup word={viewer.word} onClose={onCloseWordPopup} />
       )}
-      <main className='arcade-screen'>
-        <div className='arcade-grid arcade-grid-game'>
+      <main className="arcade-screen">
+        <div className="arcade-grid arcade-grid-game">
           <ActionBoard
             gameState={gameState}
             playerId={playerId}

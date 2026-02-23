@@ -1,4 +1,4 @@
-import { appSemanticColor, AppTheme } from "./AppColor";
+import { appSemanticColor, AppTheme } from './AppColor';
 
 export interface AppColorScheme {
   surfacePrimary: string;
@@ -24,6 +24,6 @@ export const getAppColorScheme = (theme: AppTheme): AppColorScheme => {
     textBorder: tokens.textBorder,
     textDisabled: tokens.textDisabled,
     primaryMain: tokens.primaryMain,
-    primaryLight: tokens.primaryLight
+    primaryLight: tokens.primaryLight,
   };
 };

@@ -1,4 +1,4 @@
-import { GameState } from "@imposter/shared";
+import { GameState } from '@imposter/shared';
 
 export interface GameStateRepository {
   getByRoomId(roomId: string): Promise<GameState | null>;

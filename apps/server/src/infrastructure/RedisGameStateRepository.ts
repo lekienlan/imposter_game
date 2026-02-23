@@ -1,6 +1,6 @@
-import Redis from "ioredis";
-import { GameState } from "@imposter/shared";
-import { GameStateRepository } from "../application/model/GameStateRepository";
+import Redis from 'ioredis';
+import { GameState } from '@imposter/shared';
+import { GameStateRepository } from '../application/model/GameStateRepository';
 
 export class RedisGameStateRepository implements GameStateRepository {
   private readonly ttlSeconds = 60 * 60 * 4;
@@ -20,7 +20,12 @@ export class RedisGameStateRepository implements GameStateRepository {
   }
 
   async save(gameState: GameState): Promise<void> {
-    await this.redis.set(this.key(gameState.roomId), JSON.stringify(gameState), "EX", this.ttlSeconds);
+    await this.redis.set(
+      this.key(gameState.roomId),
+      JSON.stringify(gameState),
+      'EX',
+      this.ttlSeconds,
+    );
   }
 
   async touch(roomId: string): Promise<void> {

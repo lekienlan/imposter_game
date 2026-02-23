@@ -1,11 +1,11 @@
-import { GameState, Phase, Winner } from "@imposter/shared";
-import { nanoid } from "nanoid";
-import { GameStateRepository } from "../model/GameStateRepository";
-import { resolvePlayerName } from "../utils/resolvePlayerName";
+import { GameState, Phase, Winner } from '@imposter/shared';
+import { nanoid } from 'nanoid';
+import { GameStateRepository } from '../model/GameStateRepository';
+import { resolvePlayerName } from '../utils/resolvePlayerName';
 
 interface Input {
   playerName: string;
-  settings: GameState["settings"];
+  settings: GameState['settings'];
 }
 
 interface Output {
@@ -38,8 +38,8 @@ export class CreateRoomUseCase {
           role: null,
           word: null,
           statement: null,
-          votedFor: null
-        }
+          votedFor: null,
+        },
       ],
       settings: input.settings,
       round: 0,
@@ -51,7 +51,7 @@ export class CreateRoomUseCase {
       firstRoundTopTargetIds: [],
       eliminatedPlayerId: null,
       winner: Winner.NONE,
-      winnerReason: null
+      winnerReason: null,
     };
 
     await this.repository.save(gameState);

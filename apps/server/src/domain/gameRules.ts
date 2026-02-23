@@ -20,8 +20,7 @@ export interface PostRoundOutcome {
   winnerReason: string | null;
 }
 
-const alivePlayers = (players: Player[]): Player[] =>
-  players.filter((player) => player.isAlive);
+const alivePlayers = (players: Player[]): Player[] => players.filter((player) => player.isAlive);
 
 const shuffle = <T>(items: T[], random: () => number): T[] => {
   const result = [...items];
@@ -40,14 +39,9 @@ const countAliveCitizens = (players: Player[]): number =>
 const countAliveSpies = (players: Player[]): number =>
   alivePlayers(players).filter((player) => player.role === Role.SPY).length;
 
-const pickTieBreakCandidate = (
-  players: Player[],
-  candidateIds: string[],
-): string => {
+const pickTieBreakCandidate = (players: Player[], candidateIds: string[]): string => {
   const candidateSet = new Set(candidateIds);
-  const candidates = alivePlayers(players).filter((player) =>
-    candidateSet.has(player.id),
-  );
+  const candidates = alivePlayers(players).filter((player) => candidateSet.has(player.id));
   if (candidates.length === 0) {
     throw new Error('No tie-break candidate available');
   }
@@ -75,10 +69,7 @@ const summarizeVotes = (votes: Vote[]) => {
       skipCount += 1;
       return;
     }
-    targetTally.set(
-      vote.targetPlayerId,
-      (targetTally.get(vote.targetPlayerId) ?? 0) + 1,
-    );
+    targetTally.set(vote.targetPlayerId, (targetTally.get(vote.targetPlayerId) ?? 0) + 1);
   });
 
   let maxVotes = 0;
@@ -100,8 +91,7 @@ export const sanitizeGameStateForViewer = (
   viewerPlayerId: string,
 ): GameState => ({
   ...gameState,
-  activeWordPair:
-    gameState.phase === Phase.GAME_ENDED ? gameState.activeWordPair : null,
+  activeWordPair: gameState.phase === Phase.GAME_ENDED ? gameState.activeWordPair : null,
   players: gameState.players.map((player) => {
     if (player.id === viewerPlayerId || gameState.phase === Phase.GAME_ENDED) {
       return player;
@@ -144,18 +134,12 @@ export const assignRoles = (
     throw new Error('HARDCORE requires spies to be more than citizens');
   }
   return shuffle(
-    [
-      ...Array(citizenCount).fill(Role.CITIZEN),
-      ...Array(spyCount).fill(Role.SPY),
-    ],
+    [...Array(citizenCount).fill(Role.CITIZEN), ...Array(spyCount).fill(Role.SPY)],
     random,
   );
 };
 
-export const pickWordPair = (
-  wordPairs: WordPair[],
-  random: () => number,
-): WordPair => {
+export const pickWordPair = (wordPairs: WordPair[], random: () => number): WordPair => {
   if (wordPairs.length === 0) {
     throw new Error('At least one word pair required');
   }
@@ -170,12 +154,7 @@ export const applyRolesAndWords = (
 ): Player[] =>
   players.map((player, index) => {
     const role = roles[index];
-    const word =
-      role === Role.CITIZEN
-        ? wordPair.citizen
-        : role === Role.SPY
-          ? wordPair.spy
-          : null;
+    const word = role === Role.CITIZEN ? wordPair.citizen : role === Role.SPY ? wordPair.spy : null;
     return {
       ...player,
       role,
@@ -186,10 +165,7 @@ export const applyRolesAndWords = (
     };
   });
 
-export const beginRoundDescription = (
-  gameState: GameState,
-  random: () => number,
-): void => {
+export const beginRoundDescription = (gameState: GameState, random: () => number): void => {
   const alive = alivePlayers(gameState.players);
   const order = shuffle(
     alive.map((player) => player.id),
@@ -197,9 +173,7 @@ export const beginRoundDescription = (
   );
   if (gameState.round === 1) {
     const whiteIndex = order.findIndex(
-      (playerId) =>
-        gameState.players.find((player) => player.id === playerId)?.role ===
-        Role.WHITE,
+      (playerId) => gameState.players.find((player) => player.id === playerId)?.role === Role.WHITE,
     );
     if (whiteIndex === 0 && order.length > 1) {
       [order[0], order[1]] = [order[1], order[0]];
@@ -222,37 +196,27 @@ export const beginRoundDescription = (
 export const canTransitionToVoting = (gameState: GameState): boolean =>
   gameState.phase === Phase.ROUND_DISCUSSION;
 
-export const canSubmitStatement = (
-  gameState: GameState,
-  playerId: string,
-): boolean =>
-  gameState.phase === Phase.ROUND_DESCRIPTION &&
-  gameState.pendingSpeakerIds[0] === playerId;
+export const canSubmitStatement = (gameState: GameState, playerId: string): boolean =>
+  gameState.phase === Phase.ROUND_DESCRIPTION && gameState.pendingSpeakerIds[0] === playerId;
 
 export const markStatementSubmitted = (
   gameState: GameState,
   playerId: string,
   statement: string,
 ): void => {
-  const player = gameState.players.find(
-    (candidate) => candidate.id === playerId,
-  );
+  const player = gameState.players.find((candidate) => candidate.id === playerId);
   if (!player || !player.isAlive) {
     throw new Error('Invalid player');
   }
   player.statement = statement.trim();
-  gameState.pendingSpeakerIds = gameState.pendingSpeakerIds.filter(
-    (id) => id !== playerId,
-  );
+  gameState.pendingSpeakerIds = gameState.pendingSpeakerIds.filter((id) => id !== playerId);
   if (gameState.pendingSpeakerIds.length === 0) {
     gameState.phase = Phase.ROUND_DISCUSSION;
   }
 };
 
 export const upsertVote = (gameState: GameState, vote: Vote): void => {
-  const voteIndex = gameState.votes.findIndex(
-    (item) => item.voterId === vote.voterId,
-  );
+  const voteIndex = gameState.votes.findIndex((item) => item.voterId === vote.voterId);
   if (voteIndex >= 0) {
     gameState.votes[voteIndex] = vote;
     return;
@@ -277,15 +241,13 @@ export const resolveVoting = (gameState: GameState): VoteResolution => {
 
   const summary = summarizeVotes(gameState.votes);
   const classicSkipWins =
-    gameState.settings.mode === GameMode.CLASSIC &&
-    summary.skipCount > summary.maxVotes;
+    gameState.settings.mode === GameMode.CLASSIC && summary.skipCount > summary.maxVotes;
   if (classicSkipWins || summary.maxVotes === 0) {
     return { status: 'SKIP', eliminatedPlayerId: null };
   }
 
   const tiedWithSkip =
-    gameState.settings.mode === GameMode.CLASSIC &&
-    summary.skipCount === summary.maxVotes;
+    gameState.settings.mode === GameMode.CLASSIC && summary.skipCount === summary.maxVotes;
   const tiedTargets = summary.topTargetIds.length > 1;
   const hasTie = tiedWithSkip || tiedTargets;
 
@@ -325,9 +287,7 @@ export const applyRoundResult = (
     return null;
   }
 
-  const player = gameState.players.find(
-    (candidate) => candidate.id === eliminatedPlayerId,
-  );
+  const player = gameState.players.find((candidate) => candidate.id === eliminatedPlayerId);
   if (!player) {
     throw new Error('Eliminated player not found');
   }
@@ -335,10 +295,7 @@ export const applyRoundResult = (
   return player.role;
 };
 
-const evaluateWinner = (
-  gameState: GameState,
-  eliminatedRole: Role | null,
-): PostRoundOutcome => {
+const evaluateWinner = (gameState: GameState, eliminatedRole: Role | null): PostRoundOutcome => {
   if (
     gameState.settings.mode === GameMode.CLASSIC &&
     eliminatedRole === Role.WHITE &&
@@ -350,10 +307,7 @@ const evaluateWinner = (
     };
   }
 
-  if (
-    gameState.settings.mode === GameMode.HARDCORE &&
-    eliminatedRole === Role.CITIZEN
-  ) {
+  if (gameState.settings.mode === GameMode.HARDCORE && eliminatedRole === Role.CITIZEN) {
     return { winner: Winner.SPIES, winnerReason: 'CITIZEN_MISVOTED_CITIZEN' };
   }
 

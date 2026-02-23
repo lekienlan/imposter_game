@@ -1,6 +1,9 @@
 # 🎭 GAME SUY LUẬN – FULL GAME FLOW (LOGIC-ONLY)
-## FINAL – LOCKED v4  
-## Roles: citizen / spy / white  
+
+## FINAL – LOCKED v4
+
+## Roles: citizen / spy / white
+
 ## Phases: UPPER_CASE
 
 Tài liệu này mô tả **luồng logic của toàn bộ game**, tập trung **100% vào hành vi & luật ở từng phase**.  
@@ -34,6 +37,7 @@ Tài liệu này mô tả **luồng logic của toàn bộ game**, tập trung *
 ## PHASE: GAME_CREATION
 
 **Logic**
+
 - Host luôn có quyền bấm `Reset Game`
 - Host tạo game
 - Chọn mode
@@ -41,6 +45,7 @@ Tài liệu này mô tả **luồng logic của toàn bộ game**, tập trung *
 - Game được tạo và chờ người chơi tham gia
 
 **Chuyển phase**
+
 - Sang WAITING_FOR_PLAYERS ngay lập tức
 
 ---
@@ -48,6 +53,7 @@ Tài liệu này mô tả **luồng logic của toàn bộ game**, tập trung *
 ## PHASE: WAITING_FOR_PLAYERS
 
 **Logic**
+
 - Host luôn có quyền bấm `Reset Game`
 - Người chơi tham gia bằng code
 - Không giới hạn số lượng
@@ -55,6 +61,7 @@ Tài liệu này mô tả **luồng logic của toàn bộ game**, tập trung *
 - Tất cả người chơi phải kết nối realtime để chơi
 
 **Chuyển phase**
+
 - Host quyết định khi nào bắt đầu game
 
 ---
@@ -62,12 +69,14 @@ Tài liệu này mô tả **luồng logic của toàn bộ game**, tập trung *
 ## PHASE: LOBBY_READY
 
 **Logic**
+
 - Host luôn có quyền bấm `Reset Game`
 - Game đã có đủ người để chơi (tối thiểu logic, không hard limit)
 - Host xác nhận bắt đầu game
 - Lobby bị khóa, không cho người mới vào
 
 **Chuyển phase**
+
 - Sang ROLE_DISTRIBUTION
 
 ---
@@ -75,10 +84,12 @@ Tài liệu này mô tả **luồng logic của toàn bộ game**, tập trung *
 ## PHASE: ROLE_DISTRIBUTION
 
 **Logic**
+
 - Host luôn có quyền bấm `Reset Game`
 - Game dựa trên **số người chơi hiện tại** để chia vai
 
 ### CLASSIC
+
 - Phần lớn là citizen
 - Một phần là spy
 - Nếu bật white:
@@ -87,16 +98,19 @@ Tài liệu này mô tả **luồng logic của toàn bộ game**, tập trung *
   - White luôn được tính là citizen cho thắng / thua
 
 ### HARDCORE
+
 - Spy nhiều hơn citizen
 - Không có white
 
 **Logic chung**
+
 - Mỗi người chỉ biết vai trò & keyword của mình
 - Không ai biết vai trò người khác
 - UI hiển thị popup `Word Reveal` riêng cho từng người chơi để đọc keyword rõ ràng (font lớn, dạng modal)
 - Popup này là hành vi presentation, **không phải phase logic mới của server**
 
 **Chuyển phase**
+
 - Server tiếp tục flow round như hiện tại, chuyển sang `ROUND_DESCRIPTION`
 - Việc đóng popup là thao tác UI phía client, không chặn state machine ở backend
 
@@ -111,6 +125,7 @@ Mỗi ROUND gồm 4 sub-phase theo thứ tự cố định.
 ### SUB-PHASE: ROUND_N_DESCRIPTION
 
 **Logic**
+
 - Host luôn có quyền bấm `Reset Game`
 - Tất cả người chơi còn sống **bắt buộc phải nói ít nhất 1 câu**
 - Không được nói trực tiếp keyword
@@ -120,6 +135,7 @@ Mỗi ROUND gồm 4 sub-phase theo thứ tự cố định.
     - Round 1 + có white → không bắt đầu bằng white
 
 **Chuyển phase**
+
 - Khi tất cả người chơi còn sống đã nói xong
 
 ---
@@ -127,6 +143,7 @@ Mỗi ROUND gồm 4 sub-phase theo thứ tự cố định.
 ### SUB-PHASE: ROUND_N_DISCUSSION
 
 **Logic**
+
 - Host luôn có quyền bấm `Reset Game`
 - Người chơi tự do tranh luận
 - Có thể:
@@ -137,6 +154,7 @@ Mỗi ROUND gồm 4 sub-phase theo thứ tự cố định.
 - Không có hành động bắt buộc
 
 **Chuyển phase**
+
 - Khi host hoặc timer kết thúc thảo luận
 
 ---
@@ -144,6 +162,7 @@ Mỗi ROUND gồm 4 sub-phase theo thứ tự cố định.
 ### SUB-PHASE: ROUND_N_VOTING
 
 **Logic – CLASSIC**
+
 - Host luôn có quyền bấm `Reset Game`
 - Tất cả người chơi còn sống được vote
 - Mỗi người có thể:
@@ -152,15 +171,18 @@ Mỗi ROUND gồm 4 sub-phase theo thứ tự cố định.
 - Có thể đổi vote trong thời gian vote
 
 **Logic – HARDCORE**
+
 - Chỉ citizen có quyền vote thật
 - Mỗi round **bắt buộc phải loại đúng 1 người**
 - Spy chỉ được giả vờ vote để gây nhiễu
 
 **Xử lý hòa**
+
 - Nếu hòa → vote lại ngay
 - Nếu vẫn hòa → loại người thuộc nhóm nhiều phiếu nhất ở lần vote đầu
 
 **Chuyển phase**
+
 - Khi voting kết thúc
 
 ---
@@ -168,6 +190,7 @@ Mỗi ROUND gồm 4 sub-phase theo thứ tự cố định.
 ### SUB-PHASE: ROUND_N_RESULT
 
 **Logic**
+
 - Host luôn có quyền bấm `Reset Game`
 - Nếu skip → không ai bị loại
 - Nếu có người bị loại:
@@ -177,14 +200,17 @@ Mỗi ROUND gồm 4 sub-phase theo thứ tự cố định.
 **Luật thua ngay**
 
 CLASSIC:
+
 - Nếu white bị loại ở round 1 hoặc round 2  
   → citizen thua ngay
 
 HARDCORE:
+
 - Nếu citizen vote nhầm để loại citizen  
   → citizen thua ngay
 
 **Chuyển phase**
+
 - Sang WHITE_TRANSITION (nếu có)
 - Sau đó sang WIN_LOSE_CHECK
 
@@ -193,6 +219,7 @@ HARDCORE:
 ## PHASE: WHITE_TRANSITION (CLASSIC ONLY)
 
 **Logic**
+
 - Host luôn có quyền bấm `Reset Game`
 - Chỉ xảy ra **sau round 2**
 - Nếu white còn sống:
@@ -202,6 +229,7 @@ HARDCORE:
   - Không còn luật phạt đặc biệt liên quan đến white
 
 **Chuyển phase**
+
 - Sang WIN_LOSE_CHECK
 
 ---
@@ -209,6 +237,7 @@ HARDCORE:
 ## PHASE: WIN_LOSE_CHECK
 
 **Logic – CLASSIC**
+
 - Host luôn có quyền bấm `Reset Game`
 - Citizen thắng nếu:
   - Số citizen còn sống > số spy còn sống
@@ -217,26 +246,30 @@ HARDCORE:
   - Hoặc citizen đã thua do loại nhầm white
 
 **Logic – HARDCORE**
+
 - Citizen thắng nếu:
   - Số citizen ≥ số spy
 - Spy thắng nếu:
   - Citizen vote nhầm bất kỳ citizen nào
 
 **Chuyển phase**
+
 - Nếu có phe thắng → GAME_ENDED
-- Nếu chưa → sang ROUND_(N+1)_DESCRIPTION
+- Nếu chưa → sang ROUND\_(N+1)\_DESCRIPTION
 
 ---
 
 ## PHASE: GAME_ENDED
 
 **Logic**
+
 - Host luôn có quyền bấm `Reset Game`
 - Game kết thúc hoàn toàn
 - Công bố phe thắng và lý do
 - Người chơi không được nói hoặc hành động thêm
 
 **Sau game**
+
 - Có thể replay
 - Có thể rematch
 - Có thể tạo game mới

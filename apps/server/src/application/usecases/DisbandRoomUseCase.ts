@@ -1,4 +1,4 @@
-import { GameStateRepository } from "../model/GameStateRepository";
+import { GameStateRepository } from '../model/GameStateRepository';
 
 interface Input {
   roomId: string;
@@ -11,10 +11,10 @@ export class DisbandRoomUseCase {
   async execute(input: Input): Promise<void> {
     const gameState = await this.repository.getByRoomId(input.roomId);
     if (!gameState) {
-      throw new Error("Room not found");
+      throw new Error('Room not found');
     }
     if (input.playerId !== gameState.hostPlayerId) {
-      throw new Error("Only the host can disband the room");
+      throw new Error('Only the host can disband the room');
     }
     await this.repository.delete(input.roomId);
   }

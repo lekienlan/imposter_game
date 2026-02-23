@@ -2,7 +2,7 @@ export interface ShareInvite {
   roomId: string;
 }
 
-const LOCALHOST_HOSTS = new Set(["localhost", "127.0.0.1", "::1"]);
+const LOCALHOST_HOSTS = new Set(['localhost', '127.0.0.1', '::1']);
 
 export const isLocalhostOrigin = (origin: string): boolean => {
   try {
@@ -15,7 +15,7 @@ export const isLocalhostOrigin = (origin: string): boolean => {
 
 export const resolveShareOrigin = (
   currentOrigin: string,
-  shareOriginEnv?: string
+  shareOriginEnv?: string,
 ): { origin: string; error?: string } => {
   if (!isLocalhostOrigin(currentOrigin)) {
     return { origin: currentOrigin };
@@ -32,20 +32,20 @@ export const resolveShareOrigin = (
   } catch {
     return {
       origin: currentOrigin,
-      error: "VITE_SHARE_ORIGIN không hợp lệ. Ví dụ: http://192.168.1.23:5173"
+      error: 'VITE_SHARE_ORIGIN không hợp lệ. Ví dụ: http://192.168.1.23:5173',
     };
   }
 };
 
 export const buildShareUrl = (origin: string, roomId: string): string => {
-  const url = new URL("/", origin);
-  url.searchParams.set("code", roomId.toUpperCase());
+  const url = new URL('/', origin);
+  url.searchParams.set('code', roomId.toUpperCase());
   return url.toString();
 };
 
 export const parseShareInvite = (search: string): ShareInvite | null => {
   const params = new URLSearchParams(search);
-  const code = params.get("code")?.trim().toUpperCase();
+  const code = params.get('code')?.trim().toUpperCase();
   if (!code) {
     return null;
   }

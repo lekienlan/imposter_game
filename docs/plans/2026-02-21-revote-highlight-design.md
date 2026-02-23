@@ -21,30 +21,34 @@ No new socket events. Clicking the same player submits the same vote again. The 
 ## Server Changes
 
 ### `apps/server/src/domain/gameRules.ts`
+
 - Add `retractVote(gameState: GameState, voterId: string): void`
   - Removes the vote from `votes[]`
   - Resets `player.votedFor = null`
 
 ### `apps/server/src/application/SubmitVoteUseCase.ts`
+
 - Before `upsertVote`, check if voter already has a vote for the **same** `targetPlayerId`
 - If same → call `retractVote` (remove vote)
 - If different → call `upsertVote` (change vote) as before
 
 ### `apps/server/src/domain/__tests__/gameRules.test.ts`
+
 - Add unit tests for `retractVote`
 
 ## Client Changes
 
 ### Prop chain rename: `viewerVotedForName` → `viewerVotedForId`
 
-| File | Change |
-|------|--------|
-| `App.tsx` | Compute from `gameState.votes.find(v => v.voterId === playerId)?.targetPlayerId` — `undefined` = not voted, `null` = voted skip, `string` = voted player ID |
-| `GameScreen.tsx` | Rename prop type |
-| `ActionBoard.tsx` | Rename prop type |
-| `VotingPanel.tsx` | Full update (see below) |
+| File              | Change                                                                                                                                                      |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `App.tsx`         | Compute from `gameState.votes.find(v => v.voterId === playerId)?.targetPlayerId` — `undefined` = not voted, `null` = voted skip, `string` = voted player ID |
+| `GameScreen.tsx`  | Rename prop type                                                                                                                                            |
+| `ActionBoard.tsx` | Rename prop type                                                                                                                                            |
+| `VotingPanel.tsx` | Full update (see below)                                                                                                                                     |
 
 ### `VotingPanel.tsx`
+
 - Accept `viewerVotedForId: string | null | undefined`
 - Remove `disabled={hasVoted}` from all buttons
 - Highlight selected player button with yellow (bg `var(--yellow-400)`, shadow `var(--yellow-700)`)

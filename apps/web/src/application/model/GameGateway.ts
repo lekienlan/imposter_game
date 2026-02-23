@@ -13,8 +13,8 @@ import {
   StateUpdatePayload,
   ErrorPayload,
   CreateRoomResponse,
-  JoinRoomResponse
-} from "@imposter/shared";
+  JoinRoomResponse,
+} from '@imposter/shared';
 
 export interface GameGateway {
   onStateUpdate(handler: (payload: StateUpdatePayload) => void): void;

@@ -1,8 +1,9 @@
-import { Player } from "@imposter/shared";
+import { Player } from '@imposter/shared';
 
-const DEFAULT_PLAYER_PREFIX = "Player ";
+const DEFAULT_PLAYER_PREFIX = 'Player ';
 
-const isNameTaken = (players: Player[], name: string): boolean => players.some((player) => player.name === name);
+const isNameTaken = (players: Player[], name: string): boolean =>
+  players.some((player) => player.name === name);
 
 export const normalizePlayerName = (name: string): string => name.trim();
 

@@ -1,8 +1,8 @@
-import { describe, expect, test } from "vitest";
-import { GameMode, GameState } from "@imposter/shared";
-import { CreateRoomUseCase } from "../usecases/CreateRoomUseCase";
-import { GameStateRepository } from "../model/GameStateRepository";
-import { JoinRoomUseCase } from "../usecases/JoinRoomUseCase";
+import { describe, expect, test } from 'vitest';
+import { GameMode, GameState } from '@imposter/shared';
+import { CreateRoomUseCase } from '../usecases/CreateRoomUseCase';
+import { GameStateRepository } from '../model/GameStateRepository';
+import { JoinRoomUseCase } from '../usecases/JoinRoomUseCase';
 
 class InMemoryGameStateRepository implements GameStateRepository {
   private readonly store = new Map<string, GameState>();
@@ -24,43 +24,46 @@ class InMemoryGameStateRepository implements GameStateRepository {
   }
 }
 
-const settings: GameState["settings"] = {
+const settings: GameState['settings'] = {
   mode: GameMode.CLASSIC,
   whiteEnabled: true,
-  wordPairs: [{ citizen: "Apple", spy: "Pear" }]
+  wordPairs: [{ citizen: 'Apple', spy: 'Pear' }],
 };
 
-describe("player name fallback", () => {
-  test("assigns Player 1 when host creates room with empty name", async () => {
+describe('player name fallback', () => {
+  test('assigns Player 1 when host creates room with empty name', async () => {
     const repository = new InMemoryGameStateRepository();
     const useCase = new CreateRoomUseCase(repository);
 
-    const { gameState } = await useCase.execute({ playerName: "   ", settings });
+    const { gameState } = await useCase.execute({ playerName: '   ', settings });
 
-    expect(gameState.players[0]?.name).toBe("Player 1");
+    expect(gameState.players[0]?.name).toBe('Player 1');
   });
 
-  test("assigns Player {order} when joining with empty name", async () => {
+  test('assigns Player {order} when joining with empty name', async () => {
     const repository = new InMemoryGameStateRepository();
     const createRoomUseCase = new CreateRoomUseCase(repository);
     const joinRoomUseCase = new JoinRoomUseCase(repository);
-    const { gameState } = await createRoomUseCase.execute({ playerName: "", settings });
+    const { gameState } = await createRoomUseCase.execute({ playerName: '', settings });
 
-    await joinRoomUseCase.execute({ roomId: gameState.roomId, playerName: "" });
-    const joinedResult = await joinRoomUseCase.execute({ roomId: gameState.roomId, playerName: "  " });
+    await joinRoomUseCase.execute({ roomId: gameState.roomId, playerName: '' });
+    const joinedResult = await joinRoomUseCase.execute({
+      roomId: gameState.roomId,
+      playerName: '  ',
+    });
 
-    expect(joinedResult.gameState.players[1]?.name).toBe("Player 2");
-    expect(joinedResult.gameState.players[2]?.name).toBe("Player 3");
+    expect(joinedResult.gameState.players[1]?.name).toBe('Player 2');
+    expect(joinedResult.gameState.players[2]?.name).toBe('Player 3');
   });
 
-  test("keeps duplicate-name check for explicit input after trim", async () => {
+  test('keeps duplicate-name check for explicit input after trim', async () => {
     const repository = new InMemoryGameStateRepository();
     const createRoomUseCase = new CreateRoomUseCase(repository);
     const joinRoomUseCase = new JoinRoomUseCase(repository);
-    const { gameState } = await createRoomUseCase.execute({ playerName: "Alice", settings });
+    const { gameState } = await createRoomUseCase.execute({ playerName: 'Alice', settings });
 
-    await expect(joinRoomUseCase.execute({ roomId: gameState.roomId, playerName: " Alice " })).rejects.toThrow(
-      "Player name already taken"
-    );
+    await expect(
+      joinRoomUseCase.execute({ roomId: gameState.roomId, playerName: ' Alice ' }),
+    ).rejects.toThrow('Player name already taken');
   });
 });

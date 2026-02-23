@@ -1,7 +1,7 @@
-import { FormEvent } from "react";
-import { useTranslation } from "react-i18next";
-import { Button } from "pixel-retroui";
-import { GameState, Phase, Player } from "@imposter/shared";
+import { FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Button } from 'pixel-retroui';
+import { GameState, Phase, Player } from '@imposter/shared';
 
 interface Props {
   gameState: GameState;
@@ -30,11 +30,11 @@ export const RoundActionPanel = ({
         <form className="arcade-stack" onSubmit={onSubmitStatement}>
           <label className="arcade-field">
             <span className="arcade-label">
-              {t("game.statementFor").toUpperCase()}: {currentSpeaker.name.toUpperCase()}
+              {t('game.statementFor').toUpperCase()}: {currentSpeaker.name.toUpperCase()}
             </span>
             <input
               className="arcade-native-input"
-              placeholder={t("game.statementPlaceholder")}
+              placeholder={t('game.statementPlaceholder')}
               value={statement}
               onChange={(event) => onStatementChange(event.target.value)}
             />
@@ -47,7 +47,7 @@ export const RoundActionPanel = ({
             borderColor="var(--neutral-black)"
             shadow="var(--yellow-700)"
           >
-            {t("game.sendStatement").toUpperCase()}
+            {t('game.sendStatement').toUpperCase()}
           </Button>
         </form>
       )}
@@ -62,7 +62,7 @@ export const RoundActionPanel = ({
           borderColor="var(--neutral-black)"
           shadow="var(--pink-700)"
         >
-          {t("game.startVoting").toUpperCase()}
+          {t('game.startVoting').toUpperCase()}
         </Button>
       )}
     </>

@@ -1,4 +1,4 @@
-import { StateUpdatePayload } from "@imposter/shared";
+import { StateUpdatePayload } from '@imposter/shared';
 
 export class HandlePhaseUpdate {
   execute(payload: StateUpdatePayload): StateUpdatePayload {

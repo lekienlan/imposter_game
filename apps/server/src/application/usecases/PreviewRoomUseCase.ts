@@ -1,5 +1,5 @@
-import { RoomPreviewResponse } from "@imposter/shared";
-import { GameStateRepository } from "../model/GameStateRepository";
+import { RoomPreviewResponse } from '@imposter/shared';
+import { GameStateRepository } from '../model/GameStateRepository';
 
 interface Input {
   roomId: string;
@@ -11,10 +11,10 @@ export class PreviewRoomUseCase {
   async execute(input: Input): Promise<RoomPreviewResponse> {
     const gameState = await this.repository.getByRoomId(input.roomId);
     if (!gameState) {
-      throw new Error("Room not found");
+      throw new Error('Room not found');
     }
 
-    const hostName = gameState.players.find((p) => p.isHost)?.name ?? "";
+    const hostName = gameState.players.find((p) => p.isHost)?.name ?? '';
     const playerNames = gameState.players.map((p) => p.name);
 
     return {
@@ -22,7 +22,7 @@ export class PreviewRoomUseCase {
       hostName,
       phase: gameState.phase,
       playerCount: gameState.players.length,
-      playerNames
+      playerNames,
     };
   }
 }

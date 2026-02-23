@@ -1,11 +1,11 @@
-import { FormEvent, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Button, Card } from "pixel-retroui";
-import { GameState, Phase, Player } from "@imposter/shared";
-import { phaseGuide, phaseTone } from "../shared/phasePresentation";
-import { ShareButton } from "../shared/ShareButton";
-import { RoundActionPanel } from "../round/RoundActionPanel";
-import { VotingPanel } from "../voting/VotingPanel";
+import { FormEvent, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Button, Card } from 'pixel-retroui';
+import { GameState, Phase, Player } from '@imposter/shared';
+import { phaseGuide, phaseTone } from '../shared/phasePresentation';
+import { ShareButton } from '../shared/ShareButton';
+import { RoundActionPanel } from '../round/RoundActionPanel';
+import { VotingPanel } from '../voting/VotingPanel';
 
 interface Props {
   gameState: GameState;
@@ -57,8 +57,8 @@ export const ActionBoard = ({
 
   const currentSpeakerId = gameState.pendingSpeakerIds[0] ?? null;
   const currentSpeakerName = currentSpeakerId
-    ? gameState.players.find((p) => p.id === currentSpeakerId)?.name ?? "UNKNOWN"
-    : "COMPLETED";
+    ? (gameState.players.find((p) => p.id === currentSpeakerId)?.name ?? 'UNKNOWN')
+    : 'COMPLETED';
   const guide = phaseGuide[gameState.phase];
 
   useEffect(() => {
@@ -77,7 +77,7 @@ export const ActionBoard = ({
         shadowColor="var(--blue-900)"
       >
         <div className="arcade-head-main">
-          <p className="arcade-kicker">{t("game.roomCode").toUpperCase()}</p>
+          <p className="arcade-kicker">{t('game.roomCode').toUpperCase()}</p>
           <h1 className="arcade-room-id">{gameState.roomId}</h1>
         </div>
         <div className="arcade-head-actions">
@@ -90,7 +90,7 @@ export const ActionBoard = ({
             borderColor="var(--neutral-black)"
             shadow="var(--blue-700)"
           >
-            {copied ? t("game.codeCopied").toUpperCase() : t("game.copyCode").toUpperCase()}
+            {copied ? t('game.codeCopied').toUpperCase() : t('game.copyCode').toUpperCase()}
           </Button>
           {viewerHost && (
             <ShareButton
@@ -101,18 +101,20 @@ export const ActionBoard = ({
             />
           )}
           <p className={`arcade-phase-tag ${phaseTone[gameState.phase]}`}>
-            {t("game.phase").toUpperCase()}: {gameState.phase}
+            {t('game.phase').toUpperCase()}: {gameState.phase}
           </p>
           {gameState.phase === Phase.GAME_ENDED && (
             <p className="arcade-phase-tag text-phase-over">
-              {t("game.winner").toUpperCase()}: {gameState.winner}
+              {t('game.winner').toUpperCase()}: {gameState.winner}
             </p>
           )}
         </div>
       </Card>
 
       {error && (
-        <p className="arcade-error" role="alert" aria-live="polite">{error}</p>
+        <p className="arcade-error" role="alert" aria-live="polite">
+          {error}
+        </p>
       )}
 
       <Card
@@ -122,23 +124,28 @@ export const ActionBoard = ({
         borderColor="var(--blue-500)"
         shadowColor="var(--blue-900)"
       >
-        <section className={`arcade-stack ${phaseEnter ? "arcade-action-enter" : ""}`}>
-          <h2 className="arcade-panel-title">{t("game.actionBoard").toUpperCase()}</h2>
+        <section className={`arcade-stack ${phaseEnter ? 'arcade-action-enter' : ''}`}>
+          <h2 className="arcade-panel-title">{t('game.actionBoard').toUpperCase()}</h2>
           <div className="arcade-status-box">
-            <p className="arcade-kicker">{t("game.nextMove").toUpperCase()}</p>
+            <p className="arcade-kicker">{t('game.nextMove').toUpperCase()}</p>
             <p className="arcade-guide-title">{guide.title.toUpperCase()}</p>
             <p className="arcade-muted">{guide.description.toUpperCase()}</p>
             {guide.tip && <p className="arcade-muted arcade-tip">{guide.tip}</p>}
             {gameState.phase === Phase.ROUND_DESCRIPTION && (
-              <p className="arcade-muted">{t("game.speaker").toUpperCase()}: {currentSpeakerName}</p>
+              <p className="arcade-muted">
+                {t('game.speaker').toUpperCase()}: {currentSpeakerName}
+              </p>
             )}
             {gameState.phase === Phase.ROUND_VOTING && (
-              <p className="arcade-muted">{t("game.voteRound").toUpperCase()}: {gameState.voteRound}</p>
+              <p className="arcade-muted">
+                {t('game.voteRound').toUpperCase()}: {gameState.voteRound}
+              </p>
             )}
           </div>
 
           {viewerHost &&
-            (gameState.phase === Phase.WAITING_FOR_PLAYERS || gameState.phase === Phase.GAME_CREATION) && (
+            (gameState.phase === Phase.WAITING_FOR_PLAYERS ||
+              gameState.phase === Phase.GAME_CREATION) && (
               <Button
                 type="button"
                 className="arcade-btn arcade-btn-primary"
@@ -148,23 +155,9 @@ export const ActionBoard = ({
                 borderColor="var(--neutral-black)"
                 shadow="var(--yellow-700)"
               >
-                {t("game.startGame").toUpperCase()}
+                {t('game.startGame').toUpperCase()}
               </Button>
             )}
-
-          {viewerHost && (
-            <Button
-              type="button"
-              className="arcade-btn"
-              onClick={onResetGame}
-              bg="var(--red-400)"
-              textColor="var(--neutral-black)"
-              borderColor="var(--neutral-black)"
-              shadow="var(--red-700)"
-            >
-              {t("game.resetGame").toUpperCase()}
-            </Button>
-          )}
 
           {viewerHost && (
             <Button
@@ -176,15 +169,18 @@ export const ActionBoard = ({
               borderColor="var(--neutral-black)"
               shadow="var(--neutral-700)"
             >
-              {t("game.exitGame").toUpperCase()}
+              {t('game.exitGame').toUpperCase()}
             </Button>
           )}
 
-          {(gameState.phase === Phase.ROUND_DESCRIPTION || gameState.phase === Phase.ROUND_DISCUSSION) && (
+          {(gameState.phase === Phase.ROUND_DESCRIPTION ||
+            gameState.phase === Phase.ROUND_DISCUSSION) && (
             <RoundActionPanel
               gameState={gameState}
               viewerHost={viewerHost}
-              currentSpeaker={gameState.players.find((p) => p.id === gameState.pendingSpeakerIds[0])}
+              currentSpeaker={gameState.players.find(
+                (p) => p.id === gameState.pendingSpeakerIds[0],
+              )}
               statement={statement}
               onStatementChange={onStatementChange}
               onSubmitStatement={onSubmitStatement}
@@ -202,8 +198,6 @@ export const ActionBoard = ({
               onSubmitVote={onSubmitVote}
             />
           )}
-
-
         </section>
       </Card>
     </>

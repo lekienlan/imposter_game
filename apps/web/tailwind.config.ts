@@ -1,31 +1,31 @@
-import type { Config } from "tailwindcss";
-import { appColor } from "./src/design-system/AppColor";
+import type { Config } from 'tailwindcss';
+import { appColor } from './src/design-system/AppColor';
 
 const config: Config = {
-  content: ["./index.html", "./src/**/*.{ts,tsx}"],
+  content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     extend: {
       colors: {
         ...appColor,
         surface: {
-          primary: "var(--surface-primary)",
-          secondary: "var(--surface-secondary)"
+          primary: 'var(--surface-primary)',
+          secondary: 'var(--surface-secondary)',
         },
         text: {
-          primary: "var(--text-primary)",
-          secondary: "var(--text-secondary)",
-          tertiary: "var(--text-tertiary)",
-          border: "var(--text-border)",
-          disabled: "var(--text-disabled)"
+          primary: 'var(--text-primary)',
+          secondary: 'var(--text-secondary)',
+          tertiary: 'var(--text-tertiary)',
+          border: 'var(--text-border)',
+          disabled: 'var(--text-disabled)',
         },
         primary: {
-          main: "var(--primary-main)",
-          light: "var(--primary-light)"
-        }
-      }
-    }
+          main: 'var(--primary-main)',
+          light: 'var(--primary-light)',
+        },
+      },
+    },
   },
-  plugins: []
+  plugins: [],
 };
 
 export default config;

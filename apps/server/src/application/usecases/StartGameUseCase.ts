@@ -33,11 +33,7 @@ export class StartGameUseCase {
     }
 
     gameState.phase = Phase.LOBBY_READY;
-    const roles = assignRoles(
-      gameState.players,
-      gameState.settings,
-      this.random,
-    );
+    const roles = assignRoles(gameState.players, gameState.settings, this.random);
     const wordPair = pickWordPair(gameState.settings.wordPairs, this.random);
 
     gameState.players = applyRolesAndWords(gameState.players, roles, wordPair);

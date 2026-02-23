@@ -47,6 +47,7 @@ apps/web/src/presentation/
 ### Task 1: Create lobby/ folder and move lobby components
 
 **Files:**
+
 - Create: `apps/web/src/presentation/lobby/LobbyScreen.tsx`
 - Create: `apps/web/src/presentation/lobby/CreateRoomForm.tsx`
 - Create: `apps/web/src/presentation/lobby/JoinRoomForm.tsx`
@@ -74,12 +75,13 @@ Open each moved file and update any relative imports that pointed to sibling fil
 **Step 3: Update App.tsx imports**
 
 In `apps/web/src/presentation/App.tsx`, change:
+
 ```ts
 // Before
-import { LobbyScreen } from "./LobbyScreen";
+import { LobbyScreen } from './LobbyScreen';
 
 // After
-import { LobbyScreen } from "./lobby/LobbyScreen";
+import { LobbyScreen } from './lobby/LobbyScreen';
 ```
 
 **Step 4: Verify the app compiles**
@@ -88,6 +90,7 @@ import { LobbyScreen } from "./lobby/LobbyScreen";
 cd /Users/lanle98/Desktop/imposter_game
 yarn workspace @imposter/web build 2>&1 | tail -30
 ```
+
 Expected: No TypeScript errors related to the moved files.
 
 **Step 5: Commit**
@@ -102,6 +105,7 @@ git commit -m "refactor: move lobby components into presentation/lobby/"
 ### Task 2: Create role-reveal/ folder and move WordRevealPopup
 
 **Files:**
+
 - Create: `apps/web/src/presentation/role-reveal/WordRevealPopup.tsx`
 - Delete: `apps/web/src/presentation/WordRevealPopup.tsx`
 
@@ -115,12 +119,13 @@ mv apps/web/src/presentation/WordRevealPopup.tsx apps/web/src/presentation/role-
 **Step 2: Update import in GameScreen.tsx**
 
 In `apps/web/src/presentation/game/GameScreen.tsx` (will be moved in Task 5, but for now still at old path), change:
+
 ```ts
 // Before
-import { WordRevealPopup } from "./WordRevealPopup";
+import { WordRevealPopup } from './WordRevealPopup';
 
 // After
-import { WordRevealPopup } from "../role-reveal/WordRevealPopup";
+import { WordRevealPopup } from '../role-reveal/WordRevealPopup';
 ```
 
 **Step 3: Verify**
@@ -128,6 +133,7 @@ import { WordRevealPopup } from "../role-reveal/WordRevealPopup";
 ```bash
 yarn workspace @imposter/web build 2>&1 | tail -30
 ```
+
 Expected: No errors.
 
 **Step 4: Commit**
@@ -142,6 +148,7 @@ git commit -m "refactor: move WordRevealPopup into presentation/role-reveal/"
 ### Task 3: Create shared/ folder and move shared components
 
 **Files:**
+
 - Create: `apps/web/src/presentation/shared/LanguageSwitcher.tsx`
 - Create: `apps/web/src/presentation/shared/ShareButton.tsx`
 - Create: `apps/web/src/presentation/shared/ShareModal.tsx`
@@ -162,24 +169,26 @@ mv apps/web/src/presentation/phasePresentation.ts apps/web/src/presentation/shar
 
 ```ts
 // Before
-import { LanguageSwitcher } from "./LanguageSwitcher";
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 // After
-import { LanguageSwitcher } from "./shared/LanguageSwitcher";
+import { LanguageSwitcher } from './shared/LanguageSwitcher';
 ```
 
 **Step 3: Update imports in ActionBoard.tsx**
 
 `ActionBoard.tsx` imports both `ShareButton` and `phasePresentation`. Update:
+
 ```ts
 // Before
-import { phaseGuide, phaseTone } from "./phasePresentation";
-import { ShareButton } from "./ShareButton";
+import { phaseGuide, phaseTone } from './phasePresentation';
+import { ShareButton } from './ShareButton';
 
 // After
-import { phaseGuide, phaseTone } from "../shared/phasePresentation";
-import { ShareButton } from "../shared/ShareButton";
+import { phaseGuide, phaseTone } from '../shared/phasePresentation';
+import { ShareButton } from '../shared/ShareButton';
 ```
+
 (Note: ActionBoard will be moved to `game/` in Task 5 — adjust relative paths accordingly when that happens.)
 
 **Step 4: Verify**
@@ -200,6 +209,7 @@ git commit -m "refactor: move shared presentation components into presentation/s
 ### Task 4: Extract ViewerCard from GameScreen
 
 **Files:**
+
 - Create: `apps/web/src/presentation/game/ViewerCard.tsx` (new)
 - Modify: `apps/web/src/presentation/GameScreen.tsx`
 
@@ -214,9 +224,9 @@ mkdir -p apps/web/src/presentation/game
 Create `apps/web/src/presentation/game/ViewerCard.tsx` with the following content:
 
 ```tsx
-import { useTranslation } from "react-i18next";
-import { Card } from "pixel-retroui";
-import { Player } from "@imposter/shared";
+import { useTranslation } from 'react-i18next';
+import { Card } from 'pixel-retroui';
+import { Player } from '@imposter/shared';
 
 interface Props {
   viewer: Player | undefined;
@@ -234,24 +244,24 @@ export const ViewerCard = ({ viewer }: Props) => {
       shadowColor="var(--blue-900)"
     >
       <div className="arcade-stack">
-        <h2 className="arcade-panel-title">{t("game.you").toUpperCase()}</h2>
+        <h2 className="arcade-panel-title">{t('game.you').toUpperCase()}</h2>
         {viewer ? (
           <dl className="arcade-dl">
             <div>
-              <dt>{t("game.role").toUpperCase()}</dt>
-              <dd>{viewer.role ?? t("game.roleLocked")}</dd>
+              <dt>{t('game.role').toUpperCase()}</dt>
+              <dd>{viewer.role ?? t('game.roleLocked')}</dd>
             </div>
             <div>
-              <dt>{t("game.name").toUpperCase()}</dt>
+              <dt>{t('game.name').toUpperCase()}</dt>
               <dd>{viewer.name}</dd>
             </div>
             <div>
-              <dt>{t("game.word").toUpperCase()}</dt>
-              <dd>{viewer.word ?? t("game.wordLocked")}</dd>
+              <dt>{t('game.word').toUpperCase()}</dt>
+              <dd>{viewer.word ?? t('game.wordLocked')}</dd>
             </div>
           </dl>
         ) : (
-          <p className="arcade-muted">{t("game.viewerUnavailable").toUpperCase()}</p>
+          <p className="arcade-muted">{t('game.viewerUnavailable').toUpperCase()}</p>
         )}
       </div>
     </Card>
@@ -267,10 +277,11 @@ Remove the inline viewer card JSX (the `<Card>` block containing `arcade-dl` wit
 
 ```ts
 // Add import
-import { ViewerCard } from "./game/ViewerCard";
+import { ViewerCard } from './game/ViewerCard';
 ```
 
 Replace the inline Card block (approximately lines 99–125) with:
+
 ```tsx
 <ViewerCard viewer={viewer} />
 ```
@@ -295,6 +306,7 @@ git commit -m "refactor: extract ViewerCard from GameScreen"
 ### Task 5: Extract RoundActionPanel from ActionBoard
 
 **Files:**
+
 - Create: `apps/web/src/presentation/round/RoundActionPanel.tsx` (new)
 - Modify: `apps/web/src/presentation/ActionBoard.tsx`
 
@@ -309,10 +321,10 @@ mkdir -p apps/web/src/presentation/round
 Create `apps/web/src/presentation/round/RoundActionPanel.tsx`:
 
 ```tsx
-import { FormEvent } from "react";
-import { useTranslation } from "react-i18next";
-import { Button } from "pixel-retroui";
-import { GameState, Player } from "@imposter/shared";
+import { FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Button } from 'pixel-retroui';
+import { GameState, Player } from '@imposter/shared';
 
 interface Props {
   gameState: GameState;
@@ -343,10 +355,10 @@ export const RoundActionPanel = ({
       {viewer?.isAlive && currentSpeakerId === viewer.id && (
         <form className="arcade-stack" onSubmit={onSubmitStatement}>
           <label className="arcade-field">
-            <span className="arcade-label">{t("game.yourStatement").toUpperCase()}</span>
+            <span className="arcade-label">{t('game.yourStatement').toUpperCase()}</span>
             <input
               className="arcade-native-input"
-              placeholder={t("game.statementPlaceholder")}
+              placeholder={t('game.statementPlaceholder')}
               value={statement}
               onChange={(event) => onStatementChange(event.target.value)}
               required
@@ -360,7 +372,7 @@ export const RoundActionPanel = ({
             borderColor="var(--neutral-black)"
             shadow="var(--yellow-700)"
           >
-            {t("game.sendStatement").toUpperCase()}
+            {t('game.sendStatement').toUpperCase()}
           </Button>
         </form>
       )}
@@ -374,7 +386,7 @@ export const RoundActionPanel = ({
           borderColor="var(--neutral-black)"
           shadow="var(--pink-700)"
         >
-          {t("game.startVoting").toUpperCase()}
+          {t('game.startVoting').toUpperCase()}
         </Button>
       )}
     </>
@@ -389,24 +401,28 @@ Note: `RoundActionPanel` renders both `ROUND_DESCRIPTION` and `ROUND_DISCUSSION`
 In `apps/web/src/presentation/ActionBoard.tsx`:
 
 Add import:
+
 ```ts
-import { RoundActionPanel } from "../round/RoundActionPanel";
+import { RoundActionPanel } from '../round/RoundActionPanel';
 ```
 
 Remove the two phase blocks for `ROUND_DESCRIPTION` and `ROUND_DISCUSSION` and replace with:
+
 ```tsx
-{(gameState.phase === Phase.ROUND_DESCRIPTION || gameState.phase === Phase.ROUND_DISCUSSION) && (
-  <RoundActionPanel
-    gameState={gameState}
-    playerId={playerId}
-    viewerHost={viewerHost}
-    viewer={viewer}
-    statement={statement}
-    onStatementChange={onStatementChange}
-    onSubmitStatement={onSubmitStatement}
-    onStartVoting={onStartVoting}
-  />
-)}
+{
+  (gameState.phase === Phase.ROUND_DESCRIPTION || gameState.phase === Phase.ROUND_DISCUSSION) && (
+    <RoundActionPanel
+      gameState={gameState}
+      playerId={playerId}
+      viewerHost={viewerHost}
+      viewer={viewer}
+      statement={statement}
+      onStatementChange={onStatementChange}
+      onSubmitStatement={onSubmitStatement}
+      onStartVoting={onStartVoting}
+    />
+  );
+}
 ```
 
 Remove props from `ActionBoard`'s `Props` interface that are now only used by `RoundActionPanel` and not needed elsewhere: `statement`, `onStatementChange`, `onSubmitStatement`, `onStartVoting`. Keep them in `ActionBoard.Props` and pass-through for now to avoid cascading changes — they will remain in the interface for pass-through.
@@ -429,6 +445,7 @@ git commit -m "refactor: extract RoundActionPanel from ActionBoard"
 ### Task 6: Extract VotingPanel from ActionBoard
 
 **Files:**
+
 - Create: `apps/web/src/presentation/voting/VotingPanel.tsx` (new)
 - Modify: `apps/web/src/presentation/ActionBoard.tsx`
 
@@ -443,10 +460,10 @@ mkdir -p apps/web/src/presentation/voting
 Create `apps/web/src/presentation/voting/VotingPanel.tsx`:
 
 ```tsx
-import { useTranslation } from "react-i18next";
-import { Button } from "pixel-retroui";
-import { GameMode, GameState, Player } from "@imposter/shared";
-import { canViewerVote } from "../../domain/gameSelectors";
+import { useTranslation } from 'react-i18next';
+import { Button } from 'pixel-retroui';
+import { GameMode, GameState, Player } from '@imposter/shared';
+import { canViewerVote } from '../../domain/gameSelectors';
 
 interface Props {
   gameState: GameState;
@@ -474,9 +491,11 @@ export const VotingPanel = ({
     <div className="arcade-stack">
       {canViewerVote(gameState, viewer.id) ? (
         <>
-          <p className="arcade-muted">{t("game.castVote").toUpperCase()}</p>
+          <p className="arcade-muted">{t('game.castVote').toUpperCase()}</p>
           {viewerVotedForName && (
-            <p className="arcade-muted">{t("game.currentVote").toUpperCase()}: {viewerVotedForName}</p>
+            <p className="arcade-muted">
+              {t('game.currentVote').toUpperCase()}: {viewerVotedForName}
+            </p>
           )}
           <div className="arcade-vote-grid">
             {alivePlayers
@@ -507,13 +526,13 @@ export const VotingPanel = ({
                 borderColor="var(--neutral-black)"
                 shadow="var(--blue-700)"
               >
-                {t("game.skip").toUpperCase()}
+                {t('game.skip').toUpperCase()}
               </Button>
             )}
           </div>
         </>
       ) : (
-        <p className="arcade-muted">{t("game.hardcoreVoteNotice").toUpperCase()}</p>
+        <p className="arcade-muted">{t('game.hardcoreVoteNotice').toUpperCase()}</p>
       )}
     </div>
   );
@@ -523,22 +542,26 @@ export const VotingPanel = ({
 **Step 3: Update ActionBoard.tsx to use VotingPanel**
 
 Add import:
+
 ```ts
-import { VotingPanel } from "../voting/VotingPanel";
+import { VotingPanel } from '../voting/VotingPanel';
 ```
 
 Replace the `ROUND_VOTING` block in `ActionBoard` with:
+
 ```tsx
-{gameState.phase === Phase.ROUND_VOTING && (
-  <VotingPanel
-    gameState={gameState}
-    playerId={playerId}
-    viewer={viewer}
-    alivePlayers={alivePlayers}
-    viewerVotedForName={viewerVotedForName}
-    onSubmitVote={onSubmitVote}
-  />
-)}
+{
+  gameState.phase === Phase.ROUND_VOTING && (
+    <VotingPanel
+      gameState={gameState}
+      playerId={playerId}
+      viewer={viewer}
+      alivePlayers={alivePlayers}
+      viewerVotedForName={viewerVotedForName}
+      onSubmitVote={onSubmitVote}
+    />
+  );
+}
 ```
 
 **Step 4: Verify**
@@ -559,6 +582,7 @@ git commit -m "refactor: extract VotingPanel from ActionBoard"
 ### Task 7: Extract GameOverPanel from ActionBoard
 
 **Files:**
+
 - Create: `apps/web/src/presentation/game-over/GameOverPanel.tsx` (new)
 - Modify: `apps/web/src/presentation/ActionBoard.tsx`
 
@@ -573,7 +597,7 @@ mkdir -p apps/web/src/presentation/game-over
 Create `apps/web/src/presentation/game-over/GameOverPanel.tsx`:
 
 ```tsx
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   winnerReason: string | null | undefined;
@@ -584,10 +608,8 @@ export const GameOverPanel = ({ winnerReason }: Props) => {
 
   return (
     <div className="arcade-status-box">
-      <p className="arcade-kicker">{t("game.finalReason").toUpperCase()}</p>
-      <p className="arcade-guide-title">
-        {(winnerReason ?? "NO REASON PROVIDED").toUpperCase()}
-      </p>
+      <p className="arcade-kicker">{t('game.finalReason').toUpperCase()}</p>
+      <p className="arcade-guide-title">{(winnerReason ?? 'NO REASON PROVIDED').toUpperCase()}</p>
     </div>
   );
 };
@@ -596,15 +618,17 @@ export const GameOverPanel = ({ winnerReason }: Props) => {
 **Step 3: Update ActionBoard.tsx to use GameOverPanel**
 
 Add import:
+
 ```ts
-import { GameOverPanel } from "../game-over/GameOverPanel";
+import { GameOverPanel } from '../game-over/GameOverPanel';
 ```
 
 Replace the `GAME_ENDED` block in `ActionBoard` with:
+
 ```tsx
-{gameState.phase === Phase.GAME_ENDED && (
-  <GameOverPanel winnerReason={gameState.winnerReason} />
-)}
+{
+  gameState.phase === Phase.GAME_ENDED && <GameOverPanel winnerReason={gameState.winnerReason} />;
+}
 ```
 
 **Step 4: Verify**
@@ -625,6 +649,7 @@ git commit -m "refactor: extract GameOverPanel from ActionBoard"
 ### Task 8: Move game/ files and update all remaining imports
 
 **Files:**
+
 - Move: `apps/web/src/presentation/GameScreen.tsx` → `apps/web/src/presentation/game/GameScreen.tsx`
 - Move: `apps/web/src/presentation/ActionBoard.tsx` → `apps/web/src/presentation/game/ActionBoard.tsx`
 - Move: `apps/web/src/presentation/PlayersPanel.tsx` → `apps/web/src/presentation/game/PlayersPanel.tsx`
@@ -643,6 +668,7 @@ mv apps/web/src/presentation/PlayersPanel.tsx apps/web/src/presentation/game/
 Each file in `game/` imports from sibling files and from parent folders. Update relative paths:
 
 In `game/GameScreen.tsx`:
+
 - `../role-reveal/WordRevealPopup` stays as-is (already set in Task 2, but relative from old location — now from `game/` it becomes `../role-reveal/WordRevealPopup`) ✓
 - `./PlayersPanel` ✓ (sibling)
 - `./ActionBoard` ✓ (sibling)
@@ -650,6 +676,7 @@ In `game/GameScreen.tsx`:
 - `../../domain/gameSelectors` (was `../domain/gameSelectors`) — update depth
 
 In `game/ActionBoard.tsx`:
+
 - `../../domain/gameSelectors` (was `../domain/gameSelectors`)
 - `../shared/phasePresentation` ✓
 - `../shared/ShareButton` ✓
@@ -661,10 +688,10 @@ In `game/ActionBoard.tsx`:
 
 ```ts
 // Before
-import { GameScreen } from "./GameScreen";
+import { GameScreen } from './GameScreen';
 
 // After
-import { GameScreen } from "./game/GameScreen";
+import { GameScreen } from './game/GameScreen';
 ```
 
 **Step 4: Verify**
@@ -672,6 +699,7 @@ import { GameScreen } from "./game/GameScreen";
 ```bash
 yarn workspace @imposter/web build 2>&1 | tail -30
 ```
+
 Expected: Clean build, zero TypeScript errors.
 
 **Step 5: Commit**
@@ -691,6 +719,7 @@ git commit -m "refactor: move GameScreen, ActionBoard, PlayersPanel into present
 cd /Users/lanle98/Desktop/imposter_game
 yarn workspace @imposter/web build 2>&1 | tail -30
 ```
+
 Expected: Build succeeds with no errors.
 
 **Step 2: Run type check**
@@ -698,6 +727,7 @@ Expected: Build succeeds with no errors.
 ```bash
 yarn workspace @imposter/web tsc --noEmit 2>&1 | tail -30
 ```
+
 Expected: No errors.
 
 **Step 3: Confirm no orphan files remain at old paths**
@@ -705,6 +735,7 @@ Expected: No errors.
 ```bash
 ls apps/web/src/presentation/*.tsx apps/web/src/presentation/*.ts 2>&1
 ```
+
 Expected: Only `App.tsx` and `index.css` remain at the root of `presentation/` (all other `.tsx/.ts` files are in subfolders).
 
 **Step 4: Commit if any cleanup needed, otherwise done**

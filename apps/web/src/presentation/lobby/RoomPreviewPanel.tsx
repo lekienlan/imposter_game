@@ -1,4 +1,4 @@
-import { RoomPreviewResponse } from "@imposter/shared";
+import { RoomPreviewResponse } from '@imposter/shared';
 
 interface Props {
   roomCode: string;
@@ -50,9 +50,7 @@ export const RoomPreviewPanel = ({ roomCode, previewData, error }: Props) => {
         </div>
       )}
 
-      {!previewData && !error && (
-        <p className="arcade-muted">LOADING ROOM INFO...</p>
-      )}
+      {!previewData && !error && <p className="arcade-muted">LOADING ROOM INFO...</p>}
     </div>
   );
 };

@@ -1,5 +1,5 @@
-import { GameMode } from "../enums/GameMode";
-import { WordPair } from "./WordPair";
+import { GameMode } from '../enums/GameMode';
+import { WordPair } from './WordPair';
 
 export interface GameSettings {
   mode: GameMode;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 export const useShareModal = () => {
   const [isQrOpen, setIsQrOpen] = useState(false);

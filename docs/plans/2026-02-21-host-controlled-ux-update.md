@@ -5,6 +5,7 @@
 **Goal:** Chuyển game về mô hình host-controlled: host nhập statement hộ người đang đến lượt, host vote/chốt kết quả thay vì mọi người tự vote; non-host chỉ quan sát; thêm retry socket 30s phía client; sửa locale mặc định sang `vi`; sửa thứ tự language switcher VI → EN → KO; thêm luồng reveal role cá nhân trước khi Game Over modal.
 
 **Architecture:**
+
 - Server: bổ sung `isHost` guard vào `SubmitStatementUseCase` và `SubmitVoteUseCase`; `canSubmitStatement` vẫn check turn-based speaker nhưng **người gọi phải là host**; `resolveVoting` giữ nguyên logic nhưng chỉ host mới được emit `vote:submit`.
 - Frontend: tách `hostActions` (form statement, vote panel) khỏi `viewerInfo` (read-only state); bổ sung disconnect/reconnect handlers vào `SocketGateway` với timeout 30s; thêm `RoleRevealPopup` phase cuối game; sửa i18n default + language order.
 - Shared: không cần thay đổi types.
@@ -16,6 +17,7 @@
 ## Task 1: Guard `isHost` trong `SubmitStatementUseCase` (server)
 
 **Files:**
+
 - Modify: `apps/server/src/application/usecases/SubmitStatementUseCase.ts`
 - Modify: `apps/server/src/domain/gameRules.ts` (cập nhật `canSubmitStatement`)
 - Test: `apps/server/src/application/__tests__/SubmitStatementUseCase.test.ts` (tạo mới)
@@ -25,60 +27,102 @@
 Tạo file `apps/server/src/application/__tests__/SubmitStatementUseCase.test.ts`:
 
 ```typescript
-import { describe, expect, test } from "vitest";
-import { GameMode, GameState, Phase, Winner } from "@imposter/shared";
-import { GameStateRepository } from "../model/GameStateRepository";
-import { SubmitStatementUseCase } from "../usecases/SubmitStatementUseCase";
+import { describe, expect, test } from 'vitest';
+import { GameMode, GameState, Phase, Winner } from '@imposter/shared';
+import { GameStateRepository } from '../model/GameStateRepository';
+import { SubmitStatementUseCase } from '../usecases/SubmitStatementUseCase';
 
 class InMemoryRepo implements GameStateRepository {
   private store = new Map<string, GameState>();
-  async getByRoomId(roomId: string) { return this.store.get(roomId) ?? null; }
-  async save(gameState: GameState) { this.store.set(gameState.roomId, gameState); }
+  async getByRoomId(roomId: string) {
+    return this.store.get(roomId) ?? null;
+  }
+  async save(gameState: GameState) {
+    this.store.set(gameState.roomId, gameState);
+  }
   async touch(_roomId: string) {}
 }
 
 const makeState = (overrides: Partial<GameState> = {}): GameState => ({
-  roomId: "R1", hostPlayerId: "host",
+  roomId: 'R1',
+  hostPlayerId: 'host',
   phase: Phase.ROUND_DESCRIPTION,
   players: [
-    { id: "host", name: "Host", isHost: true, isAlive: true, joinedAt: 1, role: null, word: null, statement: null, votedFor: null },
-    { id: "p2",   name: "Bob",  isHost: false, isAlive: true, joinedAt: 2, role: null, word: null, statement: null, votedFor: null },
+    {
+      id: 'host',
+      name: 'Host',
+      isHost: true,
+      isAlive: true,
+      joinedAt: 1,
+      role: null,
+      word: null,
+      statement: null,
+      votedFor: null,
+    },
+    {
+      id: 'p2',
+      name: 'Bob',
+      isHost: false,
+      isAlive: true,
+      joinedAt: 2,
+      role: null,
+      word: null,
+      statement: null,
+      votedFor: null,
+    },
   ],
-  round: 1, activeWordPair: null,
-  speakingOrder: ["p2"], pendingSpeakerIds: ["p2"],
-  votes: [], voteRound: 1, firstRoundTopTargetIds: [],
-  eliminatedPlayerId: null, winner: Winner.NONE, winnerReason: null,
+  round: 1,
+  activeWordPair: null,
+  speakingOrder: ['p2'],
+  pendingSpeakerIds: ['p2'],
+  votes: [],
+  voteRound: 1,
+  firstRoundTopTargetIds: [],
+  eliminatedPlayerId: null,
+  winner: Winner.NONE,
+  winnerReason: null,
   settings: { mode: GameMode.CLASSIC, whiteEnabled: false, wordPairs: [] },
-  createdAt: 1, updatedAt: 1,
+  createdAt: 1,
+  updatedAt: 1,
   ...overrides,
 });
 
-describe("SubmitStatementUseCase – host authorization", () => {
-  test("host can submit statement on behalf of current speaker", async () => {
+describe('SubmitStatementUseCase – host authorization', () => {
+  test('host can submit statement on behalf of current speaker', async () => {
     const repo = new InMemoryRepo();
     await repo.save(makeState());
     const useCase = new SubmitStatementUseCase(repo);
-    const result = await useCase.execute({ roomId: "R1", playerId: "host", targetSpeakerId: "p2", statement: "hello" });
-    const p2 = result.players.find(p => p.id === "p2");
-    expect(p2?.statement).toBe("hello");
+    const result = await useCase.execute({
+      roomId: 'R1',
+      playerId: 'host',
+      targetSpeakerId: 'p2',
+      statement: 'hello',
+    });
+    const p2 = result.players.find((p) => p.id === 'p2');
+    expect(p2?.statement).toBe('hello');
   });
 
-  test("non-host cannot submit statement", async () => {
+  test('non-host cannot submit statement', async () => {
     const repo = new InMemoryRepo();
     await repo.save(makeState());
     const useCase = new SubmitStatementUseCase(repo);
     await expect(
-      useCase.execute({ roomId: "R1", playerId: "p2", targetSpeakerId: "p2", statement: "hello" })
-    ).rejects.toThrow("Only host can submit statements");
+      useCase.execute({ roomId: 'R1', playerId: 'p2', targetSpeakerId: 'p2', statement: 'hello' }),
+    ).rejects.toThrow('Only host can submit statements');
   });
 
-  test("host cannot submit for a player who is not the current speaker", async () => {
+  test('host cannot submit for a player who is not the current speaker', async () => {
     const repo = new InMemoryRepo();
-    await repo.save(makeState({ pendingSpeakerIds: ["p2"] }));
+    await repo.save(makeState({ pendingSpeakerIds: ['p2'] }));
     const useCase = new SubmitStatementUseCase(repo);
     await expect(
-      useCase.execute({ roomId: "R1", playerId: "host", targetSpeakerId: "host", statement: "hello" })
-    ).rejects.toThrow("Not your speaking turn");
+      useCase.execute({
+        roomId: 'R1',
+        playerId: 'host',
+        targetSpeakerId: 'host',
+        statement: 'hello',
+      }),
+    ).rejects.toThrow('Not your speaking turn');
   });
 });
 ```
@@ -96,12 +140,12 @@ Expected: FAIL – `targetSpeakerId` không tồn tại trong `Input`.
 Thay toàn bộ nội dung file:
 
 ```typescript
-import { canSubmitStatement, markStatementSubmitted } from "../../domain/gameRules";
-import { GameStateRepository } from "../model/GameStateRepository";
+import { canSubmitStatement, markStatementSubmitted } from '../../domain/gameRules';
+import { GameStateRepository } from '../model/GameStateRepository';
 
 interface Input {
   roomId: string;
-  playerId: string;        // phải là host
+  playerId: string; // phải là host
   targetSpeakerId: string; // player đang đến lượt nói
   statement: string;
 }
@@ -111,14 +155,14 @@ export class SubmitStatementUseCase {
 
   async execute(input: Input) {
     const gameState = await this.repository.getByRoomId(input.roomId);
-    if (!gameState) throw new Error("Room not found");
+    if (!gameState) throw new Error('Room not found');
 
     if (gameState.hostPlayerId !== input.playerId) {
-      throw new Error("Only host can submit statements");
+      throw new Error('Only host can submit statements');
     }
 
     if (!canSubmitStatement(gameState, input.targetSpeakerId)) {
-      throw new Error("Not your speaking turn");
+      throw new Error('Not your speaking turn');
     }
 
     markStatementSubmitted(gameState, input.targetSpeakerId, input.statement);
@@ -166,6 +210,7 @@ git commit -m "feat(server): host-only submit statement with targetSpeakerId"
 ## Task 2: Guard `isHost` trong `SubmitVoteUseCase` (server)
 
 **Files:**
+
 - Modify: `apps/server/src/application/usecases/SubmitVoteUseCase.ts`
 - Test: `apps/server/src/application/__tests__/SubmitVoteUseCase.test.ts` (tạo mới)
 
@@ -174,50 +219,98 @@ git commit -m "feat(server): host-only submit statement with targetSpeakerId"
 Tạo file `apps/server/src/application/__tests__/SubmitVoteUseCase.test.ts`:
 
 ```typescript
-import { describe, expect, test } from "vitest";
-import { GameMode, GameState, Phase, Role, Winner } from "@imposter/shared";
-import { GameStateRepository } from "../model/GameStateRepository";
-import { SubmitVoteUseCase } from "../usecases/SubmitVoteUseCase";
+import { describe, expect, test } from 'vitest';
+import { GameMode, GameState, Phase, Role, Winner } from '@imposter/shared';
+import { GameStateRepository } from '../model/GameStateRepository';
+import { SubmitVoteUseCase } from '../usecases/SubmitVoteUseCase';
 
 class InMemoryRepo implements GameStateRepository {
   private store = new Map<string, GameState>();
-  async getByRoomId(roomId: string) { return this.store.get(roomId) ?? null; }
-  async save(gameState: GameState) { this.store.set(gameState.roomId, gameState); }
+  async getByRoomId(roomId: string) {
+    return this.store.get(roomId) ?? null;
+  }
+  async save(gameState: GameState) {
+    this.store.set(gameState.roomId, gameState);
+  }
   async touch(_roomId: string) {}
 }
 
 const makeVotingState = (): GameState => ({
-  roomId: "R1", hostPlayerId: "host",
+  roomId: 'R1',
+  hostPlayerId: 'host',
   phase: Phase.ROUND_VOTING,
   players: [
-    { id: "host", name: "Host", isHost: true,  isAlive: true, joinedAt: 1, role: Role.CITIZEN, word: "apple", statement: null, votedFor: null },
-    { id: "p2",   name: "Bob",  isHost: false, isAlive: true, joinedAt: 2, role: Role.SPY,     word: "pear",  statement: null, votedFor: null },
-    { id: "p3",   name: "Cat",  isHost: false, isAlive: true, joinedAt: 3, role: Role.CITIZEN, word: "apple", statement: null, votedFor: null },
+    {
+      id: 'host',
+      name: 'Host',
+      isHost: true,
+      isAlive: true,
+      joinedAt: 1,
+      role: Role.CITIZEN,
+      word: 'apple',
+      statement: null,
+      votedFor: null,
+    },
+    {
+      id: 'p2',
+      name: 'Bob',
+      isHost: false,
+      isAlive: true,
+      joinedAt: 2,
+      role: Role.SPY,
+      word: 'pear',
+      statement: null,
+      votedFor: null,
+    },
+    {
+      id: 'p3',
+      name: 'Cat',
+      isHost: false,
+      isAlive: true,
+      joinedAt: 3,
+      role: Role.CITIZEN,
+      word: 'apple',
+      statement: null,
+      votedFor: null,
+    },
   ],
-  round: 1, activeWordPair: { citizen: "apple", spy: "pear" },
-  speakingOrder: [], pendingSpeakerIds: [],
-  votes: [], voteRound: 1, firstRoundTopTargetIds: [],
-  eliminatedPlayerId: null, winner: Winner.NONE, winnerReason: null,
+  round: 1,
+  activeWordPair: { citizen: 'apple', spy: 'pear' },
+  speakingOrder: [],
+  pendingSpeakerIds: [],
+  votes: [],
+  voteRound: 1,
+  firstRoundTopTargetIds: [],
+  eliminatedPlayerId: null,
+  winner: Winner.NONE,
+  winnerReason: null,
   settings: { mode: GameMode.CLASSIC, whiteEnabled: false, wordPairs: [] },
-  createdAt: 1, updatedAt: 1,
+  createdAt: 1,
+  updatedAt: 1,
 });
 
-describe("SubmitVoteUseCase – host authorization", () => {
-  test("host can cast vote on behalf of all players", async () => {
+describe('SubmitVoteUseCase – host authorization', () => {
+  test('host can cast vote on behalf of all players', async () => {
     const repo = new InMemoryRepo();
     await repo.save(makeVotingState());
     const useCase = new SubmitVoteUseCase(repo);
-    const { gameState } = await useCase.execute({ roomId: "R1", playerId: "host", targetPlayerId: "p2" });
-    expect(gameState.votes.some(v => v.voterId === "host" && v.targetPlayerId === "p2")).toBe(true);
+    const { gameState } = await useCase.execute({
+      roomId: 'R1',
+      playerId: 'host',
+      targetPlayerId: 'p2',
+    });
+    expect(gameState.votes.some((v) => v.voterId === 'host' && v.targetPlayerId === 'p2')).toBe(
+      true,
+    );
   });
 
-  test("non-host cannot cast vote", async () => {
+  test('non-host cannot cast vote', async () => {
     const repo = new InMemoryRepo();
     await repo.save(makeVotingState());
     const useCase = new SubmitVoteUseCase(repo);
     await expect(
-      useCase.execute({ roomId: "R1", playerId: "p2", targetPlayerId: "p3" })
-    ).rejects.toThrow("Only host can submit votes");
+      useCase.execute({ roomId: 'R1', playerId: 'p2', targetPlayerId: 'p3' }),
+    ).rejects.toThrow('Only host can submit votes');
   });
 });
 ```
@@ -237,7 +330,7 @@ Thêm guard ngay sau khi lấy `gameState`:
 ```typescript
 // Thêm ngay sau dòng check phase
 if (gameState.hostPlayerId !== input.playerId) {
-  throw new Error("Only host can submit votes");
+  throw new Error('Only host can submit votes');
 }
 ```
 
@@ -274,10 +367,12 @@ git commit -m "feat(server): host-only vote submission"
 ## Task 3: Cập nhật `VotingPanel` – host-only controls, hiển thị tất cả players kể cả host
 
 **Files:**
+
 - Modify: `apps/web/src/presentation/voting/VotingPanel.tsx`
 - Modify: `apps/web/src/domain/gameSelectors.ts`
 
 **Bối cảnh:**
+
 - Hiện tại `VotingPanel` dùng `canViewerVote` (check role CITIZEN/SPY) và filter `player.id !== playerId`.
 - Mới: chỉ host thấy vote controls; non-host thấy "đang chờ host chốt"; danh sách vote hiển thị **tất cả** alive players (bao gồm host).
 
@@ -386,16 +481,19 @@ export const VotingPanel = ({
 **Step 3: Thêm i18n key `game.waitingForHostVote`**
 
 Thêm vào `apps/web/src/presentation/locales/vi.json`:
+
 ```json
 "waitingForHostVote": "Đang chờ host chốt vote..."
 ```
 
 Thêm vào `apps/web/src/presentation/locales/en.json`:
+
 ```json
 "waitingForHostVote": "Waiting for host to vote..."
 ```
 
 Thêm vào `apps/web/src/presentation/locales/ko.json`:
+
 ```json
 "waitingForHostVote": "호스트가 투표 중입니다..."
 ```
@@ -416,11 +514,13 @@ git commit -m "feat(web): host-only vote panel, show all players including host"
 ## Task 4: Cập nhật `RoundActionPanel` – host nhập statement hộ speaker
 
 **Files:**
+
 - Modify: `apps/web/src/presentation/round/RoundActionPanel.tsx`
 - Modify: `apps/web/src/application/usecases/SubmitStatement.ts`
 - Modify: `apps/web/src/presentation/App.tsx` (cập nhật call site)
 
 **Bối cảnh:**
+
 - Hiện tại: form statement chỉ hiện khi `viewer.id === currentSpeakerId`.
 - Mới: form statement chỉ hiện khi `viewerIsHost`; label hiển thị tên của `currentSpeaker`; submit gửi thêm `targetSpeakerId`.
 
@@ -553,7 +653,7 @@ const submitStatement = (event: FormEvent<HTMLFormElement>) => {
   const targetSpeakerId = gameState.pendingSpeakerIds[0];
   if (!targetSpeakerId) return;
   submitStatementUseCase.execute({ roomId, playerId, targetSpeakerId, statement });
-  setStatement("");
+  setStatement('');
 };
 ```
 
@@ -575,6 +675,7 @@ git commit -m "feat(web): host enters statement on behalf of current speaker"
 ## Task 5: Sửa locale mặc định và thứ tự language switcher
 
 **Files:**
+
 - Modify: `apps/web/src/infrastructure/i18nSetup.ts`
 - Modify: `apps/web/src/presentation/shared/LanguageSwitcher.tsx`
 - Test: `apps/web/src/domain/__tests__/i18nDefaults.test.ts` (tạo mới)
@@ -583,28 +684,28 @@ git commit -m "feat(web): host enters statement on behalf of current speaker"
 
 ```typescript
 // apps/web/src/domain/__tests__/i18nDefaults.test.ts
-import { describe, test, expect, beforeEach } from "vitest";
+import { describe, test, expect, beforeEach } from 'vitest';
 
-describe("i18n defaults", () => {
+describe('i18n defaults', () => {
   beforeEach(() => {
     localStorage.clear();
   });
 
-  test("fallback locale is vi when no saved preference", () => {
-    const saved = localStorage.getItem("imposter_locale");
-    const resolved = saved ?? "vi";
-    expect(resolved).toBe("vi");
+  test('fallback locale is vi when no saved preference', () => {
+    const saved = localStorage.getItem('imposter_locale');
+    const resolved = saved ?? 'vi';
+    expect(resolved).toBe('vi');
   });
 
-  test("language switcher order is VI, EN, KO", () => {
+  test('language switcher order is VI, EN, KO', () => {
     const LOCALE_OPTIONS = [
-      { value: "vi", label: "VI" },
-      { value: "en", label: "EN" },
-      { value: "ko", label: "KO" },
+      { value: 'vi', label: 'VI' },
+      { value: 'en', label: 'EN' },
+      { value: 'ko', label: 'KO' },
     ];
-    expect(LOCALE_OPTIONS[0].value).toBe("vi");
-    expect(LOCALE_OPTIONS[1].value).toBe("en");
-    expect(LOCALE_OPTIONS[2].value).toBe("ko");
+    expect(LOCALE_OPTIONS[0].value).toBe('vi');
+    expect(LOCALE_OPTIONS[1].value).toBe('en');
+    expect(LOCALE_OPTIONS[2].value).toBe('ko');
   });
 });
 ```
@@ -620,19 +721,25 @@ Expected: FAIL test 1 (vì code hiện tại fallback `"en"`).
 **Step 3: Sửa `i18nSetup.ts`**
 
 Dòng:
+
 ```typescript
-const savedLocale = localStorage.getItem(LOCALE_STORAGE_KEY) ?? "en";
+const savedLocale = localStorage.getItem(LOCALE_STORAGE_KEY) ?? 'en';
 ```
+
 Đổi thành:
+
 ```typescript
-const savedLocale = localStorage.getItem(LOCALE_STORAGE_KEY) ?? "vi";
+const savedLocale = localStorage.getItem(LOCALE_STORAGE_KEY) ?? 'vi';
 ```
 
 Và:
+
 ```typescript
 fallbackLng: "en",
 ```
+
 Đổi thành:
+
 ```typescript
 fallbackLng: "vi",
 ```
@@ -641,9 +748,9 @@ fallbackLng: "vi",
 
 ```typescript
 const LOCALE_OPTIONS: { value: Locale; label: string }[] = [
-  { value: "vi", label: "VI" },
-  { value: "en", label: "EN" },
-  { value: "ko", label: "KO" },
+  { value: 'vi', label: 'VI' },
+  { value: 'en', label: 'EN' },
+  { value: 'ko', label: 'KO' },
 ];
 ```
 
@@ -669,11 +776,13 @@ git commit -m "feat(web): default locale vi, reorder language switcher VI > EN >
 ## Task 6: Luồng reveal role cuối game (popup cá nhân → Game Over modal)
 
 **Files:**
+
 - Modify: `apps/web/src/presentation/App.tsx`
 - Modify: `apps/web/src/presentation/game/GameScreen.tsx` (nếu tồn tại logic liên quan)
 - Tham khảo: `apps/web/src/presentation/role-reveal/WordRevealPopup.tsx` (component đã có, dùng lại)
 
 **Bối cảnh:**
+
 - `WordRevealPopup` hiện dùng để reveal word khi game bắt đầu round.
 - Cuối game cần: popup riêng cho từng người hiển thị **role + word của họ** → sau khi đóng popup mới hiện `GameOverModal`.
 - `sanitizeGameStateForViewer` ở server **đã** trả về `role` và `word` khi `phase === GAME_ENDED` – không cần sửa server.
@@ -699,20 +808,24 @@ if (updated.gameState.phase === Phase.GAME_ENDED && gameState?.phase !== Phase.G
 **Step 3: Cập nhật render trong `App.tsx`**
 
 ```tsx
-{gameState?.phase === Phase.GAME_ENDED && isRoleRevealOpen && viewer?.word && (
-  <WordRevealPopup
-    word={viewer.word}
-    role={viewer.role}
-    onClose={() => setIsRoleRevealOpen(false)}
-  />
-)}
+{
+  gameState?.phase === Phase.GAME_ENDED && isRoleRevealOpen && viewer?.word && (
+    <WordRevealPopup
+      word={viewer.word}
+      role={viewer.role}
+      onClose={() => setIsRoleRevealOpen(false)}
+    />
+  );
+}
 
-{gameState?.phase === Phase.GAME_ENDED && !isRoleRevealOpen && (
-  <GameOverModal
-    gameState={gameState}
-    onRestart={() => gateway.resetGame({ roomId, playerId })}
-  />
-)}
+{
+  gameState?.phase === Phase.GAME_ENDED && !isRoleRevealOpen && (
+    <GameOverModal
+      gameState={gameState}
+      onRestart={() => gateway.resetGame({ roomId, playerId })}
+    />
+  );
+}
 ```
 
 > `WordRevealPopup` đã có countdown 3 giây – không cần sửa.
@@ -721,20 +834,20 @@ if (updated.gameState.phase === Phase.GAME_ENDED && gameState?.phase !== Phase.G
 
 ```typescript
 // apps/web/src/domain/__tests__/roleRevealTrigger.test.ts
-import { describe, test, expect } from "vitest";
-import { Phase } from "@imposter/shared";
+import { describe, test, expect } from 'vitest';
+import { Phase } from '@imposter/shared';
 
 const shouldTriggerRoleReveal = (newPhase: Phase, prevPhase: Phase | undefined) =>
   newPhase === Phase.GAME_ENDED && prevPhase !== Phase.GAME_ENDED;
 
-describe("role reveal trigger", () => {
-  test("triggers when transitioning to GAME_ENDED", () => {
+describe('role reveal trigger', () => {
+  test('triggers when transitioning to GAME_ENDED', () => {
     expect(shouldTriggerRoleReveal(Phase.GAME_ENDED, Phase.ROUND_RESULT)).toBe(true);
   });
-  test("does not trigger on reconnect to already ended game", () => {
+  test('does not trigger on reconnect to already ended game', () => {
     expect(shouldTriggerRoleReveal(Phase.GAME_ENDED, Phase.GAME_ENDED)).toBe(false);
   });
-  test("does not trigger on other phase transitions", () => {
+  test('does not trigger on other phase transitions', () => {
     expect(shouldTriggerRoleReveal(Phase.ROUND_VOTING, Phase.ROUND_DISCUSSION)).toBe(false);
   });
 });
@@ -761,12 +874,14 @@ git commit -m "feat(web): role reveal popup before game over modal on GAME_ENDED
 ## Task 7: Socket retry 30s phía client khi mất kết nối
 
 **Files:**
+
 - Modify: `apps/web/src/infrastructure/socketGateway.ts`
 - Modify: `apps/web/src/application/model/GameGateway.ts`
 - Modify: `apps/web/src/presentation/App.tsx`
 - Test: `apps/web/src/domain/__tests__/reconnectLogic.test.ts` (tạo mới – pure logic test)
 
 **Bối cảnh:**
+
 - Socket.IO **tự động retry** connect khi bị ngắt (exponential backoff).
 - Cần: expose event `disconnect` và `connect` ra ngoài `SocketGateway` để `App.tsx` có thể:
   1. Hiển thị banner "Đang kết nối lại..." khi disconnect.
@@ -825,8 +940,8 @@ gateway.onReconnected(() => {
     clearTimeout(reconnectTimeoutRef.current);
     reconnectTimeoutRef.current = null;
   }
-  const storedRoomId = localStorage.getItem("roomId");
-  const storedPlayerId = localStorage.getItem("playerId");
+  const storedRoomId = localStorage.getItem('roomId');
+  const storedPlayerId = localStorage.getItem('playerId');
   if (storedRoomId && storedPlayerId) {
     gateway.reconnect({ roomId: storedRoomId, playerId: storedPlayerId });
   }
@@ -839,14 +954,17 @@ gateway.onReconnected(() => {
 Thêm vào render (trước `<LanguageSwitcher />`):
 
 ```tsx
-{isReconnecting && (
-  <div className="arcade-reconnect-banner" role="status" aria-live="polite">
-    {t("app.reconnecting")}
-  </div>
-)}
+{
+  isReconnecting && (
+    <div className="arcade-reconnect-banner" role="status" aria-live="polite">
+      {t('app.reconnecting')}
+    </div>
+  );
+}
 ```
 
 Thêm i18n key:
+
 ```json
 // vi.json
 "reconnecting": "Đang kết nối lại..."
@@ -860,7 +978,7 @@ Thêm i18n key:
 
 ```typescript
 // apps/web/src/domain/__tests__/reconnectLogic.test.ts
-import { describe, test, expect, vi } from "vitest";
+import { describe, test, expect, vi } from 'vitest';
 
 const createReconnectManager = (timeoutMs: number, onTimeout: () => void) => {
   let timer: ReturnType<typeof setTimeout> | null = null;
@@ -873,12 +991,14 @@ const createReconnectManager = (timeoutMs: number, onTimeout: () => void) => {
       if (timer) clearTimeout(timer);
       timer = null;
     },
-    getTimer() { return timer; },
+    getTimer() {
+      return timer;
+    },
   };
 };
 
-describe("reconnect logic", () => {
-  test("clears timeout on successful reconnect", () => {
+describe('reconnect logic', () => {
+  test('clears timeout on successful reconnect', () => {
     vi.useFakeTimers();
     const onTimeout = vi.fn();
     const manager = createReconnectManager(30_000, onTimeout);
@@ -889,7 +1009,7 @@ describe("reconnect logic", () => {
     vi.useRealTimers();
   });
 
-  test("calls onTimeout after 30s without reconnect", () => {
+  test('calls onTimeout after 30s without reconnect', () => {
     vi.useFakeTimers();
     const onTimeout = vi.fn();
     const manager = createReconnectManager(30_000, onTimeout);

@@ -1,4 +1,4 @@
 export enum GameMode {
-  CLASSIC = "CLASSIC",
-  HARDCORE = "HARDCORE"
+  CLASSIC = 'CLASSIC',
+  HARDCORE = 'HARDCORE',
 }

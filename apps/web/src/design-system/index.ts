@@ -1,2 +1,2 @@
-export * from "./AppColor";
-export * from "./AppColorScheme";
+export * from './AppColor';
+export * from './AppColorScheme';

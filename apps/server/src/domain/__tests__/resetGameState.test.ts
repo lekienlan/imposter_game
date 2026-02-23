@@ -1,67 +1,67 @@
-import { describe, expect, test } from "vitest";
-import { GameMode, Phase, Role, Winner, type GameState } from "@imposter/shared";
-import { resetGameState } from "../resetGameState";
+import { describe, expect, test } from 'vitest';
+import { GameMode, Phase, Role, Winner, type GameState } from '@imposter/shared';
+import { resetGameState } from '../resetGameState';
 
 const baseState = (): GameState => ({
-  roomId: "ROOM1",
+  roomId: 'ROOM1',
   createdAt: 1,
   updatedAt: 1,
-  hostPlayerId: "p1",
+  hostPlayerId: 'p1',
   phase: Phase.ROUND_VOTING,
   settings: {
     mode: GameMode.CLASSIC,
     whiteEnabled: true,
-    wordPairs: [{ citizen: "Cat", spy: "Tiger" }]
+    wordPairs: [{ citizen: 'Cat', spy: 'Tiger' }],
   },
   round: 2,
-  activeWordPair: { citizen: "Cat", spy: "Tiger" },
-  speakingOrder: ["p1", "p2", "p3"],
-  pendingSpeakerIds: ["p2"],
-  votes: [{ voterId: "p1", targetPlayerId: "p2", submittedAt: 1 }],
+  activeWordPair: { citizen: 'Cat', spy: 'Tiger' },
+  speakingOrder: ['p1', 'p2', 'p3'],
+  pendingSpeakerIds: ['p2'],
+  votes: [{ voterId: 'p1', targetPlayerId: 'p2', submittedAt: 1 }],
   voteRound: 2,
-  firstRoundTopTargetIds: ["p2", "p3"],
-  eliminatedPlayerId: "p3",
+  firstRoundTopTargetIds: ['p2', 'p3'],
+  eliminatedPlayerId: 'p3',
   winner: Winner.SPIES,
-  winnerReason: "SPIES_PARITY_OR_CONTROL",
+  winnerReason: 'SPIES_PARITY_OR_CONTROL',
   players: [
     {
-      id: "p1",
-      name: "A",
+      id: 'p1',
+      name: 'A',
       isHost: true,
       isAlive: true,
       joinedAt: 1,
       role: Role.CITIZEN,
-      word: "Cat",
-      statement: "A",
-      votedFor: "p2"
+      word: 'Cat',
+      statement: 'A',
+      votedFor: 'p2',
     },
     {
-      id: "p2",
-      name: "B",
+      id: 'p2',
+      name: 'B',
       isHost: false,
       isAlive: false,
       joinedAt: 2,
       role: Role.SPY,
-      word: "Tiger",
-      statement: "B",
-      votedFor: "p1"
+      word: 'Tiger',
+      statement: 'B',
+      votedFor: 'p1',
     },
     {
-      id: "p3",
-      name: "C",
+      id: 'p3',
+      name: 'C',
       isHost: false,
       isAlive: true,
       joinedAt: 3,
       role: Role.WHITE,
       word: null,
-      statement: "C",
-      votedFor: null
-    }
-  ]
+      statement: 'C',
+      votedFor: null,
+    },
+  ],
 });
 
-describe("resetGameState", () => {
-  test("returns game to waiting phase and clears round state", () => {
+describe('resetGameState', () => {
+  test('returns game to waiting phase and clears round state', () => {
     const state = baseState();
 
     const reset = resetGameState(state);

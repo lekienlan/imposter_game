@@ -1,9 +1,9 @@
-import { MutableRefObject, useEffect } from "react";
-import { Phase, RoomPreviewResponse, GameState } from "@imposter/shared";
-import { GameGateway } from "../model/GameGateway";
-import { HandlePhaseUpdate } from "../usecases/HandlePhaseUpdate";
-import { PreviewRoom } from "../usecases/PreviewRoom";
-import { parseShareInvite } from "../../domain/ShareLink";
+import { MutableRefObject, useEffect } from 'react';
+import { Phase, RoomPreviewResponse, GameState } from '@imposter/shared';
+import { GameGateway } from '../model/GameGateway';
+import { HandlePhaseUpdate } from '../usecases/HandlePhaseUpdate';
+import { PreviewRoom } from '../usecases/PreviewRoom';
+import { parseShareInvite } from '../../domain/ShareLink';
 
 interface GatewayEventCallbacks {
   setIsLobbyLoading: (v: boolean) => void;
@@ -14,7 +14,7 @@ interface GatewayEventCallbacks {
   setError: (v: string) => void;
   setStatement: (v: string) => void;
   setPreviewData: (v: RoomPreviewResponse | null) => void;
-  setEntryMode: (v: "CREATE_ONLY" | "JOIN_ONLY") => void;
+  setEntryMode: (v: 'CREATE_ONLY' | 'JOIN_ONLY') => void;
   setIsReconnecting: (v: boolean) => void;
   setIsDisbanded: (v: boolean) => void;
   clearSessionState: () => void;
@@ -31,10 +31,22 @@ export const useGatewayEvents = (
   callbacks: GatewayEventCallbacks,
 ) => {
   const {
-    setIsLobbyLoading, setRoomId, setPlayerId, setGameState,
-    setIsWordPopupOpen, setError, setStatement,
-    setPreviewData, setEntryMode, setIsReconnecting, setIsDisbanded, clearSessionState,
-    shownWordMarkerRef, inviteHandledRef, reconnectTimeoutRef, consumeCodeParam,
+    setIsLobbyLoading,
+    setRoomId,
+    setPlayerId,
+    setGameState,
+    setIsWordPopupOpen,
+    setError,
+    setStatement,
+    setPreviewData,
+    setEntryMode,
+    setIsReconnecting,
+    setIsDisbanded,
+    clearSessionState,
+    shownWordMarkerRef,
+    inviteHandledRef,
+    reconnectTimeoutRef,
+    consumeCodeParam,
   } = callbacks;
 
   useEffect(() => {
@@ -44,10 +56,10 @@ export const useGatewayEvents = (
       setPlayerId(payload.playerId);
       setGameState(payload.gameState);
       setIsWordPopupOpen(false);
-      shownWordMarkerRef.current = "";
-      localStorage.setItem("roomId", payload.roomId);
-      localStorage.setItem("playerId", payload.playerId);
-      setError("");
+      shownWordMarkerRef.current = '';
+      localStorage.setItem('roomId', payload.roomId);
+      localStorage.setItem('playerId', payload.playerId);
+      setError('');
     };
 
     const onRoomJoined = (payload: { roomId: string; playerId: string; gameState: GameState }) => {
@@ -56,10 +68,10 @@ export const useGatewayEvents = (
       setPlayerId(payload.playerId);
       setGameState(payload.gameState);
       setIsWordPopupOpen(false);
-      shownWordMarkerRef.current = "";
-      localStorage.setItem("roomId", payload.roomId);
-      localStorage.setItem("playerId", payload.playerId);
-      setError("");
+      shownWordMarkerRef.current = '';
+      localStorage.setItem('roomId', payload.roomId);
+      localStorage.setItem('playerId', payload.playerId);
+      setError('');
     };
 
     gateway.onRoomCreated(onRoomCreated);
@@ -67,26 +79,31 @@ export const useGatewayEvents = (
 
     gateway.onRoomPreviewed((payload) => {
       setPreviewData(payload);
-      setError("");
+      setError('');
     });
 
     gateway.onStateUpdate((payload) => {
       const updated = handlePhaseUpdate.execute(payload);
       const viewer = updated.gameState.players.find((p) => p.id === payload.viewerPlayerId);
-      const wordMarker = viewer?.word ? `${payload.viewerPlayerId}:${updated.gameState.round}:${viewer.word}` : "";
+      const wordMarker = viewer?.word
+        ? `${payload.viewerPlayerId}:${updated.gameState.round}:${viewer.word}`
+        : '';
       setRoomId(payload.gameState.roomId);
       setPlayerId(payload.viewerPlayerId);
-      localStorage.setItem("roomId", payload.gameState.roomId);
-      localStorage.setItem("playerId", payload.viewerPlayerId);
+      localStorage.setItem('roomId', payload.gameState.roomId);
+      localStorage.setItem('playerId', payload.viewerPlayerId);
       setGameState(updated.gameState);
       if (wordMarker && shownWordMarkerRef.current !== wordMarker) {
         shownWordMarkerRef.current = wordMarker;
         setIsWordPopupOpen(true);
       }
-      if (updated.gameState.phase === Phase.WAITING_FOR_PLAYERS || updated.gameState.phase === Phase.GAME_CREATION) {
-        setStatement("");
+      if (
+        updated.gameState.phase === Phase.WAITING_FOR_PLAYERS ||
+        updated.gameState.phase === Phase.GAME_CREATION
+      ) {
+        setStatement('');
         setIsWordPopupOpen(false);
-        shownWordMarkerRef.current = "";
+        shownWordMarkerRef.current = '';
       }
     });
 
@@ -112,8 +129,8 @@ export const useGatewayEvents = (
         clearTimeout(reconnectTimeoutRef.current);
         reconnectTimeoutRef.current = null;
       }
-      const storedRoomId = localStorage.getItem("roomId");
-      const storedPlayerId = localStorage.getItem("playerId");
+      const storedRoomId = localStorage.getItem('roomId');
+      const storedPlayerId = localStorage.getItem('playerId');
       if (storedRoomId && storedPlayerId) {
         gateway.reconnect({ roomId: storedRoomId, playerId: storedPlayerId });
       }
@@ -127,13 +144,13 @@ export const useGatewayEvents = (
       clearSessionState();
       gateway.resetConnection();
       setRoomId(invite.roomId);
-      setEntryMode("JOIN_ONLY");
+      setEntryMode('JOIN_ONLY');
       previewRoomUseCase.execute({ roomId: invite.roomId });
       return;
     }
 
-    const storedRoomId = localStorage.getItem("roomId");
-    const storedPlayerId = localStorage.getItem("playerId");
+    const storedRoomId = localStorage.getItem('roomId');
+    const storedPlayerId = localStorage.getItem('playerId');
     if (storedRoomId && storedPlayerId) {
       setRoomId(storedRoomId);
       setPlayerId(storedPlayerId);

@@ -1,6 +1,6 @@
-import { Phase } from "@imposter/shared";
-import { GameStateRepository } from "../model/GameStateRepository";
-import { canTransitionToVoting } from "../../domain/gameRules";
+import { Phase } from '@imposter/shared';
+import { GameStateRepository } from '../model/GameStateRepository';
+import { canTransitionToVoting } from '../../domain/gameRules';
 
 interface Input {
   roomId: string;
@@ -13,15 +13,15 @@ export class StartVotingUseCase {
   async execute(input: Input) {
     const gameState = await this.repository.getByRoomId(input.roomId);
     if (!gameState) {
-      throw new Error("Room not found");
+      throw new Error('Room not found');
     }
 
     if (gameState.hostPlayerId !== input.playerId) {
-      throw new Error("Only host can start voting");
+      throw new Error('Only host can start voting');
     }
 
     if (!canTransitionToVoting(gameState)) {
-      throw new Error("Cannot start voting now");
+      throw new Error('Cannot start voting now');
     }
 
     gameState.votes = [];

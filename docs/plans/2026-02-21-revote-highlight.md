@@ -13,6 +13,7 @@
 ### Task 1: Add `retractVote` domain function with tests
 
 **Files:**
+
 - Modify: `apps/server/src/domain/gameRules.ts`
 - Test: `apps/server/src/domain/__tests__/gameRules.test.ts`
 
@@ -21,41 +22,41 @@
 Open `apps/server/src/domain/__tests__/gameRules.test.ts` and add these tests at the bottom (after the existing `describe` blocks):
 
 ```typescript
-import { upsertVote, retractVote } from "../gameRules";
+import { upsertVote, retractVote } from '../gameRules';
 
-describe("retractVote", () => {
-  test("removes the vote from votes array", () => {
+describe('retractVote', () => {
+  test('removes the vote from votes array', () => {
     const state = baseState(GameMode.CLASSIC);
-    upsertVote(state, { voterId: "p1", targetPlayerId: "p2", submittedAt: 1 });
+    upsertVote(state, { voterId: 'p1', targetPlayerId: 'p2', submittedAt: 1 });
     expect(state.votes).toHaveLength(1);
 
-    retractVote(state, "p1");
+    retractVote(state, 'p1');
     expect(state.votes).toHaveLength(0);
   });
 
-  test("resets the player votedFor to null", () => {
+  test('resets the player votedFor to null', () => {
     const state = baseState(GameMode.CLASSIC);
-    state.players[0].votedFor = "p2";
-    upsertVote(state, { voterId: "p1", targetPlayerId: "p2", submittedAt: 1 });
+    state.players[0].votedFor = 'p2';
+    upsertVote(state, { voterId: 'p1', targetPlayerId: 'p2', submittedAt: 1 });
 
-    retractVote(state, "p1");
+    retractVote(state, 'p1');
     expect(state.players[0].votedFor).toBeNull();
   });
 
-  test("does nothing if voter has no vote", () => {
+  test('does nothing if voter has no vote', () => {
     const state = baseState(GameMode.CLASSIC);
-    expect(() => retractVote(state, "p1")).not.toThrow();
+    expect(() => retractVote(state, 'p1')).not.toThrow();
     expect(state.votes).toHaveLength(0);
   });
 
   test("only removes the matching voter's vote, leaves others", () => {
     const state = baseState(GameMode.CLASSIC);
-    upsertVote(state, { voterId: "p1", targetPlayerId: "p2", submittedAt: 1 });
-    upsertVote(state, { voterId: "p2", targetPlayerId: "p1", submittedAt: 2 });
+    upsertVote(state, { voterId: 'p1', targetPlayerId: 'p2', submittedAt: 1 });
+    upsertVote(state, { voterId: 'p2', targetPlayerId: 'p1', submittedAt: 2 });
 
-    retractVote(state, "p1");
+    retractVote(state, 'p1');
     expect(state.votes).toHaveLength(1);
-    expect(state.votes[0].voterId).toBe("p2");
+    expect(state.votes[0].voterId).toBe('p2');
   });
 });
 ```
@@ -104,6 +105,7 @@ git commit -m "feat(server): add retractVote domain function"
 ### Task 2: Update `SubmitVoteUseCase` to retract on same-target re-vote
 
 **Files:**
+
 - Modify: `apps/server/src/application/usecases/SubmitVoteUseCase.ts`
 
 **Step 1: Update the import line**
@@ -111,7 +113,7 @@ git commit -m "feat(server): add retractVote domain function"
 In `SubmitVoteUseCase.ts`, change the import to include `retractVote`:
 
 ```typescript
-import { resolveVoting, upsertVote, retractVote } from "../../domain/gameRules";
+import { resolveVoting, upsertVote, retractVote } from '../../domain/gameRules';
 ```
 
 **Step 2: Replace the vote insertion block**
@@ -119,33 +121,33 @@ import { resolveVoting, upsertVote, retractVote } from "../../domain/gameRules";
 Find this section (around line 43-47):
 
 ```typescript
-    const vote: Vote = {
-      voterId: input.playerId,
-      targetPlayerId: input.targetPlayerId,
-      submittedAt: Date.now()
-    };
+const vote: Vote = {
+  voterId: input.playerId,
+  targetPlayerId: input.targetPlayerId,
+  submittedAt: Date.now(),
+};
 
-    upsertVote(gameState, vote);
-    voter.votedFor = input.targetPlayerId;
+upsertVote(gameState, vote);
+voter.votedFor = input.targetPlayerId;
 ```
 
 Replace with:
 
 ```typescript
-    const existingVote = gameState.votes.find((v) => v.voterId === input.playerId);
-    const isSameTarget = existingVote?.targetPlayerId === input.targetPlayerId;
+const existingVote = gameState.votes.find((v) => v.voterId === input.playerId);
+const isSameTarget = existingVote?.targetPlayerId === input.targetPlayerId;
 
-    if (isSameTarget) {
-      retractVote(gameState, input.playerId);
-    } else {
-      const vote: Vote = {
-        voterId: input.playerId,
-        targetPlayerId: input.targetPlayerId,
-        submittedAt: Date.now()
-      };
-      upsertVote(gameState, vote);
-      voter.votedFor = input.targetPlayerId;
-    }
+if (isSameTarget) {
+  retractVote(gameState, input.playerId);
+} else {
+  const vote: Vote = {
+    voterId: input.playerId,
+    targetPlayerId: input.targetPlayerId,
+    submittedAt: Date.now(),
+  };
+  upsertVote(gameState, vote);
+  voter.votedFor = input.targetPlayerId;
+}
 ```
 
 **Step 3: Build to check for type errors**
@@ -168,6 +170,7 @@ git commit -m "feat(server): retract vote when same target re-submitted"
 ### Task 3: Update client prop chain — replace `viewerVotedForName` with `viewerVotedForId`
 
 **Files:**
+
 - Modify: `apps/web/src/presentation/App.tsx`
 - Modify: `apps/web/src/presentation/game/GameScreen.tsx`
 - Modify: `apps/web/src/presentation/game/ActionBoard.tsx`
@@ -177,22 +180,23 @@ git commit -m "feat(server): retract vote when same target re-submitted"
 Find this block (around line 200):
 
 ```typescript
-  const viewerVotedForName =
-    viewer?.votedFor ? gameState.players.find((player) => player.id === viewer.votedFor)?.name : undefined;
+const viewerVotedForName = viewer?.votedFor
+  ? gameState.players.find((player) => player.id === viewer.votedFor)?.name
+  : undefined;
 ```
 
 Replace with:
 
 ```typescript
-  const viewerVoteEntry = gameState.votes.find((v) => v.voterId === playerId);
-  const viewerVotedForId: string | null | undefined =
-    viewerVoteEntry !== undefined ? viewerVoteEntry.targetPlayerId : undefined;
+const viewerVoteEntry = gameState.votes.find((v) => v.voterId === playerId);
+const viewerVotedForId: string | null | undefined =
+  viewerVoteEntry !== undefined ? viewerVoteEntry.targetPlayerId : undefined;
 ```
 
 Then in the `<GameScreen>` JSX, change the prop:
 
 ```tsx
-viewerVotedForId={viewerVotedForId}
+viewerVotedForId = { viewerVotedForId };
 ```
 
 (was `viewerVotedForName={viewerVotedForName}`)
@@ -202,16 +206,17 @@ viewerVotedForId={viewerVotedForId}
 In the `Props` interface, change:
 
 ```typescript
-  viewerVotedForName: string | undefined;
+viewerVotedForName: string | undefined;
 ```
 
 to:
 
 ```typescript
-  viewerVotedForId: string | null | undefined;
+viewerVotedForId: string | null | undefined;
 ```
 
 In the destructured props and in the `<ActionBoard>` JSX, rename accordingly:
+
 - Destructure: `viewerVotedForId` instead of `viewerVotedForName`
 - Pass to ActionBoard: `viewerVotedForId={viewerVotedForId}`
 
@@ -220,16 +225,17 @@ In the destructured props and in the `<ActionBoard>` JSX, rename accordingly:
 In the `Props` interface, change:
 
 ```typescript
-  viewerVotedForName: string | undefined;
+viewerVotedForName: string | undefined;
 ```
 
 to:
 
 ```typescript
-  viewerVotedForId: string | null | undefined;
+viewerVotedForId: string | null | undefined;
 ```
 
 In the destructured props and in the `<VotingPanel>` JSX, rename accordingly:
+
 - Destructure: `viewerVotedForId`
 - Pass to VotingPanel: `viewerVotedForId={viewerVotedForId}`
 
@@ -250,6 +256,7 @@ Hold commit — do it together with Task 4.
 ### Task 4: Update `VotingPanel` — enable re-vote + highlight selected button
 
 **Files:**
+
 - Modify: `apps/web/src/presentation/voting/VotingPanel.tsx`
 
 **Step 1: Replace the entire `VotingPanel.tsx` content**
@@ -257,10 +264,10 @@ Hold commit — do it together with Task 4.
 The file is small (under 70 lines). Replace it with:
 
 ```tsx
-import { useTranslation } from "react-i18next";
-import { Button } from "pixel-retroui";
-import { GameMode, GameState, Player } from "@imposter/shared";
-import { canViewerVote } from "../../domain/gameSelectors";
+import { useTranslation } from 'react-i18next';
+import { Button } from 'pixel-retroui';
+import { GameMode, GameState, Player } from '@imposter/shared';
+import { canViewerVote } from '../../domain/gameSelectors';
 
 interface Props {
   gameState: GameState;
@@ -282,7 +289,7 @@ export const VotingPanel = ({
   const { t } = useTranslation();
   const hasVoted = viewerVotedForId !== undefined;
   const votedForName =
-    typeof viewerVotedForId === "string"
+    typeof viewerVotedForId === 'string'
       ? alivePlayers.find((p) => p.id === viewerVotedForId)?.name
       : undefined;
 
@@ -294,11 +301,10 @@ export const VotingPanel = ({
     <div className="arcade-stack">
       {canViewerVote(gameState, viewer.id) ? (
         <>
-          <p className="arcade-muted">{t("game.castVote").toUpperCase()}</p>
+          <p className="arcade-muted">{t('game.castVote').toUpperCase()}</p>
           {hasVoted && (
             <p className="arcade-muted">
-              {t("game.currentVote").toUpperCase()}:{" "}
-              {votedForName ?? t("game.skip").toUpperCase()}
+              {t('game.currentVote').toUpperCase()}: {votedForName ?? t('game.skip').toUpperCase()}
             </p>
           )}
           <div className="arcade-vote-grid">
@@ -312,35 +318,36 @@ export const VotingPanel = ({
                     type="button"
                     className="arcade-btn"
                     onClick={() => onSubmitVote(player.id)}
-                    bg={isSelected ? "var(--yellow-400)" : "var(--blue-400)"}
+                    bg={isSelected ? 'var(--yellow-400)' : 'var(--blue-400)'}
                     textColor="var(--neutral-black)"
                     borderColor="var(--neutral-black)"
-                    shadow={isSelected ? "var(--yellow-700)" : "var(--blue-700)"}
+                    shadow={isSelected ? 'var(--yellow-700)' : 'var(--blue-700)'}
                   >
                     {player.name.toUpperCase()}
                   </Button>
                 );
               })}
-            {gameState.settings.mode === GameMode.CLASSIC && (() => {
-              const isSkipSelected = viewerVotedForId === null;
-              return (
-                <Button
-                  type="button"
-                  className="arcade-btn"
-                  onClick={() => onSubmitVote(null)}
-                  bg={isSkipSelected ? "var(--yellow-400)" : "var(--blue-400)"}
-                  textColor="var(--neutral-black)"
-                  borderColor="var(--neutral-black)"
-                  shadow={isSkipSelected ? "var(--yellow-700)" : "var(--blue-700)"}
-                >
-                  {t("game.skip").toUpperCase()}
-                </Button>
-              );
-            })()}
+            {gameState.settings.mode === GameMode.CLASSIC &&
+              (() => {
+                const isSkipSelected = viewerVotedForId === null;
+                return (
+                  <Button
+                    type="button"
+                    className="arcade-btn"
+                    onClick={() => onSubmitVote(null)}
+                    bg={isSkipSelected ? 'var(--yellow-400)' : 'var(--blue-400)'}
+                    textColor="var(--neutral-black)"
+                    borderColor="var(--neutral-black)"
+                    shadow={isSkipSelected ? 'var(--yellow-700)' : 'var(--blue-700)'}
+                  >
+                    {t('game.skip').toUpperCase()}
+                  </Button>
+                );
+              })()}
           </div>
         </>
       ) : (
-        <p className="arcade-muted">{t("game.hardcoreVoteNotice").toUpperCase()}</p>
+        <p className="arcade-muted">{t('game.hardcoreVoteNotice').toUpperCase()}</p>
       )}
     </div>
   );
@@ -348,6 +355,7 @@ export const VotingPanel = ({
 ```
 
 **Key changes:**
+
 - `viewerVotedForName` → `viewerVotedForId: string | null | undefined`
 - `disabled={hasVoted}` removed from all buttons
 - Selected player button: yellow bg + yellow shadow

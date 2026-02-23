@@ -1,6 +1,6 @@
-import { Button } from "pixel-retroui";
-import { useShareModal } from "../../application/utils/useShareModal";
-import { ShareModal } from "./ShareModal";
+import { Button } from 'pixel-retroui';
+import { useShareModal } from '../../application/utils/useShareModal';
+import { ShareModal } from './ShareModal';
 
 interface Props {
   shareUrl: string;
@@ -24,7 +24,7 @@ export const ShareButton = ({ shareUrl, roomId, shareCopied, onCopyLink }: Props
           borderColor="var(--neutral-black)"
           shadow="var(--pink-700)"
         >
-          {shareCopied ? "LINK COPIED" : "COPY LINK"}
+          {shareCopied ? 'LINK COPIED' : 'COPY LINK'}
         </Button>
         <Button
           type="button"

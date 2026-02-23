@@ -1,6 +1,6 @@
-import { useTranslation } from "react-i18next";
-import { GameState, Role, Winner, Player } from "@imposter/shared";
-import { Card, Button } from "pixel-retroui";
+import { useTranslation } from 'react-i18next';
+import { GameState, Role, Winner, Player } from '@imposter/shared';
+import { Card, Button } from 'pixel-retroui';
 
 interface Props {
   gameState: GameState;
@@ -12,7 +12,10 @@ export const GameEndRoleRevealModal = ({ gameState, viewer, onClose }: Props) =>
   const { t } = useTranslation();
 
   const didPlayerWin = (player: Player) => {
-    if (gameState.winner === Winner.CITIZENS && (player.role === Role.CITIZEN || player.role === Role.WHITE)) {
+    if (
+      gameState.winner === Winner.CITIZENS &&
+      (player.role === Role.CITIZEN || player.role === Role.WHITE)
+    ) {
       return true;
     }
     if (gameState.winner === Winner.SPIES && player.role === Role.SPY) {
@@ -24,26 +27,26 @@ export const GameEndRoleRevealModal = ({ gameState, viewer, onClose }: Props) =>
   const getRoleLabel = (role: Role | null) => {
     switch (role) {
       case Role.CITIZEN:
-        return t("role.citizen", "CITIZEN");
+        return t('role.citizen', 'CITIZEN');
       case Role.SPY:
-        return t("role.spy", "SPY");
+        return t('role.spy', 'SPY');
       case Role.WHITE:
-        return t("role.white", "WHITE ROLE");
+        return t('role.white', 'WHITE ROLE');
       default:
-        return t("role.unknown", "UNKNOWN");
+        return t('role.unknown', 'UNKNOWN');
     }
   };
 
   const getRoleColorClass = (role: Role | null) => {
     switch (role) {
       case Role.CITIZEN:
-        return "text-blue-400";
+        return 'text-blue-400';
       case Role.SPY:
-        return "text-red-400";
+        return 'text-red-400';
       case Role.WHITE:
-        return "text-neutral-400";
+        return 'text-neutral-400';
       default:
-        return "text-neutral-400";
+        return 'text-neutral-400';
     }
   };
 
@@ -59,16 +62,16 @@ export const GameEndRoleRevealModal = ({ gameState, viewer, onClose }: Props) =>
         shadowColor="var(--neutral-black)"
       >
         <div className="game-over-header role-reveal-header">
-          <p className="role-reveal-label">{t("game.role", "ROLE").toUpperCase()}</p>
+          <p className="role-reveal-label">{t('game.role', 'ROLE').toUpperCase()}</p>
           <p className={`role-reveal-role ${getRoleColorClass(viewer?.role ?? null)}`}>
             {getRoleLabel(viewer?.role ?? null).toUpperCase()}
           </p>
         </div>
 
         <div className="role-reveal-status-wrap">
-          <p className="role-reveal-label">{t("game.status", "STATUS").toUpperCase()}</p>
-          <span className={`status-badge ${viewerWon ? "victory-badge" : "defeat-badge"}`}>
-            {(viewerWon ? t("game.victory", "VICTORY") : t("game.defeat", "DEFEAT")).toUpperCase()}
+          <p className="role-reveal-label">{t('game.status', 'STATUS').toUpperCase()}</p>
+          <span className={`status-badge ${viewerWon ? 'victory-badge' : 'defeat-badge'}`}>
+            {(viewerWon ? t('game.victory', 'VICTORY') : t('game.defeat', 'DEFEAT')).toUpperCase()}
           </span>
         </div>
 
@@ -82,7 +85,7 @@ export const GameEndRoleRevealModal = ({ gameState, viewer, onClose }: Props) =>
             borderColor="var(--neutral-black)"
             shadow="var(--blue-700)"
           >
-            {t("game.continue", "CONTINUE").toUpperCase()}
+            {t('game.continue', 'CONTINUE').toUpperCase()}
           </Button>
         </div>
       </Card>

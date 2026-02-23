@@ -107,12 +107,11 @@
 .arcade-viewer-card {
   min-width: 0;
   border-width: 4px;
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--surface-primary) 82%, var(--blue-900)) 0%,
-      color-mix(in srgb, var(--surface-primary) 92%, var(--blue-900)) 100%
-    );
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--surface-primary) 82%, var(--blue-900)) 0%,
+    color-mix(in srgb, var(--surface-primary) 92%, var(--blue-900)) 100%
+  );
   box-shadow:
     inset 0 0 0 2px color-mix(in srgb, var(--blue-300) 36%, transparent),
     0 0 0 1px color-mix(in srgb, var(--blue-950) 65%, transparent);
@@ -426,8 +425,14 @@
 }
 
 @keyframes modalEnter {
-  from { opacity: 0; transform: scale(0.8) translateY(20px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .game-over-header {
@@ -440,7 +445,9 @@
   margin: 0;
   font-size: clamp(2.5rem, 6vw, 4rem);
   letter-spacing: 0.1em;
-  text-shadow: 4px 4px 0 black, 0 0 15px currentColor;
+  text-shadow:
+    4px 4px 0 black,
+    0 0 15px currentColor;
 }
 
 .blinking-text {
@@ -448,7 +455,9 @@
 }
 
 @keyframes blink {
-  to { visibility: hidden; }
+  to {
+    visibility: hidden;
+  }
 }
 
 .game-over-reason {

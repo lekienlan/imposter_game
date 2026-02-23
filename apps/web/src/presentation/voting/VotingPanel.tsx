@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Button } from "pixel-retroui";
-import { GameMode, GameState, Player } from "@imposter/shared";
-import { isHost } from "../../domain/gameSelectors";
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Button } from 'pixel-retroui';
+import { GameMode, GameState, Player } from '@imposter/shared';
+import { isHost } from '../../domain/gameSelectors';
 
 interface Props {
   gameState: GameState;
@@ -27,16 +27,13 @@ export const VotingPanel = ({
 
   const hasVoted = viewerVotedForId !== undefined;
   const votedForName =
-    typeof viewerVotedForId === "string"
+    typeof viewerVotedForId === 'string'
       ? alivePlayers.find((p) => p.id === viewerVotedForId)?.name
       : undefined;
 
-  if (!viewer?.isAlive) return null;
-
   if (!viewerIsHost) {
-    return (
-      <p className="arcade-muted">{t("game.waitingForHostVote").toUpperCase()}</p>
-    );
+    if (!viewer?.isAlive) return null;
+    return <p className="arcade-muted">{t('game.waitingForHostVote').toUpperCase()}</p>;
   }
 
   const handleSubmit = () => {
@@ -47,11 +44,10 @@ export const VotingPanel = ({
 
   return (
     <div className="arcade-stack">
-      <p className="arcade-muted">{t("game.castVote").toUpperCase()}</p>
+      <p className="arcade-muted">{t('game.castVote').toUpperCase()}</p>
       {hasVoted && (
         <p className="arcade-muted">
-          {t("game.currentVote").toUpperCase()}:{" "}
-          {votedForName ?? t("game.skip").toUpperCase()}
+          {t('game.currentVote').toUpperCase()}: {votedForName ?? t('game.skip').toUpperCase()}
         </p>
       )}
       <div className="arcade-vote-grid">
@@ -63,31 +59,32 @@ export const VotingPanel = ({
               type="button"
               className="arcade-btn"
               onClick={() => setSelectedTarget(player.id)}
-              bg={isSelected ? "var(--yellow-400)" : "var(--blue-400)"}
+              bg={isSelected ? 'var(--yellow-400)' : 'var(--blue-400)'}
               textColor="var(--neutral-black)"
               borderColor="var(--neutral-black)"
-              shadow={isSelected ? "var(--yellow-700)" : "var(--blue-700)"}
+              shadow={isSelected ? 'var(--yellow-700)' : 'var(--blue-700)'}
             >
               {player.name.toUpperCase()}
             </Button>
           );
         })}
-        {gameState.settings.mode === GameMode.CLASSIC && (() => {
-          const isSkipSelected = selectedTarget === null;
-          return (
-            <Button
-              type="button"
-              className="arcade-btn"
-              onClick={() => setSelectedTarget(null)}
-              bg={isSkipSelected ? "var(--yellow-400)" : "var(--blue-400)"}
-              textColor="var(--neutral-black)"
-              borderColor="var(--neutral-black)"
-              shadow={isSkipSelected ? "var(--yellow-700)" : "var(--blue-700)"}
-            >
-              {t("game.skip").toUpperCase()}
-            </Button>
-          );
-        })()}
+        {gameState.settings.mode === GameMode.CLASSIC &&
+          (() => {
+            const isSkipSelected = selectedTarget === null;
+            return (
+              <Button
+                type="button"
+                className="arcade-btn"
+                onClick={() => setSelectedTarget(null)}
+                bg={isSkipSelected ? 'var(--yellow-400)' : 'var(--blue-400)'}
+                textColor="var(--neutral-black)"
+                borderColor="var(--neutral-black)"
+                shadow={isSkipSelected ? 'var(--yellow-700)' : 'var(--blue-700)'}
+              >
+                {t('game.skip').toUpperCase()}
+              </Button>
+            );
+          })()}
       </div>
       <Button
         type="button"
@@ -99,7 +96,7 @@ export const VotingPanel = ({
         borderColor="var(--neutral-black)"
         shadow="var(--green-700)"
       >
-        {t("game.submitVote").toUpperCase()}
+        {t('game.submitVote').toUpperCase()}
       </Button>
     </div>
   );

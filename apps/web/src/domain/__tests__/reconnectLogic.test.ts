@@ -1,4 +1,4 @@
-import { describe, test, expect, vi } from "vitest";
+import { describe, test, expect, vi } from 'vitest';
 
 const createReconnectManager = (timeoutMs: number, onTimeout: () => void) => {
   let timer: ReturnType<typeof setTimeout> | null = null;
@@ -11,12 +11,14 @@ const createReconnectManager = (timeoutMs: number, onTimeout: () => void) => {
       if (timer) clearTimeout(timer);
       timer = null;
     },
-    getTimer() { return timer; },
+    getTimer() {
+      return timer;
+    },
   };
 };
 
-describe("reconnect logic", () => {
-  test("clears timeout on successful reconnect", () => {
+describe('reconnect logic', () => {
+  test('clears timeout on successful reconnect', () => {
     vi.useFakeTimers();
     const onTimeout = vi.fn();
     const manager = createReconnectManager(30_000, onTimeout);
@@ -27,7 +29,7 @@ describe("reconnect logic", () => {
     vi.useRealTimers();
   });
 
-  test("calls onTimeout after 30s without reconnect", () => {
+  test('calls onTimeout after 30s without reconnect', () => {
     vi.useFakeTimers();
     const onTimeout = vi.fn();
     const manager = createReconnectManager(30_000, onTimeout);

@@ -1,5 +1,5 @@
-import { QRCodeCanvas } from "qrcode.react";
-import { Card } from "pixel-retroui";
+import { QRCodeCanvas } from 'qrcode.react';
+import { Card } from 'pixel-retroui';
 
 interface Props {
   shareUrl: string;
@@ -11,7 +11,7 @@ const MAX_DISPLAY_LENGTH = 50;
 
 const truncateUrl = (url: string): string => {
   if (url.length <= MAX_DISPLAY_LENGTH) return url;
-  return url.slice(0, MAX_DISPLAY_LENGTH) + "...";
+  return url.slice(0, MAX_DISPLAY_LENGTH) + '...';
 };
 
 export const ShareModal = ({ shareUrl, roomId, onClose }: Props) => {

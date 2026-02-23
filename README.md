@@ -78,18 +78,21 @@ Multiplayer Undercover-style social deduction game built with React + Vite + Tai
 ## Clean Architecture Implementation
 
 ### Backend (`apps/server`)
+
 - `domain`: pure rules (`assignRoles`, elimination tie-break, win checks, phase-related guards), no Socket.IO/Redis imports.
 - `application`: explicit use cases (`CreateRoom`, `JoinRoom`, `StartGame`, `SubmitClue`, `StartVoting`, `SubmitVote`, `EliminatePlayer`, `CheckWinCondition`) plus `ReconnectPlayer`.
 - `interfaces`: Socket.IO handlers only map events to use cases and send shared DTO payloads.
 - `infrastructure`: Redis repository persistence (`room:{roomId}` with TTL), Socket.IO/bootstrap wiring.
 
 ### Frontend (`apps/web`)
+
 - `domain`: UI-independent selectors (no React/socket imports).
 - `application`: frontend use cases (`JoinRoom`, `SubmitClue`, `SubmitVote`, `HandlePhaseUpdate`) and `GameGateway` contract.
 - `infrastructure`: Socket.IO adapter implementing gateway with shared DTOs and event names.
 - `presentation`: React/Tailwind UI only, no game rule computation.
 
 ### Shared Contracts (`packages/shared`)
+
 - Single source of truth for models, enums, and DTOs.
 - Both FE and BE import directly from `@imposter/shared`.
 - No duplicated model definitions in app layers.
@@ -116,6 +119,7 @@ Multiplayer Undercover-style social deduction game built with React + Vite + Tai
 ## Run Locally
 
 ### Prerequisites
+
 - Node.js 20+
 - Redis running locally on `redis://127.0.0.1:6379`
 
@@ -134,6 +138,7 @@ yarn dev
 ```
 
 ### App URLs
+
 - Web: [http://localhost:5173](http://localhost:5173)
 - Socket server: [http://localhost:3001](http://localhost:3001)
 
