@@ -29,11 +29,16 @@
   color: var(--yellow-300);
 }
 
-.share-modal-room {
-  margin: 0;
-  font-size: 0.85rem;
-  letter-spacing: 0.06em;
-  color: var(--pink-300);
+.share-options-list {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.share-btn-small {
+  font-size: 0.75rem !important;
+  padding: 4px 10px !important;
 }
 
 .share-modal-qr {
@@ -62,8 +67,3 @@
   cursor: pointer;
 }
 
-.share-button-group {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}

@@ -9,7 +9,6 @@ import { HandlePhaseUpdate } from '../domain/usecases/HandlePhaseUpdate';
 import { parseWordPairs } from '../domain/utils/parseWordPairs';
 import { generateWordPairs } from '../domain/utils/wordPairBank';
 import { alivePlayers, getViewer } from '../domain/utils/gameSelectors';
-import { buildShareUrl, resolveShareOrigin } from '../domain/usecases/ShareLink';
 import { SocketGateway } from '../data/socketGateway';
 import { useGatewayEvents } from '../domain/hooks/useGatewayEvents';
 import { GameScreen } from './game/GameScreen';
@@ -42,8 +41,6 @@ export const App = () => {
   const [pairsInput, setPairsInput] = useState(() => generateWordPairs(i18n.language));
   const [mode, setMode] = useState<GameMode>(GameMode.CLASSIC);
   const [whiteEnabled, setWhiteEnabled] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const [shareCopied, setShareCopied] = useState(false);
   const [isWordPopupOpen, setIsWordPopupOpen] = useState(false);
   const [isRoleRevealOpen, setIsRoleRevealOpen] = useState(false);
   const [isReconnecting, setIsReconnecting] = useState(false);
@@ -158,39 +155,6 @@ export const App = () => {
     setStatement('');
   };
 
-  const copyRoomCode = async () => {
-    if (!gameState) return;
-    try {
-      await navigator.clipboard.writeText(gameState.roomId);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch {
-      setCopied(false);
-    }
-  };
-
-  const shareGame = async () => {
-    if (!gameState) return;
-    const { origin, error: shareOriginError } = resolveShareOrigin(
-      window.location.origin,
-      import.meta.env.VITE_SHARE_ORIGIN as string | undefined,
-    );
-    if (shareOriginError) {
-      setError(shareOriginError);
-      setShareCopied(false);
-      return;
-    }
-    const shareUrl = buildShareUrl(origin, gameState.roomId);
-    try {
-      await navigator.clipboard.writeText(shareUrl);
-      setShareCopied(true);
-      setTimeout(() => setShareCopied(false), 1500);
-      setError('');
-    } catch {
-      setShareCopied(false);
-      setError('Không thể copy link share. Hãy thử lại.');
-    }
-  };
 
   if (!gameState || gameState.phase === Phase.GAME_CREATION) {
     return (
@@ -223,12 +187,6 @@ export const App = () => {
   const viewerVoteEntry = gameState.votes.find((v) => v.voterId === playerId);
   const viewerVotedForId: string | null | undefined =
     viewerVoteEntry !== undefined ? viewerVoteEntry.targetPlayerId : undefined;
-  const { origin: shareOrigin } = resolveShareOrigin(
-    window.location.origin,
-    import.meta.env.VITE_SHARE_ORIGIN as string | undefined,
-  );
-  const shareUrl = buildShareUrl(shareOrigin, gameState.roomId);
-
   return (
     <>
       <LanguageSwitcher />
@@ -239,20 +197,14 @@ export const App = () => {
       )}
       {isDisbanded && <RoomDisbandedBanner />}
       <GameScreen
-        roomId={roomId}
         playerId={playerId}
         gameState={gameState}
         error={error}
-        copied={copied}
-        shareCopied={shareCopied}
-        shareUrl={shareUrl}
         isWordPopupOpen={isWordPopupOpen}
         statement={statement}
         alivePlayers={alive}
         viewer={viewer}
         viewerVotedForId={viewerVotedForId}
-        onCopyRoomCode={copyRoomCode}
-        onShareGame={shareGame}
         onCloseWordPopup={() => setIsWordPopupOpen(false)}
         onStatementChange={setStatement}
         onSubmitStatement={submitStatement}

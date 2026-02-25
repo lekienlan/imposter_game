@@ -7,20 +7,14 @@ import { ActionBoard } from './ActionBoard';
 import { ViewerCard } from './ViewerCard';
 
 interface Props {
-  roomId: string;
   playerId: string;
   gameState: GameState;
   error: string;
-  copied: boolean;
-  shareCopied: boolean;
-  shareUrl: string;
   isWordPopupOpen: boolean;
   statement: string;
   alivePlayers: Player[];
   viewer: Player | undefined;
   viewerVotedForId: string | null | undefined;
-  onCopyRoomCode: () => Promise<void>;
-  onShareGame: () => void;
   onCloseWordPopup: () => void;
   onStatementChange: (value: string) => void;
   onSubmitStatement: (event: FormEvent<HTMLFormElement>) => void;
@@ -35,16 +29,11 @@ export const GameScreen = ({
   playerId,
   gameState,
   error,
-  copied,
-  shareCopied,
-  shareUrl,
   isWordPopupOpen,
   statement,
   alivePlayers,
   viewer,
   viewerVotedForId,
-  onCopyRoomCode,
-  onShareGame,
   onCloseWordPopup,
   onStatementChange,
   onSubmitStatement,
@@ -73,12 +62,7 @@ export const GameScreen = ({
             alivePlayers={alivePlayers}
             viewerVotedForId={viewerVotedForId}
             statement={statement}
-            copied={copied}
-            shareCopied={shareCopied}
-            shareUrl={shareUrl}
             error={error}
-            onCopyRoomCode={onCopyRoomCode}
-            onShareGame={onShareGame}
             onStatementChange={onStatementChange}
             onSubmitStatement={onSubmitStatement}
             onStartGame={onStartGame}

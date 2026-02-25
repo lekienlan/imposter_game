@@ -15,12 +15,7 @@ interface Props {
   alivePlayers: Player[];
   viewerVotedForId: string | null | undefined;
   statement: string;
-  copied: boolean;
-  shareCopied: boolean;
-  shareUrl: string;
   error: string;
-  onCopyRoomCode: () => Promise<void>;
-  onShareGame: () => void;
   onStatementChange: (value: string) => void;
   onSubmitStatement: (event: FormEvent<HTMLFormElement>) => void;
   onStartGame: () => void;
@@ -38,12 +33,7 @@ export const ActionBoard = ({
   alivePlayers,
   viewerVotedForId,
   statement,
-  copied,
-  shareCopied,
-  shareUrl,
   error,
-  onCopyRoomCode,
-  onShareGame,
   onStatementChange,
   onSubmitStatement,
   onStartGame,
@@ -81,25 +71,7 @@ export const ActionBoard = ({
           <h1 className="arcade-room-id">{gameState.roomId}</h1>
         </div>
         <div className="arcade-head-actions">
-          <Button
-            type="button"
-            className="arcade-btn"
-            onClick={onCopyRoomCode}
-            bg="var(--blue-400)"
-            textColor="var(--neutral-black)"
-            borderColor="var(--neutral-black)"
-            shadow="var(--blue-700)"
-          >
-            {copied ? t('game.codeCopied').toUpperCase() : t('game.copyCode').toUpperCase()}
-          </Button>
-          {viewerHost && (
-            <ShareButton
-              shareUrl={shareUrl}
-              roomId={gameState.roomId}
-              shareCopied={shareCopied}
-              onCopyLink={onShareGame}
-            />
-          )}
+          <ShareButton roomId={gameState.roomId} />
           <p className={`arcade-phase-tag ${phaseTone[gameState.phase]}`}>
             {t('game.phase').toUpperCase()}: {gameState.phase}
           </p>
