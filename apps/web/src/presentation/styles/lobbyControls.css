@@ -1,0 +1,90 @@
+.arcade-label-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.arcade-toggle-text {
+  background: none;
+  border: none;
+  color: var(--blue-200);
+  font-family: inherit;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.arcade-toggle-text:hover {
+  color: var(--neutral-white);
+}
+
+.arcade-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.arcade-mode-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 128px;
+  padding: 12px;
+  border: 3px solid var(--blue-500);
+  background: color-mix(in srgb, var(--surface-primary) 90%, var(--blue-900));
+  cursor: pointer;
+  transition: transform 90ms ease-in;
+}
+
+.arcade-mode-card:focus-visible {
+  outline: 3px solid var(--yellow-400);
+  outline-offset: 0;
+}
+
+.arcade-mode-card:hover {
+  transform: translateY(-1px);
+}
+
+.arcade-mode-card.is-selected {
+  border-color: var(--yellow-400);
+  box-shadow: 4px 4px 0 var(--blue-700);
+}
+
+.arcade-mode-title {
+  margin: 0;
+  font-size: 15px;
+  letter-spacing: 0.05em;
+}
+
+.arcade-mode-desc {
+  margin: 0;
+  color: var(--blue-200);
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.arcade-mode-option {
+  justify-content: center;
+  min-height: 44px;
+}
+
+.arcade-mode-option.is-selected {
+  outline: 3px solid var(--yellow-400);
+  outline-offset: 0;
+}
+
+.arcade-toggle-option {
+  width: 100%;
+  justify-content: center;
+}
+
+.arcade-toggle-option-small {
+  width: fit-content;
+  min-height: 34px;
+  padding: 0 10px;
+  font-size: 10px;
+  align-self: flex-start;
+}

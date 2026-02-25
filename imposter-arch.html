@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Imposter Game — Architecture Explorer</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #070b12;
+  color: #e2e8f0;
+  font-family: system-ui, -apple-system, sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+header {
+  padding: 10px 18px;
+  border-bottom: 1px solid #1a2535;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+header h1 { font-size: 14px; font-weight: 700; color: #f1f5f9; letter-spacing: -0.01em; }
+header .tag { font-size: 11px; color: #475569; background: #111827; border: 1px solid #1e2a3a; border-radius: 4px; padding: 2px 7px; }
+
+.main { display: flex; flex: 1; overflow: hidden; }
+
+/* ── Sidebar ── */
+.sidebar {
+  width: 220px;
+  min-width: 220px;
+  border-right: 1px solid #1a2535;
+  overflow-y: auto;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  scrollbar-width: thin;
+  scrollbar-color: #1e2a3a transparent;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: #1e2a3a; border-radius: 2px; }
+
+.sb-section h3 {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #334155;
+  margin-bottom: 8px;
+}
+
+.presets { display: flex; flex-direction: column; gap: 4px; }
+.preset-btn {
+  background: #0d1523;
+  border: 1px solid #1e2a3a;
+  color: #64748b;
+  font-size: 12px;
+  padding: 5px 9px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.12s;
+}
+.preset-btn:hover { background: #121e2e; color: #94a3b8; }
+.preset-btn.active { background: #0c1f3a; border-color: #1d4ed8; color: #60a5fa; }
+
+.layer-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 0;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.layer-row:hover .layer-label { color: #e2e8f0; }
+.layer-dot { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+.layer-label { font-size: 11px; color: #64748b; flex: 1; transition: color 0.1s; }
+.layer-row.off .layer-label { opacity: 0.4; }
+
+.conn-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 0;
+  cursor: pointer;
+}
+.conn-row:hover .conn-label { color: #e2e8f0; }
+.conn-dash { width: 20px; height: 2px; flex-shrink: 0; border-radius: 1px; }
+.conn-label { font-size: 11px; color: #64748b; flex: 1; transition: color 0.1s; }
+.conn-row.off .conn-label { opacity: 0.4; }
+.conn-row.off .conn-dash { opacity: 0.25; }
+
+.comment-item {
+  background: #0d1523;
+  border: 1px solid #1e2a3a;
+  border-radius: 5px;
+  padding: 8px;
+  margin-bottom: 6px;
+}
+.comment-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 5px;
+}
+.comment-node { font-size: 11px; color: #60a5fa; font-weight: 600; flex: 1; }
+.comment-del {
+  background: none;
+  border: none;
+  color: #334155;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.1s;
+}
+.comment-del:hover { color: #ef4444; }
+.comment-body { font-size: 11px; color: #64748b; line-height: 1.5; }
+.no-comments { font-size: 11px; color: #334155; font-style: italic; }
+
+/* ── Canvas ── */
+.canvas-wrap {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  background: #070b12;
+}
+#diagram-svg { display: block; width: 100%; height: 100%; cursor: grab; }
+#diagram-svg:active { cursor: grabbing; }
+
+.zoom-btns {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  z-index: 10;
+}
+.zoom-btn {
+  background: #0d1523;
+  border: 1px solid #1e2a3a;
+  color: #64748b;
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.1s;
+}
+.zoom-btn:hover { background: #121e2e; color: #94a3b8; }
+
+/* ── Prompt bar ── */
+.prompt-bar {
+  border-top: 1px solid #1a2535;
+  padding: 10px 16px;
+  min-height: 90px;
+  max-height: 130px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.prompt-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #334155; }
+.prompt-row { display: flex; gap: 10px; flex: 1; overflow: hidden; }
+.prompt-text {
+  flex: 1;
+  font-family: 'Menlo', 'Courier New', monospace;
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.5;
+  background: #0a0e17;
+  border: 1px solid #1a2535;
+  border-radius: 5px;
+  padding: 7px 10px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+.copy-btn {
+  background: #0c1f3a;
+  border: 1px solid #1d4ed8;
+  color: #60a5fa;
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: all 0.12s;
+  white-space: nowrap;
+}
+.copy-btn:hover { background: #1e40af; color: #fff; }
+.copy-btn.ok { background: #14532d; border-color: #16a34a; color: #86efac; }
+
+/* ── Modal ── */
+.modal-bg {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+}
+.modal-bg.open { display: flex; }
+.modal-box {
+  background: #0d1523;
+  border: 1px solid #1e2a3a;
+  border-radius: 10px;
+  width: 380px;
+  padding: 20px;
+}
+.modal-box h3 { font-size: 14px; color: #f1f5f9; margin-bottom: 3px; }
+.modal-path { font-size: 10px; color: #334155; font-family: monospace; margin-bottom: 14px; }
+.modal-box textarea {
+  width: 100%;
+  background: #070b12;
+  border: 1px solid #1e2a3a;
+  color: #e2e8f0;
+  border-radius: 5px;
+  padding: 9px;
+  font-size: 12px;
+  line-height: 1.6;
+  min-height: 80px;
+  resize: vertical;
+  font-family: system-ui, sans-serif;
+  outline: none;
+}
+.modal-box textarea:focus { border-color: #1d4ed8; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px; }
+.modal-cancel {
+  background: none;
+  border: 1px solid #1e2a3a;
+  color: #64748b;
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.modal-save {
+  background: #0c1f3a;
+  border: 1px solid #1d4ed8;
+  color: #60a5fa;
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.modal-save:hover { background: #1e40af; color: #fff; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Imposter Game</h1>
+  <span class="tag">Architecture Explorer</span>
+</header>
+
+<div class="main">
+  <div class="sidebar">
+    <div class="sb-section">
+      <h3>Presets</h3>
+      <div class="presets" id="presets-el"></div>
+    </div>
+    <div class="sb-section">
+      <h3>Layers</h3>
+      <div id="layers-el"></div>
+    </div>
+    <div class="sb-section">
+      <h3>Connections</h3>
+      <div id="conns-el"></div>
+    </div>
+    <div class="sb-section" style="flex:1">
+      <h3>Comments (<span id="comment-count">0</span>)</h3>
+      <div id="comments-el">
+        <div class="no-comments">Click a node to annotate it</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="canvas-wrap">
+    <svg id="diagram-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div class="zoom-btns">
+      <button class="zoom-btn" onclick="doZoom(1.2)">+</button>
+      <button class="zoom-btn" onclick="doZoom(0.83)">−</button>
+      <button class="zoom-btn" onclick="resetView()" title="Fit">⊙</button>
+    </div>
+  </div>
+</div>
+
+<div class="prompt-bar">
+  <div class="prompt-label">Prompt Output</div>
+  <div class="prompt-row">
+    <div class="prompt-text" id="prompt-el"></div>
+    <button class="copy-btn" id="copy-btn" onclick="copyPrompt()">Copy</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-bg">
+  <div class="modal-box">
+    <h3 id="modal-title"></h3>
+    <div class="modal-path" id="modal-path"></div>
+    <textarea id="modal-input" placeholder="Add a note, question, or feedback about this component…"></textarea>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+      <button class="modal-save" onclick="saveComment()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────
+const LAYERS = [
+  { id: 'shared',         label: 'Shared Types',       color: '#6b7280', fill: '#111827' },
+  { id: 'web-ui',         label: 'Web Presentation',   color: '#3b82f6', fill: '#0c1f3a' },
+  { id: 'web-logic',      label: 'Web Domain / App',   color: '#818cf8', fill: '#1e1b4b' },
+  { id: 'web-infra',      label: 'Web Infrastructure', color: '#22d3ee', fill: '#083344' },
+  { id: 'srv-handler',    label: 'Server Interfaces',  color: '#fbbf24', fill: '#1c1300' },
+  { id: 'srv-app',        label: 'Server Application', color: '#4ade80', fill: '#052e16' },
+  { id: 'srv-domain',     label: 'Server Domain',      color: '#34d399', fill: '#022c22' },
+  { id: 'srv-infra',      label: 'Server Infra / DB',  color: '#fb923c', fill: '#1c0a00' },
+];
+
+const CONN_TYPES = [
+  { id: 'socket', label: 'Socket Events',  color: '#f87171', dash: '6,3' },
+  { id: 'call',   label: 'Function Calls', color: '#4ade80', dash: '' },
+  { id: 'domain', label: 'Domain Logic',   color: '#60a5fa', dash: '' },
+  { id: 'import', label: 'Shared Imports', color: '#6b7280', dash: '3,3' },
+];
+
+// Node layout: canvas ~1020 wide × 640 tall
+const NODES = [
+  // ── Shared (bottom band, y=580) ──
+  { id: 'gs-model',   label: 'GameState',   sub: 'packages/shared/src/models/GameState.ts',   x: 30,  y: 580, w: 130, h: 44, layer: 'shared' },
+  { id: 'pl-model',   label: 'Player',       sub: 'packages/shared/src/models/Player.ts',      x: 175, y: 580, w: 95,  h: 44, layer: 'shared' },
+  { id: 'enums',      label: 'Enums',        sub: 'Phase · Role · Winner · GameMode',          x: 285, y: 580, w: 140, h: 44, layer: 'shared' },
+  { id: 'gs-settings',label: 'GameSettings', sub: 'packages/shared/src/models/GameSettings.ts',x: 440, y: 580, w: 130, h: 44, layer: 'shared' },
+  { id: 'sock-dto',   label: 'Socket DTOs',  sub: 'packages/shared/src/dto/socket.ts',         x: 585, y: 580, w: 120, h: 44, layer: 'shared' },
+
+  // ── Web Presentation (top-left) ──
+  { id: 'app-tsx',    label: 'App',           sub: 'apps/web/src/presentation/App.tsx',                    x: 20,  y: 30,  w: 82,  h: 44, layer: 'web-ui' },
+  { id: 'lobby-scr',  label: 'LobbyScreen',   sub: 'apps/web/src/presentation/lobby/LobbyScreen.tsx',      x: 115, y: 30,  w: 130, h: 44, layer: 'web-ui' },
+  { id: 'game-scr',   label: 'GameScreen',    sub: 'apps/web/src/presentation/game/GameScreen.tsx',        x: 260, y: 30,  w: 120, h: 44, layer: 'web-ui' },
+  { id: 'vote-panel', label: 'VotingPanel',   sub: 'apps/web/src/presentation/voting/VotingPanel.tsx',     x: 20,  y: 110, w: 120, h: 44, layer: 'web-ui' },
+  { id: 'round-panel',label: 'RoundActionPanel',sub: 'apps/web/src/presentation/round/RoundActionPanel.tsx',x:155, y: 110, w: 160, h: 44, layer: 'web-ui' },
+  { id: 'gameover',   label: 'GameOverPanel', sub: 'apps/web/src/presentation/game-over/GameOverPanel.tsx',x: 330, y: 110, w: 130, h: 44, layer: 'web-ui' },
+
+  // ── Web Domain / App (mid-left) ──
+  { id: 'selectors',  label: 'gameSelectors',    sub: 'apps/web/src/domain/gameSelectors.ts',             x: 20,  y: 230, w: 140, h: 44, layer: 'web-logic' },
+  { id: 'gw-events',  label: 'useGatewayEvents', sub: 'apps/web/src/application/hooks/useGatewayEvents.ts', x: 175, y: 230, w: 165, h: 44, layer: 'web-logic' },
+  { id: 'gw-model',   label: 'GameGateway',      sub: 'apps/web/src/application/model/GameGateway.ts',    x: 20,  y: 310, w: 130, h: 44, layer: 'web-logic' },
+
+  // ── Web Infrastructure ──
+  { id: 'sock-gw',    label: 'socketGateway',    sub: 'apps/web/src/infrastructure/socketGateway.ts',     x: 20,  y: 410, w: 140, h: 44, layer: 'web-infra' },
+
+  // ── Server Interfaces (top-right) ──
+  { id: 'sock-hdlr',  label: 'socketHandlers',   sub: 'apps/server/src/interfaces/socketHandlers.ts',     x: 640, y: 30,  w: 155, h: 44, layer: 'srv-handler' },
+
+  // ── Server Application ──
+  { id: 'cr-uc',      label: 'CreateRoomUseCase',       sub: 'apps/server/src/application/usecases/',    x: 630, y: 120, w: 170, h: 44, layer: 'srv-app' },
+  { id: 'sg-uc',      label: 'StartGameUseCase',        sub: 'apps/server/src/application/usecases/',    x: 815, y: 120, w: 155, h: 44, layer: 'srv-app' },
+  { id: 'ss-uc',      label: 'SubmitStatementUseCase',  sub: 'apps/server/src/application/usecases/',    x: 630, y: 200, w: 190, h: 44, layer: 'srv-app' },
+  { id: 'sv-uc',      label: 'SubmitVoteUseCase',       sub: 'apps/server/src/application/usecases/',    x: 835, y: 200, w: 155, h: 44, layer: 'srv-app' },
+  { id: 'el-uc',      label: 'EliminatePlayerUseCase',  sub: 'apps/server/src/application/usecases/',    x: 630, y: 280, w: 190, h: 44, layer: 'srv-app' },
+  { id: 'rg-uc',      label: 'ResetGameUseCase',        sub: 'apps/server/src/application/usecases/',    x: 835, y: 280, w: 155, h: 44, layer: 'srv-app' },
+  { id: 'gs-repo',    label: 'GameStateRepository',     sub: 'apps/server/src/application/model/GameStateRepository.ts', x: 700, y: 360, w: 175, h: 44, layer: 'srv-app' },
+
+  // ── Server Domain ──
+  { id: 'rules',      label: 'gameRules',     sub: 'apps/server/src/domain/gameRules.ts',            x: 630, y: 450, w: 120, h: 44, layer: 'srv-domain' },
+  { id: 'reset-dom',  label: 'resetGameState',sub: 'apps/server/src/domain/resetGameState.ts',        x: 765, y: 450, w: 160, h: 44, layer: 'srv-domain' },
+
+  // ── Server Infrastructure ──
+  { id: 'redis-repo', label: 'RedisGameStateRepository', sub: 'apps/server/src/infrastructure/RedisGameStateRepository.ts', x: 630, y: 530, w: 205, h: 44, layer: 'srv-infra' },
+  { id: 'sock-srv',   label: 'socketServer',             sub: 'apps/server/src/infrastructure/socketServer.ts', x: 850, y: 530, w: 130, h: 44, layer: 'srv-infra' },
+];
+
+const CONNECTIONS = [
+  // Socket.IO bridge
+  { from: 'sock-gw',   to: 'sock-hdlr',  type: 'socket', label: 'Socket.IO' },
+
+  // socketHandlers → use cases
+  { from: 'sock-hdlr', to: 'cr-uc',   type: 'call' },
+  { from: 'sock-hdlr', to: 'sg-uc',   type: 'call' },
+  { from: 'sock-hdlr', to: 'ss-uc',   type: 'call' },
+  { from: 'sock-hdlr', to: 'sv-uc',   type: 'call' },
+  { from: 'sock-hdlr', to: 'el-uc',   type: 'call' },
+  { from: 'sock-hdlr', to: 'rg-uc',   type: 'call' },
+
+  // Use cases → repository
+  { from: 'cr-uc',  to: 'gs-repo', type: 'call' },
+  { from: 'sg-uc',  to: 'gs-repo', type: 'call' },
+  { from: 'sv-uc',  to: 'gs-repo', type: 'call' },
+  { from: 'el-uc',  to: 'gs-repo', type: 'call' },
+
+  // Use cases → domain logic
+  { from: 'sg-uc', to: 'rules',     type: 'domain', label: 'assignRoles · pickWordPair' },
+  { from: 'ss-uc', to: 'rules',     type: 'domain', label: 'markStatementSubmitted' },
+  { from: 'sv-uc', to: 'rules',     type: 'domain', label: 'resolveVoting' },
+  { from: 'el-uc', to: 'rules',     type: 'domain', label: 'applyRoundResult · advanceAfterRound' },
+  { from: 'rg-uc', to: 'reset-dom', type: 'domain' },
+
+  // Repository → Redis
+  { from: 'gs-repo', to: 'redis-repo', type: 'call' },
+
+  // Web presentation → logic
+  { from: 'app-tsx',    to: 'gw-events', type: 'call' },
+  { from: 'game-scr',   to: 'selectors', type: 'call' },
+  { from: 'vote-panel', to: 'sock-gw',   type: 'call' },
+  { from: 'round-panel',to: 'sock-gw',   type: 'call' },
+  { from: 'gw-events',  to: 'sock-gw',   type: 'call' },
+  { from: 'gw-events',  to: 'gw-model',  type: 'call' },
+
+  // Shared imports
+  { from: 'rules',    to: 'gs-model',  type: 'import' },
+  { from: 'rules',    to: 'enums',     type: 'import' },
+  { from: 'selectors',to: 'gs-model',  type: 'import' },
+  { from: 'selectors',to: 'pl-model',  type: 'import' },
+  { from: 'sock-hdlr',to: 'sock-dto',  type: 'import' },
+  { from: 'sock-gw',  to: 'sock-dto',  type: 'import' },
+];
+
+const PRESETS = [
+  {
+    id: 'full', label: '🔭 Full System',
+    layers: { shared:true,'web-ui':true,'web-logic':true,'web-infra':true,'srv-handler':true,'srv-app':true,'srv-domain':true,'srv-infra':true },
+    conns:  { socket:true, call:true, domain:true, import:true },
+  },
+  {
+    id: 'logic', label: '⚙️ Game Logic',
+    layers: { shared:true,'web-ui':false,'web-logic':false,'web-infra':false,'srv-handler':false,'srv-app':true,'srv-domain':true,'srv-infra':true },
+    conns:  { socket:false, call:true, domain:true, import:true },
+  },
+  {
+    id: 'frontend', label: '🖥 Frontend Flow',
+    layers: { shared:true,'web-ui':true,'web-logic':true,'web-infra':true,'srv-handler':false,'srv-app':false,'srv-domain':false,'srv-infra':false },
+    conns:  { socket:true, call:true, domain:false, import:true },
+  },
+  {
+    id: 'dataflow', label: '📡 Data Flow',
+    layers: { shared:false,'web-ui':false,'web-logic':false,'web-infra':true,'srv-handler':true,'srv-app':false,'srv-domain':false,'srv-infra':true },
+    conns:  { socket:true, call:true, domain:false, import:false },
+  },
+];
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+const state = {
+  activePreset: 'full',
+  layers: { shared:true,'web-ui':true,'web-logic':true,'web-infra':true,'srv-handler':true,'srv-app':true,'srv-domain':true,'srv-infra':true },
+  conns:  { socket:true, call:true, domain:true, import:true },
+  comments: [],
+};
+
+// SVG pan/zoom
+let vp = { x: 0, y: 0, scale: 0.9 };
+let panStart = null;
+
+// ─────────────────────────────────────────────
+// SVG helpers
+// ─────────────────────────────────────────────
+const NS = 'http://www.w3.org/2000/svg';
+const mk = (tag) => document.createElementNS(NS, tag);
+
+function attr(el, obj) {
+  Object.entries(obj).forEach(([k, v]) => el.setAttribute(k, v));
+  return el;
+}
+
+// ─────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────
+function render() {
+  const svg = document.getElementById('diagram-svg');
+  svg.innerHTML = '';
+
+  // Defs – arrowheads
+  const defs = mk('defs');
+  CONN_TYPES.forEach(ct => {
+    const m = mk('marker');
+    attr(m, { id: `arr-${ct.id}`, markerWidth:'8', markerHeight:'6', refX:'7', refY:'3', orient:'auto' });
+    const poly = mk('polygon');
+    attr(poly, { points:'0 0,8 3,0 6', fill: ct.color, opacity:'0.85' });
+    m.appendChild(poly);
+    defs.appendChild(m);
+  });
+  svg.appendChild(defs);
+
+  // Root group with pan/zoom
+  const root = mk('g');
+  attr(root, { id: 'root', transform: `translate(${vp.x},${vp.y}) scale(${vp.scale})` });
+  svg.appendChild(root);
+
+  const visSet = new Set(NODES.filter(n => state.layers[n.layer]).map(n => n.id));
+
+  // ── Layer bands ──
+  const bands = {};
+  NODES.filter(n => visSet.has(n.id)).forEach(n => {
+    if (!bands[n.layer]) bands[n.layer] = { minX:Infinity, maxX:-Infinity, minY:Infinity, maxY:-Infinity };
+    const b = bands[n.layer];
+    b.minX = Math.min(b.minX, n.x - 10);
+    b.maxX = Math.max(b.maxX, n.x + n.w + 10);
+    b.minY = Math.min(b.minY, n.y - 20);
+    b.maxY = Math.max(b.maxY, n.y + n.h + 8);
+  });
+
+  LAYERS.forEach(ly => {
+    if (!state.layers[ly.id] || !bands[ly.id]) return;
+    const b = bands[ly.id];
+    const rect = mk('rect');
+    attr(rect, { x: b.minX, y: b.minY, width: b.maxX - b.minX, height: b.maxY - b.minY,
+      rx:'8', fill: ly.fill, 'fill-opacity':'0.8', stroke: ly.color, 'stroke-width':'1', 'stroke-opacity':'0.3' });
+    root.appendChild(rect);
+
+    const lbl = mk('text');
+    attr(lbl, { x: b.minX + 9, y: b.minY + 14, fill: ly.color, 'font-size':'9.5',
+      'font-weight':'600', 'font-family':'system-ui', opacity:'0.65' });
+    lbl.textContent = ly.label;
+    root.appendChild(lbl);
+  });
+
+  // ── Connections ──
+  CONNECTIONS.forEach(conn => {
+    if (!state.conns[conn.type]) return;
+    if (!visSet.has(conn.from) || !visSet.has(conn.to)) return;
+
+    const fn = NODES.find(n => n.id === conn.from);
+    const tn = NODES.find(n => n.id === conn.to);
+    const ct = CONN_TYPES.find(c => c.id === conn.type);
+
+    // Center points
+    const fx = fn.x + fn.w / 2, fy = fn.y + fn.h / 2;
+    const tx = tn.x + tn.w / 2, ty = tn.y + tn.h / 2;
+    const dx = tx - fx, dy = ty - fy;
+    const len = Math.sqrt(dx*dx + dy*dy) || 1;
+    const nx = dx / len, ny = dy / len;
+
+    // Clip to node edges
+    const sx = fx + nx * (fn.w / 2 + 2), sy = fy + ny * (fn.h / 2 + 2);
+    const ex = tx - nx * (tn.w / 2 + 10), ey = ty - ny * (tn.h / 2 + 10);
+
+    // Slight curve
+    const cpx = (sx + ex) / 2 - dy * 0.12;
+    const cpy = (sy + ey) / 2 + dx * 0.12;
+
+    const g = mk('g');
+    const path = mk('path');
+    attr(path, {
+      d: `M${sx},${sy} Q${cpx},${cpy} ${ex},${ey}`,
+      fill: 'none', stroke: ct.color, 'stroke-width': '1.4',
+      'stroke-opacity': '0.45',
+      'marker-end': `url(#arr-${ct.id})`,
+      ...(ct.dash ? { 'stroke-dasharray': ct.dash } : {}),
+    });
+    g.appendChild(path);
+
+    if (conn.label) {
+      const lbl = mk('text');
+      attr(lbl, { x: cpx, y: cpy - 5, 'text-anchor':'middle', fill: ct.color,
+        'font-size':'8', 'font-family':'system-ui', opacity:'0.65' });
+      lbl.textContent = conn.label;
+      g.appendChild(lbl);
+    }
+    root.appendChild(g);
+  });
+
+  // ── Nodes ──
+  NODES.filter(n => visSet.has(n.id)).forEach(node => {
+    const ly = LAYERS.find(l => l.id === node.layer);
+    const hasComment = state.comments.some(c => c.target === node.id);
+
+    const g = mk('g');
+    g.style.cursor = 'pointer';
+    g.addEventListener('click', (e) => { e.stopPropagation(); openModal(node.id); });
+
+    // Shadow
+    const shadow = mk('rect');
+    attr(shadow, { x: node.x + 2, y: node.y + 2, width: node.w, height: node.h,
+      rx:'6', fill:'#000', 'fill-opacity':'0.4' });
+    g.appendChild(shadow);
+
+    const box = mk('rect');
+    attr(box, { x: node.x, y: node.y, width: node.w, height: node.h,
+      rx:'6', fill:'#0d1523',
+      stroke: hasComment ? '#fbbf24' : ly.color,
+      'stroke-width': hasComment ? '2' : '1.5',
+    });
+    g.appendChild(box);
+
+    // Title
+    const title = mk('text');
+    attr(title, { x: node.x + node.w/2, y: node.y + 17,
+      'text-anchor':'middle', fill:'#f1f5f9', 'font-size':'11.5',
+      'font-weight':'600', 'font-family':'system-ui' });
+    title.textContent = node.label;
+    g.appendChild(title);
+
+    // Subtitle (truncated)
+    const maxSubLen = Math.floor(node.w / 5.5);
+    let sub = node.sub;
+    if (sub.length > maxSubLen) sub = '…' + sub.slice(-(maxSubLen - 1));
+    const subT = mk('text');
+    attr(subT, { x: node.x + node.w/2, y: node.y + 30,
+      'text-anchor':'middle', fill:'#475569', 'font-size':'8.5', 'font-family':'monospace' });
+    subT.textContent = sub;
+    g.appendChild(subT);
+
+    // Comment dot
+    if (hasComment) {
+      const dot = mk('circle');
+      attr(dot, { cx: node.x + node.w - 6, cy: node.y + 7, r:'4.5', fill:'#fbbf24' });
+      g.appendChild(dot);
+    }
+
+    root.appendChild(g);
+  });
+}
+
+// ─────────────────────────────────────────────
+// SIDEBAR
+// ─────────────────────────────────────────────
+function buildSidebar() {
+  // Presets
+  document.getElementById('presets-el').innerHTML = PRESETS.map(p => `
+    <button class="preset-btn ${state.activePreset === p.id ? 'active' : ''}"
+      onclick="applyPreset('${p.id}')">${p.label}</button>
+  `).join('');
+
+  // Layers
+  document.getElementById('layers-el').innerHTML = LAYERS.map(l => `
+    <div class="layer-row ${state.layers[l.id] ? '' : 'off'}" onclick="toggleLayer('${l.id}')">
+      <div class="layer-dot" style="background:${l.color}; opacity:${state.layers[l.id] ? 1 : 0.3}"></div>
+      <span class="layer-label">${l.label}</span>
+    </div>
+  `).join('');
+
+  // Connections
+  document.getElementById('conns-el').innerHTML = CONN_TYPES.map(ct => `
+    <div class="conn-row ${state.conns[ct.id] ? '' : 'off'}" onclick="toggleConn('${ct.id}')">
+      <div class="conn-dash" style="background:${ct.color}; ${ct.dash ? `background:repeating-linear-gradient(90deg,${ct.color} 0,${ct.color} 4px,transparent 4px,transparent 7px)` : ''}"></div>
+      <span class="conn-label">${ct.label}</span>
+    </div>
+  `).join('');
+
+  // Comments
+  document.getElementById('comment-count').textContent = state.comments.length;
+  const el = document.getElementById('comments-el');
+  if (state.comments.length === 0) {
+    el.innerHTML = '<div class="no-comments">Click a node to annotate it</div>';
+  } else {
+    el.innerHTML = state.comments.map(c => `
+      <div class="comment-item">
+        <div class="comment-header">
+          <span class="comment-node">${c.label}</span>
+          <button class="comment-del" onclick="deleteComment('${c.target}')">✕</button>
+        </div>
+        <div class="comment-body">${escHtml(c.text)}</div>
+      </div>
+    `).join('');
+  }
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function toggleLayer(id) {
+  state.layers[id] = !state.layers[id];
+  state.activePreset = '';
+  updateAll();
+}
+
+function toggleConn(id) {
+  state.conns[id] = !state.conns[id];
+  state.activePreset = '';
+  updateAll();
+}
+
+function applyPreset(id) {
+  const p = PRESETS.find(x => x.id === id);
+  if (!p) return;
+  state.layers = { ...p.layers };
+  state.conns = { ...p.conns };
+  state.activePreset = id;
+  updateAll();
+}
+
+// ─────────────────────────────────────────────
+// PROMPT
+// ─────────────────────────────────────────────
+function updatePrompt() {
+  const vis = LAYERS.filter(l => state.layers[l.id]).map(l => l.label);
+  const hid = LAYERS.filter(l => !state.layers[l.id]);
+
+  let out = `This is the Imposter Game monorepo architecture`;
+  if (hid.length === 0) {
+    out += `, showing the full system (8 layers).`;
+  } else {
+    out += `, filtered to: ${vis.join(', ')}.`;
+  }
+
+  const visConns = CONN_TYPES.filter(c => state.conns[c.id]).map(c => c.label);
+  if (visConns.length < CONN_TYPES.length) {
+    out += `\nVisible connections: ${visConns.join(', ')}.`;
+  }
+
+  if (state.comments.length > 0) {
+    out += `\n\nNotes on specific components:\n`;
+    state.comments.forEach(c => {
+      out += `\n**${c.label}** (${c.sub}):\n${c.text}\n`;
+    });
+  }
+
+  document.getElementById('prompt-el').textContent = out.trim();
+}
+
+function copyPrompt() {
+  navigator.clipboard.writeText(document.getElementById('prompt-el').textContent);
+  const btn = document.getElementById('copy-btn');
+  btn.textContent = 'Copied!';
+  btn.classList.add('ok');
+  setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('ok'); }, 1500);
+}
+
+// ─────────────────────────────────────────────
+// MODAL
+// ─────────────────────────────────────────────
+let activeNodeId = null;
+
+function openModal(nodeId) {
+  const node = NODES.find(n => n.id === nodeId);
+  if (!node) return;
+  activeNodeId = nodeId;
+  document.getElementById('modal-title').textContent = node.label;
+  document.getElementById('modal-path').textContent = node.sub;
+  const existing = state.comments.find(c => c.target === nodeId);
+  document.getElementById('modal-input').value = existing ? existing.text : '';
+  document.getElementById('modal-bg').classList.add('open');
+  setTimeout(() => document.getElementById('modal-input').focus(), 50);
+}
+
+function closeModal() {
+  document.getElementById('modal-bg').classList.remove('open');
+  activeNodeId = null;
+}
+
+function saveComment() {
+  const text = document.getElementById('modal-input').value.trim();
+  closeModal();
+  if (!text) return;
+  const node = NODES.find(n => n.id === activeNodeId);
+  const entry = { target: activeNodeId, label: node.label, sub: node.sub, text };
+  const idx = state.comments.findIndex(c => c.target === activeNodeId);
+  if (idx >= 0) state.comments[idx] = entry;
+  else state.comments.push(entry);
+  updateAll();
+}
+
+function deleteComment(targetId) {
+  state.comments = state.comments.filter(c => c.target !== targetId);
+  updateAll();
+}
+
+// ─────────────────────────────────────────────
+// PAN / ZOOM
+// ─────────────────────────────────────────────
+const svg = document.getElementById('diagram-svg');
+
+svg.addEventListener('mousedown', e => {
+  if (e.target.closest('g[data-node]')) return;
+  panStart = { mx: e.clientX, my: e.clientY, vx: vp.x, vy: vp.y };
+});
+
+window.addEventListener('mousemove', e => {
+  if (!panStart) return;
+  vp.x = panStart.vx + (e.clientX - panStart.mx);
+  vp.y = panStart.vy + (e.clientY - panStart.my);
+  document.getElementById('root').setAttribute('transform',
+    `translate(${vp.x},${vp.y}) scale(${vp.scale})`);
+});
+
+window.addEventListener('mouseup', () => { panStart = null; });
+
+svg.addEventListener('wheel', e => {
+  e.preventDefault();
+  const f = e.deltaY < 0 ? 1.1 : 0.91;
+  const rect = svg.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  vp.x = mx - (mx - vp.x) * f;
+  vp.y = my - (my - vp.y) * f;
+  vp.scale *= f;
+  document.getElementById('root').setAttribute('transform',
+    `translate(${vp.x},${vp.y}) scale(${vp.scale})`);
+}, { passive: false });
+
+function doZoom(f) {
+  const rect = svg.getBoundingClientRect();
+  const cx = rect.width / 2, cy = rect.height / 2;
+  vp.x = cx - (cx - vp.x) * f;
+  vp.y = cy - (cy - vp.y) * f;
+  vp.scale *= f;
+  document.getElementById('root')?.setAttribute('transform',
+    `translate(${vp.x},${vp.y}) scale(${vp.scale})`);
+}
+
+function resetView() {
+  const rect = svg.getBoundingClientRect();
+  // Content bounds: ~1000 wide, 640 tall (y=30 to y=630)
+  const scaleX = (rect.width - 40) / 1020;
+  const scaleY = (rect.height - 40) / 650;
+  vp.scale = Math.min(scaleX, scaleY, 1);
+  vp.x = (rect.width - 1020 * vp.scale) / 2;
+  vp.y = (rect.height - 650 * vp.scale) / 2;
+  document.getElementById('root')?.setAttribute('transform',
+    `translate(${vp.x},${vp.y}) scale(${vp.scale})`);
+}
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+document.getElementById('modal-bg').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-bg')) closeModal();
+});
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+function updateAll() {
+  buildSidebar();
+  render();
+  updatePrompt();
+}
+
+// Initial viewport: fit content
+window.addEventListener('load', () => {
+  resetView();
+  // Pan start event needs re-binding after load for Firefox compat
+});
+
+updateAll();
+// Slight delay to ensure SVG is sized
+setTimeout(resetView, 80);
+</script>
+</body>
+</html>

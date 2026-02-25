@@ -1,0 +1,74 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-card: var(--neutral-black);
+  --bg-input: var(--neutral-black);
+  --bg-textarea: var(--neutral-black);
+  --bg-popup-base: var(--neutral-black);
+  --bg-popup: var(--neutral-black);
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  background: var(--neutral-black) !important;
+}
+
+body {
+  margin: 0;
+  background-color: var(--neutral-black) !important;
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--blue-800) 65%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--blue-800) 65%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 24px 24px;
+  color: var(--ink);
+  color-scheme: dark;
+  image-rendering: pixelated;
+  line-height: 1.55;
+}
+
+.arcade-screen {
+  position: relative;
+  min-height: 100vh;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 16px;
+  background: transparent;
+}
+
+.arcade-header {
+  border: 4px solid var(--blue-500);
+  background: color-mix(in srgb, var(--surface-primary) 85%, var(--blue-900));
+  padding: 12px;
+  margin-bottom: 18px;
+}
+
+.arcade-header-line {
+  margin: 0;
+  color: var(--yellow-300);
+  letter-spacing: 0.08em;
+}
+
+.arcade-title {
+  margin: 6px 0;
+  font-size: clamp(1.7rem, 4.7vw, 3rem);
+  letter-spacing: 0.06em;
+  color: var(--yellow-400);
+}
+
+.arcade-subtitle {
+  margin: 0;
+  color: var(--blue-200);
+  letter-spacing: 0.05em;
+}

@@ -1,0 +1,25 @@
+{
+  "name": "@imposter/server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "esbuild src/index.ts --bundle --platform=node --format=esm --external:ioredis --external:socket.io --external:nanoid --outfile=dist/index.js",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@imposter/shared": "1.0.0",
+    "ioredis": "^5.4.2",
+    "nanoid": "^5.1.5",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.8",
+    "esbuild": "^0.25.0",
+    "tsx": "^4.19.3",
+    "vitest": "^3.0.8"
+  }
+}

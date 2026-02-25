@@ -1,0 +1,48 @@
+.arcade-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.arcade-grid-game {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  align-items: start;
+}
+
+.arcade-stack {
+  display: grid;
+  gap: 14px;
+}
+
+.arcade-head {
+  display: grid;
+  gap: 12px;
+  align-items: start;
+  margin-bottom: 14px;
+}
+
+.arcade-head-main {
+  display: grid;
+  gap: 4px;
+}
+
+.arcade-head-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.arcade-inline-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.arcade-vote-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 8px;
+}

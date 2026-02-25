@@ -1,0 +1,45 @@
+@media (min-width: 920px) {
+  .arcade-grid-game {
+    grid-template-columns: minmax(240px, 0.7fr) minmax(420px, 1.3fr);
+  }
+
+  .arcade-head {
+    grid-template-columns: 1fr auto;
+  }
+}
+
+@media (max-width: 720px) {
+  .arcade-screen {
+    padding: 10px;
+  }
+
+  .arcade-head-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .arcade-btn {
+    width: 100%;
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .arcade-vote-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .arcade-vote-grid .arcade-btn {
+    flex: 1 1 calc(50% - 6px);
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .arcade-btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}

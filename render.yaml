@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: imposter-game-server
+    plan: free
+    runtime: node
+    buildCommand: yarn install --production=false && yarn workspace @imposter/server build
+    startCommand: node apps/server/dist/index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: imposter-game-redis
+          property: connectionString
+  - type: redis
+    name: imposter-game-redis
+    plan: free
+    ipAllowList: []
