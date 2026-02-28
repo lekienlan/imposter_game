@@ -55,21 +55,22 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PHASE-01 | Phase 1 | Pending |
-| PHASE-02 | Phase 1 | Pending |
-| VOTE-01 | Phase 2 | Pending |
-| VOTE-02 | Phase 2 | Pending |
-| WORD-01 | Phase 3 | Pending |
-| WORD-02 | Phase 3 | Pending |
-| END-01 | Phase 4 | Pending |
-| END-02 | Phase 4 | Pending |
-| END-03 | Phase 4 | Pending |
+| PHASE-01 | Phase 2 | Pending |
+| PHASE-02 | Phase 2 | Pending |
+| VOTE-01 | Phase 3 | Pending |
+| VOTE-02 | Phase 3 | Pending |
+| WORD-01 | Phase 4 | Pending |
+| WORD-02 | Phase 4 | Pending |
+| END-01 | Phase 5 | Pending |
+| END-02 | Phase 5 | Pending |
+| END-03 | Phase 5 | Pending |
 
 **Coverage:**
 - v1 requirements: 9 total
 - Mapped to phases: 9
-- Unmapped: 0 ✓
+- Unmapped: 0
+- Note: Phase 1 (Selector Foundation) is an architectural prerequisite with no direct v1 requirements — it enables safe implementation of Phase 5
 
 ---
 *Requirements defined: 2026-02-28*
-*Last updated: 2026-02-28 after initial definition*
+*Last updated: 2026-02-28 after roadmap creation (phases renumbered to 2-5; Phase 1 = selector foundation)*
