@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 2: Phase Clarity** - Players see a human-readable phase label and contextual action guidance at all times
 - [ ] **Phase 3: Vote Clarity** - Non-host players see a clear locked state; host sees a proper two-step vote interface
 - [ ] **Phase 4: Word Discoverability** - Secret word is findable after the popup closes, with a closing cue that tells players where to look
-- [ ] **Phase 5: End Game Clarity** - End screen shows personal win/loss result prominently, imposter reveal, and winner reason
+- [ ] **Phase 5: End Game Clarity** - End screen shows personal win/loss result prominently, Spy reveal, and winner reason
 
 ## Phase Details
 
@@ -63,12 +63,12 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: TBD
 
 ### Phase 5: End Game Clarity
-**Goal**: Players understand who won, who the imposter was, and their personal result at a glance — without parsing a table
+**Goal**: Players understand who won, who the Spy was, and their personal result at a glance — without parsing a table
 **Depends on**: Phase 1
 **Requirements**: END-01, END-02, END-03
 **Success Criteria** (what must be TRUE):
-  1. The end screen prominently displays the game outcome ("Villagers Win" or "Imposter Wins") as the primary visual element
-  2. Each player's role (Imposter or Villager) is revealed on the end screen, styled with the appropriate role color
+  1. The end screen prominently displays the game outcome ("Citizens Win" or "Spy Wins") as the primary visual element
+  2. Each player's role (Spy / Citizen / White) is revealed on the end screen, styled with the appropriate role color
   3. A player viewing the end screen immediately sees their personal result (VICTORY or DEFEAT) above the player table — without scanning rows
 **Plans**: TBD
 

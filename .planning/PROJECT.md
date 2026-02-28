@@ -2,7 +2,7 @@
 
 ## What This Is
 
-Game đoán vai xã hội (social deduction) chạy real-time qua Socket.IO. Người chơi vào phòng, nhận vai (Imposter / Villager), thảo luận bí mật, rồi host vote loại người bị nghi ngờ. Mục tiêu milestone này: cải thiện rõ ràng visual trong màn game để người chơi tự hiểu trạng thái mà không cần giải thích.
+Game đoán vai xã hội (social deduction) chạy real-time qua Socket.IO. Người chơi vào phòng, nhận vai (Spy / Citizen / White), thảo luận bí mật, rồi host vote loại người bị nghi ngờ. Mục tiêu milestone này: cải thiện rõ ràng visual trong màn game để người chơi tự hiểu trạng thái mà không cần giải thích.
 
 ## Core Value
 
@@ -13,7 +13,7 @@ Người chơi nhìn vào màn hình là biết ngay mình đang ở phase nào,
 ### Validated
 
 - ✓ Tạo phòng và chia sẻ link tham gia — existing
-- ✓ Nhận vai (Imposter / Villager) và từ bí mật — existing
+- ✓ Nhận vai (Spy / Citizen / White) và từ bí mật — existing
 - ✓ Hệ thống vote: chỉ host vote, two-step UI (chọn → submit) — existing
 - ✓ Word reveal popup (chỉ hiển thị từ, không hiện role) — existing
 - ✓ Game over modal với reveal role — existing
@@ -26,7 +26,7 @@ Người chơi nhìn vào màn hình là biết ngay mình đang ở phase nào,
 - [ ] Phase indicator rõ ràng — người chơi biết ngay đang ở phase nào mà không phải đọc kỹ
 - [ ] Vote rules tự giải thích — non-host hiểu rõ mình không được vote, host hiểu rõ mình đang vote ai
 - [ ] Word reveal hiện đúng lúc, dễ tìm lại — từ bí mật không bị mất sau khi popup đóng
-- [ ] End game rõ ràng — ai thắng, tại sao, ai là imposter — trình bày trực quan không cần đọc nhiều
+- [ ] End game rõ ràng — ai thắng, tại sao, ai là Spy — trình bày trực quan không cần đọc nhiều
 
 ### Out of Scope
 

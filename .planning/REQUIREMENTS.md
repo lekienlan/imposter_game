@@ -22,8 +22,8 @@
 
 ### End Game
 
-- [ ] **END-01**: Màn kết thúc hiển thị kết quả thắng/thua rõ ràng: "Villagers Win" hoặc "Imposter Wins" với visual nổi bật
-- [ ] **END-02**: Màn kết thúc reveal role của tất cả người chơi (Imposter / Villager)
+- [ ] **END-01**: Màn kết thúc hiển thị kết quả thắng/thua rõ ràng: "Citizens Win" hoặc "Spy Wins" với visual nổi bật
+- [ ] **END-02**: Màn kết thúc reveal role của tất cả người chơi (Spy / Citizen / White)
 - [ ] **END-03**: Màn kết thúc hiển thị win/lose status của từng player
 
 ## v2 Requirements
@@ -38,8 +38,8 @@
 
 ### End Game
 
-- **END-04**: Tóm tắt lý do kết thúc: bị vote đúng imposter hay vote sai người
-- **END-05**: Từ bí mật của Imposter được reveal (so sánh với Villagers)
+- **END-04**: Tóm tắt lý do kết thúc: bị vote đúng Spy hay vote sai người
+- **END-05**: Từ bí mật của Spy được reveal (so sánh với Citizens và White)
 
 ## Out of Scope
 
