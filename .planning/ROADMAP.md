@@ -29,7 +29,10 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. `GameOverModal.tsx` and `GameEndRoleRevealModal.tsx` import these functions from selectors instead of computing them inline
   3. No role-reveal logic exists inline in any presentation component — all role display is gated through `isGameOver()` from selectors
   4. Zero visible UI change after this phase — behavior is identical, logic is now in one place
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 01-01-PLAN.md — TDD: add 5 selectors to gameSelectors.ts with unit tests (RED → GREEN)
+- [ ] 01-02-PLAN.md — Wire: replace inline logic in GameOverModal.tsx, GameEndRoleRevealModal.tsx, GameScreen.tsx with selector imports
 
 ### Phase 2: Phase Clarity
 **Goal**: Players know exactly which phase the game is in without reading carefully
@@ -82,7 +85,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Selector Foundation | 0/TBD | Not started | - |
+| 1. Selector Foundation | 0/2 | Ready to execute | - |
 | 2. Phase Clarity | 0/2 | Ready to execute | - |
 | 3. Vote Clarity | 0/TBD | Not started | - |
 | 4. Word Discoverability | 0/TBD | Not started | - |
