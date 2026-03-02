@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { GameState, Player, Role, Winner } from '@imposter/shared';
+import { GameState, Player, Winner } from '@imposter/shared';
 import { Card, Button } from 'pixel-retroui';
+import { didPlayerWin, getRoleLabel, getRoleColorClass } from '../../domain/utils/gameSelectors';
 
 interface Props {
   gameState: GameState;
@@ -32,45 +33,6 @@ export const GameOverModal = ({ gameState, onRestart }: Props) => {
     }
   };
 
-  const didPlayerWin = (player: Player) => {
-    if (
-      gameState.winner === Winner.CITIZENS &&
-      (player.role === Role.CITIZEN || player.role === Role.WHITE)
-    ) {
-      return true;
-    }
-    if (gameState.winner === Winner.SPIES && player.role === Role.SPY) {
-      return true;
-    }
-    return false;
-  };
-
-  const getRoleLabel = (role: Role | null) => {
-    switch (role) {
-      case Role.CITIZEN:
-        return t('role.citizen', 'CITIZEN');
-      case Role.SPY:
-        return t('role.spy', 'SPY');
-      case Role.WHITE:
-        return t('role.white', 'WHITE ROLE');
-      default:
-        return t('role.unknown', 'UNKNOWN');
-    }
-  };
-
-  const getRoleColorClass = (role: Role | null) => {
-    switch (role) {
-      case Role.CITIZEN:
-        return 'text-blue-400';
-      case Role.SPY:
-        return 'text-red-400';
-      case Role.WHITE:
-        return 'text-neutral-400';
-      default:
-        return 'text-neutral-400';
-    }
-  };
-
   return (
     <div className="arcade-modal-backdrop">
       <Card
@@ -98,7 +60,7 @@ export const GameOverModal = ({ gameState, onRestart }: Props) => {
             </thead>
             <tbody>
               {gameState.players.map((player) => {
-                const isWinner = didPlayerWin(player);
+                const isWinner = didPlayerWin(player, gameState.winner);
                 return (
                   <tr key={player.id} className={isWinner ? 'row-winner' : 'row-loser'}>
                     <td className="player-name">{player.name}</td>
