@@ -55,8 +55,8 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PHASE-01 | Phase 2 | Pending |
-| PHASE-02 | Phase 2 | Pending |
+| PHASE-01 | Phase 2 | In Progress (02-01 done, 02-02 pending) |
+| PHASE-02 | Phase 2 | In Progress (02-01 done, 02-02 pending) |
 | VOTE-01 | Phase 3 | Pending |
 | VOTE-02 | Phase 3 | Pending |
 | WORD-01 | Phase 4 | Pending |

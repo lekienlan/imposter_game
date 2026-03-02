@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-02T08:23:14.447Z"
+last_updated: "2026-03-02T08:33:10.000Z"
 progress:
   total_phases: 3
   completed_phases: 1
   total_plans: 5
-  completed_plans: 2
+  completed_plans: 3
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-02-28)
 ## Current Position
 
 Phase: 2 of 5 (Phase Clarity)
-Plan: 0 of 2 in current phase
-Status: Phase 1 complete — Phase 2 ready to execute
-Last activity: 2026-03-02 — Phase 1 Plan 02 complete: inline selector duplicates removed from three presentation components
+Plan: 1 of 2 in current phase
+Status: Phase 2 Plan 01 complete — Phase 2 Plan 02 ready to execute
+Last activity: 2026-03-02 — Phase 2 Plan 01 complete: phaseLabel/phaseGuidanceKey implemented with i18n keys and locale translations
 
-Progress: [████░░░░░░] 40%
+Progress: [█████░░░░░] 60%
 
 ## Performance Metrics
 
@@ -41,10 +41,11 @@ Progress: [████░░░░░░] 40%
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-selector-foundation | 2 | 12 min | 6 min |
+| 02-phase-clarity | 1 | 3 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: 8 min, 4 min
-- Trend: -
+- Last 5 plans: 8 min, 4 min, 3 min
+- Trend: improving
 
 *Updated after each plan completion*
 
@@ -64,6 +65,9 @@ Recent decisions affecting current work:
 - [01-02]: Renamed local variable to gameIsOver (not isGameOver) in GameScreen.tsx to avoid shadowing imported selector function
 - [01-02]: Winner kept in GameOverModal.tsx import — still needed for getWinnerTitle/getWinnerColor switch statements
 - [01-02]: ActionBoard.tsx has pre-existing Phase.GAME_ENDED usage — left untouched as out of scope for this plan
+- [02-01]: phaseLabel and phaseGuidanceKey return i18n key strings (not translated text) — components call t() themselves to keep domain layer i18n-free
+- [02-01]: phaseGuidanceSlot is an internal Record<Phase, string>; phaseGuidanceKey composes it with role prefix — avoids duplicating slot map for host/player
+- [02-01]: ActionBoard.tsx updated to use new exports in this plan as Rule 3 auto-fix (broken phaseGuide import)
 
 ### Pending Todos
 
@@ -72,11 +76,11 @@ None yet.
 ### Blockers/Concerns
 
 - [Phase 4]: Audit `GameScreen.tsx` → `ViewerCard.tsx` prop chain before implementing; verify `onCloseWordPopup` callback and `wordJustClosed` prop threading before coding
-- [Phase 2]: Audit `phasePresentation.ts` for hardcoded strings — must be wrapped in `t()` if promoted to primary phase header
+- [Phase 2]: phasePresentation.ts hardcoded strings resolved — phaseLabel/phaseGuidanceKey now return i18n keys (RESOLVED in 02-01)
 - [General]: Verify `App.tsx` line count before Phase 1 — if over 200 lines, extract `useGameUIState` hook first
 
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Completed 01-02-PLAN.md — inline selector duplicates removed from GameOverModal, GameEndRoleRevealModal, GameScreen; Phase 1 complete
+Stopped at: Completed 02-01-PLAN.md — phaseLabel/phaseGuidanceKey with i18n keys, 4 locale files updated, 27 tests pass
 Resume file: None

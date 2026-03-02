@@ -45,7 +45,7 @@ Plans:
   4. Phase labels and guidance text are rendered through i18n `t()` — no hardcoded Vietnamese strings in JSX
 **Plans**: 2 plans
 Plans:
-- [ ] 02-01-PLAN.md — Logic layer: phaseLabel map + phaseGuidanceKey function in phasePresentation.ts, unit tests, all 4 locale JSON files updated
+- [x] 02-01-PLAN.md — Logic layer: phaseLabel map + phaseGuidanceKey function in phasePresentation.ts, unit tests, all 4 locale JSON files updated
 - [ ] 02-02-PLAN.md — Presentation layer: ActionBoard.tsx wired to consume new functions with conditional badge + guidance rendering
 
 ### Phase 3: Vote Clarity
@@ -86,7 +86,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Selector Foundation | 2/2 | Complete | 2026-03-02 |
-| 2. Phase Clarity | 0/2 | Ready to execute | - |
+| 2. Phase Clarity | 1/2 | In progress | - |
 | 3. Vote Clarity | 0/TBD | Not started | - |
 | 4. Word Discoverability | 0/TBD | Not started | - |
 | 5. End Game Clarity | 0/TBD | Not started | - |
