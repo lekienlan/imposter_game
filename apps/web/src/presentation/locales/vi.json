@@ -95,5 +95,34 @@
     "spy": "Gián Điệp",
     "white": "Vai Trắng",
     "unknown": "Không Rõ"
+  },
+  "phase": {
+    "label": {
+      "waiting": "Chờ",
+      "wordReveal": "Tiết lộ từ",
+      "discussion": "Thảo luận",
+      "voting": "Bầu chọn",
+      "ended": "Kết thúc"
+    },
+    "guidance": {
+      "host": {
+        "waiting": "Nhấn Start khi đủ người chơi",
+        "wordReveal": "Đợi người chơi xem từ bí mật",
+        "description": "Theo dõi lượt phát biểu",
+        "discussion": "Thảo luận cùng người chơi",
+        "voting": "Chọn người bị nghi ngờ",
+        "result": "Xem kết quả vòng này",
+        "ended": "Trò chơi đã kết thúc"
+      },
+      "player": {
+        "waiting": "Chờ host bắt đầu",
+        "wordReveal": "Xem từ bí mật của bạn",
+        "description": "Chuẩn bị phát biểu của bạn",
+        "discussion": "Thảo luận cùng mọi người",
+        "voting": "Đang chờ host bầu chọn",
+        "result": "Xem kết quả vòng này",
+        "ended": "Trò chơi đã kết thúc"
+      }
+    }
   }
 }

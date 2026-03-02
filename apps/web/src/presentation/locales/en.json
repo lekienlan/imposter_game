@@ -95,5 +95,34 @@
     "spy": "Spy",
     "white": "White Role",
     "unknown": "Unknown"
+  },
+  "phase": {
+    "label": {
+      "waiting": "Waiting",
+      "wordReveal": "Word Reveal",
+      "discussion": "Discussion",
+      "voting": "Voting",
+      "ended": "Game Over"
+    },
+    "guidance": {
+      "host": {
+        "waiting": "Start when all players have joined",
+        "wordReveal": "Wait for players to see their word",
+        "description": "Listen to each player's statement",
+        "discussion": "Discuss with your players",
+        "voting": "Choose who you suspect",
+        "result": "Review this round's result",
+        "ended": "The game has ended"
+      },
+      "player": {
+        "waiting": "Wait for the host to start",
+        "wordReveal": "Check your secret word",
+        "description": "Prepare your statement",
+        "discussion": "Discuss with everyone",
+        "voting": "Waiting for the host to vote",
+        "result": "Review this round's result",
+        "ended": "The game has ended"
+      }
+    }
   }
 }

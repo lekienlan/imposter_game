@@ -94,5 +94,34 @@
     "spy": "스파이",
     "white": "화이트",
     "unknown": "알 수 없음"
+  },
+  "phase": {
+    "label": {
+      "waiting": "대기 중",
+      "wordReveal": "단어 공개",
+      "discussion": "토론",
+      "voting": "투표",
+      "ended": "게임 종료"
+    },
+    "guidance": {
+      "host": {
+        "waiting": "모든 플레이어가 참가하면 시작하세요",
+        "wordReveal": "플레이어가 단어를 확인할 때까지 기다리세요",
+        "description": "각 플레이어의 발언을 들으세요",
+        "discussion": "플레이어들과 토론하세요",
+        "voting": "의심스러운 사람을 선택하세요",
+        "result": "이번 라운드 결과를 확인하세요",
+        "ended": "게임이 종료되었습니다"
+      },
+      "player": {
+        "waiting": "호스트가 시작할 때까지 기다리세요",
+        "wordReveal": "비밀 단어를 확인하세요",
+        "description": "발언을 준비하세요",
+        "discussion": "모두와 토론하세요",
+        "voting": "호스트가 투표 중입니다",
+        "result": "이번 라운드 결과를 확인하세요",
+        "ended": "게임이 종료되었습니다"
+      }
+    }
   }
 }

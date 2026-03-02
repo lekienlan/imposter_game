@@ -95,5 +95,34 @@
     "spy": "卧底",
     "white": "白板",
     "unknown": "未知"
+  },
+  "phase": {
+    "label": {
+      "waiting": "等待中",
+      "wordReveal": "揭示词语",
+      "discussion": "讨论",
+      "voting": "投票",
+      "ended": "游戏结束"
+    },
+    "guidance": {
+      "host": {
+        "waiting": "所有玩家加入后开始游戏",
+        "wordReveal": "等待玩家查看他们的词语",
+        "description": "聆听每位玩家的发言",
+        "discussion": "与玩家讨论",
+        "voting": "选择你怀疑的人",
+        "result": "查看本轮结果",
+        "ended": "游戏已结束"
+      },
+      "player": {
+        "waiting": "等待主机开始",
+        "wordReveal": "查看你的秘密词语",
+        "description": "准备你的发言",
+        "discussion": "与大家讨论",
+        "voting": "等待主机投票",
+        "result": "查看本轮结果",
+        "ended": "游戏已结束"
+      }
+    }
   }
 }

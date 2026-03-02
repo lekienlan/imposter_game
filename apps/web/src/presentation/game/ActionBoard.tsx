@@ -2,7 +2,7 @@ import { FormEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Card } from 'pixel-retroui';
 import { GameState, Phase, Player } from '@imposter/shared';
-import { phaseGuide, phaseTone } from '../shared/phasePresentation';
+import { phaseGuidanceKey, phaseLabel, phaseTone } from '../shared/phasePresentation';
 import { ShareButton } from '../shared/ShareButton';
 import { RoundActionPanel } from '../round/RoundActionPanel';
 import { VotingPanel } from '../voting/VotingPanel';
@@ -49,7 +49,8 @@ export const ActionBoard = ({
   const currentSpeakerName = currentSpeakerId
     ? (gameState.players.find((p) => p.id === currentSpeakerId)?.name ?? 'UNKNOWN')
     : 'COMPLETED';
-  const guide = phaseGuide[gameState.phase];
+  const guidanceKey = phaseGuidanceKey(gameState.phase, viewerHost);
+  const labelKey = phaseLabel[gameState.phase];
 
   useEffect(() => {
     setPhaseEnter(true);
@@ -100,9 +101,8 @@ export const ActionBoard = ({
           <h2 className="arcade-panel-title">{t('game.actionBoard').toUpperCase()}</h2>
           <div className="arcade-status-box">
             <p className="arcade-kicker">{t('game.nextMove').toUpperCase()}</p>
-            <p className="arcade-guide-title">{guide.title.toUpperCase()}</p>
-            <p className="arcade-muted">{guide.description.toUpperCase()}</p>
-            {guide.tip && <p className="arcade-muted arcade-tip">{guide.tip}</p>}
+            <p className="arcade-guide-title">{t(labelKey).toUpperCase()}</p>
+            <p className="arcade-muted">{t(guidanceKey).toUpperCase()}</p>
             {gameState.phase === Phase.ROUND_DESCRIPTION && (
               <p className="arcade-muted">
                 {t('game.speaker').toUpperCase()}: {currentSpeakerName}
