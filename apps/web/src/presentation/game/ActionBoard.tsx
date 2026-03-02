@@ -49,8 +49,6 @@ export const ActionBoard = ({
   const currentSpeakerName = currentSpeakerId
     ? (gameState.players.find((p) => p.id === currentSpeakerId)?.name ?? 'UNKNOWN')
     : 'COMPLETED';
-  const guidanceKey = phaseGuidanceKey(gameState.phase, viewerHost);
-  const labelKey = phaseLabel[gameState.phase];
   const showPhaseInfo =
     gameState.phase !== Phase.GAME_ENDED &&
     gameState.phase !== Phase.ROLE_DISTRIBUTION;
@@ -76,12 +74,9 @@ export const ActionBoard = ({
         </div>
         <div className="arcade-head-actions">
           <ShareButton roomId={gameState.roomId} />
-          <p className={`arcade-phase-tag ${phaseTone[gameState.phase]}`}>
-            {t('game.phase').toUpperCase()}: {gameState.phase}
-          </p>
-          {gameState.phase === Phase.GAME_ENDED && (
-            <p className="arcade-phase-tag text-phase-over">
-              {t('game.winner').toUpperCase()}: {gameState.winner}
+          {showPhaseInfo && (
+            <p className={`arcade-phase-tag ${phaseTone[gameState.phase]}`}>
+              {t(phaseLabel[gameState.phase]).toUpperCase()}
             </p>
           )}
         </div>
@@ -104,8 +99,11 @@ export const ActionBoard = ({
           <h2 className="arcade-panel-title">{t('game.actionBoard').toUpperCase()}</h2>
           <div className="arcade-status-box">
             <p className="arcade-kicker">{t('game.nextMove').toUpperCase()}</p>
-            <p className="arcade-guide-title">{t(labelKey).toUpperCase()}</p>
-            <p className="arcade-muted">{t(guidanceKey).toUpperCase()}</p>
+            {showPhaseInfo && (
+              <p className="arcade-muted">
+                {t(phaseGuidanceKey(gameState.phase, viewerHost))}
+              </p>
+            )}
             {gameState.phase === Phase.ROUND_DESCRIPTION && (
               <p className="arcade-muted">
                 {t('game.speaker').toUpperCase()}: {currentSpeakerName}
