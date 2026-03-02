@@ -51,6 +51,9 @@ export const ActionBoard = ({
     : 'COMPLETED';
   const guidanceKey = phaseGuidanceKey(gameState.phase, viewerHost);
   const labelKey = phaseLabel[gameState.phase];
+  const showPhaseInfo =
+    gameState.phase !== Phase.GAME_ENDED &&
+    gameState.phase !== Phase.ROLE_DISTRIBUTION;
 
   useEffect(() => {
     setPhaseEnter(true);
