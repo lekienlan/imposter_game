@@ -12,7 +12,7 @@ This milestone delivers four targeted UX improvements to an already-functioning 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Selector Foundation** - Extract shared game-state logic into `gameSelectors.ts` before any visible UI changes
+- [x] **Phase 1: Selector Foundation** - Extract shared game-state logic into `gameSelectors.ts` before any visible UI changes
 - [ ] **Phase 2: Phase Clarity** - Players see a human-readable phase label and contextual action guidance at all times
 - [ ] **Phase 3: Vote Clarity** - Non-host players see a clear locked state; host sees a proper two-step vote interface
 - [ ] **Phase 4: Word Discoverability** - Secret word is findable after the popup closes, with a closing cue that tells players where to look
@@ -32,7 +32,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 2 plans
 Plans:
 - [x] 01-01-PLAN.md — TDD: add 5 selectors to gameSelectors.ts with unit tests (RED → GREEN)
-- [ ] 01-02-PLAN.md — Wire: replace inline logic in GameOverModal.tsx, GameEndRoleRevealModal.tsx, GameScreen.tsx with selector imports
+- [x] 01-02-PLAN.md — Wire: replace inline logic in GameOverModal.tsx, GameEndRoleRevealModal.tsx, GameScreen.tsx with selector imports
 
 ### Phase 2: Phase Clarity
 **Goal**: Players know exactly which phase the game is in without reading carefully
@@ -85,7 +85,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Selector Foundation | 1/2 | In progress | - |
+| 1. Selector Foundation | 2/2 | Complete | 2026-03-02 |
 | 2. Phase Clarity | 0/2 | Ready to execute | - |
 | 3. Vote Clarity | 0/TBD | Not started | - |
 | 4. Word Discoverability | 0/TBD | Not started | - |
