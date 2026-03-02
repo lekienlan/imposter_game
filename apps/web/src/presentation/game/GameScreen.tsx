@@ -1,6 +1,6 @@
 import { FormEvent } from 'react';
-import { GameState, Phase, Player } from '@imposter/shared';
-import { isHost } from '../../domain/utils/gameSelectors';
+import { GameState, Player } from '@imposter/shared';
+import { isHost, isGameOver } from '../../domain/utils/gameSelectors';
 import { WordRevealPopup } from '../word-reveal/WordRevealPopup';
 import { PlayersPanel } from './PlayersPanel';
 import { ActionBoard } from './ActionBoard';
@@ -45,7 +45,7 @@ export const GameScreen = ({
 }: Props) => {
   const currentSpeakerId = gameState.pendingSpeakerIds[0] ?? null;
   const viewerHost = isHost(gameState, playerId);
-  const isGameOver = gameState.phase === Phase.GAME_ENDED;
+  const gameIsOver = isGameOver(gameState);
 
   return (
     <>
@@ -71,7 +71,7 @@ export const GameScreen = ({
             onStartVoting={onStartVoting}
             onSubmitVote={onSubmitVote}
           />
-          <ViewerCard viewer={viewer} isGameOver={isGameOver} />
+          <ViewerCard viewer={viewer} isGameOver={gameIsOver} />
 
           <PlayersPanel
             players={gameState.players}
