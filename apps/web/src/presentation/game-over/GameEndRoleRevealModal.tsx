@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { GameState, Role, Winner, Player } from '@imposter/shared';
+import { GameState, Player } from '@imposter/shared';
 import { Card, Button } from 'pixel-retroui';
+import { didPlayerWin, getRoleLabel, getRoleColorClass } from '../../domain/utils/gameSelectors';
 
 interface Props {
   gameState: GameState;
@@ -11,46 +12,7 @@ interface Props {
 export const GameEndRoleRevealModal = ({ gameState, viewer, onClose }: Props) => {
   const { t } = useTranslation();
 
-  const didPlayerWin = (player: Player) => {
-    if (
-      gameState.winner === Winner.CITIZENS &&
-      (player.role === Role.CITIZEN || player.role === Role.WHITE)
-    ) {
-      return true;
-    }
-    if (gameState.winner === Winner.SPIES && player.role === Role.SPY) {
-      return true;
-    }
-    return false;
-  };
-
-  const getRoleLabel = (role: Role | null) => {
-    switch (role) {
-      case Role.CITIZEN:
-        return t('role.citizen', 'CITIZEN');
-      case Role.SPY:
-        return t('role.spy', 'SPY');
-      case Role.WHITE:
-        return t('role.white', 'WHITE ROLE');
-      default:
-        return t('role.unknown', 'UNKNOWN');
-    }
-  };
-
-  const getRoleColorClass = (role: Role | null) => {
-    switch (role) {
-      case Role.CITIZEN:
-        return 'text-blue-400';
-      case Role.SPY:
-        return 'text-red-400';
-      case Role.WHITE:
-        return 'text-neutral-400';
-      default:
-        return 'text-neutral-400';
-    }
-  };
-
-  const viewerWon = viewer ? didPlayerWin(viewer) : false;
+  const viewerWon = viewer ? didPlayerWin(viewer, gameState.winner) : false;
 
   return (
     <div className="arcade-modal-backdrop" style={{ zIndex: 1000 }}>
