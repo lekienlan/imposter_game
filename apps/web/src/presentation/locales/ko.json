@@ -75,7 +75,9 @@
     "waitingForHostVote": "호스트가 투표 중입니다...",
     "hostVotingForGroup": "호스트가 그룹을 대신해 투표 중입니다",
     "voteFor": "투표",
-    "exitGame": "게임 종료"
+    "exitGame": "게임 종료",
+    "peekWord": "단어 엿보기",
+    "wordMasked": "***"
   },
   "app": {
     "reconnecting": "재연결 중..."
@@ -84,7 +86,8 @@
     "disbanded": "호스트가 방을 종료했습니다"
   },
   "wordPopup": {
-    "ready": "준비 완료!"
+    "ready": "준비 완료!",
+    "closingCue": "단어가 카드에 저장되었습니다"
   },
   "roomPreview": {
     "host": "호스트",

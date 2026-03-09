@@ -76,7 +76,9 @@
     "waitingForHostVote": "Waiting for host to vote...",
     "hostVotingForGroup": "Host is voting on behalf of the group",
     "voteFor": "Vote out",
-    "exitGame": "Exit Game"
+    "exitGame": "Exit Game",
+    "peekWord": "Peek at your word",
+    "wordMasked": "***"
   },
   "app": {
     "reconnecting": "Reconnecting..."
@@ -85,7 +87,8 @@
     "disbanded": "The host has ended the room"
   },
   "wordPopup": {
-    "ready": "Ready!"
+    "ready": "Ready!",
+    "closingCue": "Word saved to your card"
   },
   "roomPreview": {
     "host": "Host",

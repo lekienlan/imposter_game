@@ -76,7 +76,9 @@
     "waitingForHostVote": "Đang chờ host chốt vote...",
     "hostVotingForGroup": "Host đang vote cho cả nhóm",
     "voteFor": "Vote loại",
-    "exitGame": "Thoát game"
+    "exitGame": "Thoát game",
+    "peekWord": "Xem lại từ bí mật",
+    "wordMasked": "***"
   },
   "app": {
     "reconnecting": "Đang kết nối lại..."
@@ -85,7 +87,8 @@
     "disbanded": "Host đã kết thúc phòng"
   },
   "wordPopup": {
-    "ready": "Sẵn Sàng!"
+    "ready": "Sẵn Sàng!",
+    "closingCue": "Từ đã được lưu vào thẻ của bạn"
   },
   "roomPreview": {
     "host": "Chủ Trò",

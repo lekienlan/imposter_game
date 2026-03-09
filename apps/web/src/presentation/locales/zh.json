@@ -76,7 +76,9 @@
     "waitingForHostVote": "等待主机投票...",
     "hostVotingForGroup": "主持人正在代表小组投票",
     "voteFor": "投票淘汰",
-    "exitGame": "退出游戏"
+    "exitGame": "退出游戏",
+    "peekWord": "查看你的单词",
+    "wordMasked": "***"
   },
   "app": {
     "reconnecting": "重新连接中..."
@@ -85,7 +87,8 @@
     "disbanded": "房主已结束房间"
   },
   "wordPopup": {
-    "ready": "准备好了！"
+    "ready": "准备好了！",
+    "closingCue": "单词已保存到你的卡片"
   },
   "roomPreview": {
     "host": "主机",
