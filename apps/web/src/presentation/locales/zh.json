@@ -74,6 +74,8 @@
     "playAgain": "再玩一次",
     "noStatement": "无发言",
     "waitingForHostVote": "等待主机投票...",
+    "hostVotingForGroup": "主持人正在代表小组投票",
+    "voteFor": "投票淘汰",
     "exitGame": "退出游戏"
   },
   "app": {

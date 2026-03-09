@@ -73,6 +73,8 @@
     "defeat": "패배",
     "playAgain": "다시 시작",
     "waitingForHostVote": "호스트가 투표 중입니다...",
+    "hostVotingForGroup": "호스트가 그룹을 대신해 투표 중입니다",
+    "voteFor": "투표",
     "exitGame": "게임 종료"
   },
   "app": {

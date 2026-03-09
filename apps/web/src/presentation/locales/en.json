@@ -74,6 +74,8 @@
     "playAgain": "Play Again",
     "noStatement": "No Statement",
     "waitingForHostVote": "Waiting for host to vote...",
+    "hostVotingForGroup": "Host is voting on behalf of the group",
+    "voteFor": "Vote out",
     "exitGame": "Exit Game"
   },
   "app": {
