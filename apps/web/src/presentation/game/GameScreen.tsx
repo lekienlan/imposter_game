@@ -1,6 +1,6 @@
-import { FormEvent } from 'react';
+import { FormEvent, useState, useRef, useEffect } from 'react';
 import { GameState, Player } from '@imposter/shared';
-import { isHost, isGameOver } from '../../domain/utils/gameSelectors';
+import { isHost, isGameOver, canViewerSeeWord } from '../../domain/utils/gameSelectors';
 import { WordRevealPopup } from '../word-reveal/WordRevealPopup';
 import { PlayersPanel } from './PlayersPanel';
 import { ActionBoard } from './ActionBoard';
@@ -43,14 +43,30 @@ export const GameScreen = ({
   onStartVoting,
   onSubmitVote,
 }: Props) => {
+  const [wordJustRevealed, setWordJustRevealed] = useState(false);
+  const pulseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (pulseTimerRef.current) clearTimeout(pulseTimerRef.current);
+    };
+  }, []);
+
   const currentSpeakerId = gameState.pendingSpeakerIds[0] ?? null;
   const viewerHost = isHost(gameState, playerId);
   const gameIsOver = isGameOver(gameState);
+  const canSeeWord = canViewerSeeWord(viewer, gameState);
+
+  const handleCloseWordPopup = () => {
+    onCloseWordPopup();
+    setWordJustRevealed(true);
+    pulseTimerRef.current = setTimeout(() => setWordJustRevealed(false), 1500);
+  };
 
   return (
     <>
       {isWordPopupOpen && viewer?.word && gameState.round === 1 && (
-        <WordRevealPopup word={viewer.word} onClose={onCloseWordPopup} />
+        <WordRevealPopup word={viewer.word} onClose={handleCloseWordPopup} />
       )}
       <main className="arcade-screen">
         <div className="arcade-grid arcade-grid-game">
@@ -71,7 +87,12 @@ export const GameScreen = ({
             onStartVoting={onStartVoting}
             onSubmitVote={onSubmitVote}
           />
-          <ViewerCard viewer={viewer} isGameOver={gameIsOver} />
+          <ViewerCard
+            viewer={viewer}
+            isGameOver={gameIsOver}
+            canSeeWord={canSeeWord}
+            wordJustRevealed={wordJustRevealed}
+          />
 
           <PlayersPanel
             players={gameState.players}

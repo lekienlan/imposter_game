@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from 'pixel-retroui';
 import { Player, Role } from '@imposter/shared';
@@ -5,6 +6,8 @@ import { Player, Role } from '@imposter/shared';
 interface Props {
   viewer: Player | undefined;
   isGameOver: boolean;
+  canSeeWord: boolean;
+  wordJustRevealed: boolean;
 }
 
 const getRoleClass = (role: Role | null): string => {
@@ -13,9 +16,23 @@ const getRoleClass = (role: Role | null): string => {
   return 'citizen';
 };
 
-export const ViewerCard = ({ viewer, isGameOver }: Props) => {
+export const ViewerCard = ({ viewer, isGameOver, canSeeWord, wordJustRevealed }: Props) => {
   const { t } = useTranslation();
+  const [isMiniWordOpen, setIsMiniWordOpen] = useState(false);
+  const dismissTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (!isMiniWordOpen) return;
+    dismissTimerRef.current = setTimeout(() => setIsMiniWordOpen(false), 3000);
+    return () => {
+      if (dismissTimerRef.current) clearTimeout(dismissTimerRef.current);
+    };
+  }, [isMiniWordOpen]);
+
+  const toggleMiniWord = () => setIsMiniWordOpen((prev) => !prev);
+
   const wordDisplay = viewer?.word ?? t('game.wordLocked');
+  const displayWord = canSeeWord ? t('game.wordMasked') : wordDisplay;
   const roleClass = viewer?.role ? getRoleClass(viewer.role) : null;
 
   return (
@@ -48,9 +65,27 @@ export const ViewerCard = ({ viewer, isGameOver }: Props) => {
                 <span className="arcade-viewer-value">{viewer.name}</span>
               </span>
             </div>
-            <div className="arcade-viewer-word-block">
+            <div className={`arcade-viewer-word-block${wordJustRevealed ? ' arcade-viewer-word-block--pulse' : ''}`}>
               <span className="arcade-viewer-label">{t('game.word').toUpperCase()}</span>
-              <p className="arcade-viewer-word">{wordDisplay}</p>
+              <p className="arcade-viewer-word">{displayWord}</p>
+              {canSeeWord && (
+                <button
+                  type="button"
+                  className="arcade-eye-btn"
+                  onClick={toggleMiniWord}
+                  aria-label={t('game.peekWord')}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                </button>
+              )}
+              {isMiniWordOpen && viewer?.word && (
+                <div className="arcade-mini-word-popup">
+                  <span>{viewer.word}</span>
+                </div>
+              )}
             </div>
           </>
         ) : (
