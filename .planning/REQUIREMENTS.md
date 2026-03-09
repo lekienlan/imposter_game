@@ -12,8 +12,8 @@
 
 ### Vote UI
 
-- [ ] **VOTE-01**: Non-host không thấy vote UI trong VOTING phase — chỉ thấy trạng thái "Đang chờ host vote..."
-- [ ] **VOTE-02**: Host thấy danh sách players có thể vote và nút Submit (two-step: chọn → submit)
+- [x] **VOTE-01**: Non-host không thấy vote UI trong VOTING phase — chỉ thấy trạng thái "Đang chờ host vote..."
+- [x] **VOTE-02**: Host thấy danh sách players có thể vote và nút Submit (two-step: chọn → submit)
 
 ### Word Reveal
 
@@ -57,8 +57,8 @@
 |-------------|-------|--------|
 | PHASE-01 | Phase 2 | In Progress (02-01 done, 02-02 pending) |
 | PHASE-02 | Phase 2 | In Progress (02-01 done, 02-02 pending) |
-| VOTE-01 | Phase 3 | Pending |
-| VOTE-02 | Phase 3 | Pending |
+| VOTE-01 | Phase 3 | Complete |
+| VOTE-02 | Phase 3 | Complete |
 | WORD-01 | Phase 4 | Pending |
 | WORD-02 | Phase 4 | Pending |
 | END-01 | Phase 5 | Pending |

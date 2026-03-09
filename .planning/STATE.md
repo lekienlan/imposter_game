@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-03-02T08:33:10.000Z"
+status: in-progress
+last_updated: "2026-03-09T09:07:55.000Z"
 progress:
   total_phases: 3
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 5
-  completed_plans: 3
+  completed_plans: 4
 ---
 
 # Project State
@@ -18,23 +18,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-28)
 
 **Core value:** Người chơi nhìn vào màn hình là biết ngay mình đang ở phase nào, phải làm gì, và kết quả là gì — không cần hỏi.
-**Current focus:** Phase 2 — Phase Clarity
+**Current focus:** Phase 3 — Vote Clarity
 
 ## Current Position
 
-Phase: 2 of 5 (Phase Clarity)
-Plan: 1 of 2 in current phase
-Status: Phase 2 Plan 01 complete — Phase 2 Plan 02 ready to execute
-Last activity: 2026-03-02 — Phase 2 Plan 01 complete: phaseLabel/phaseGuidanceKey implemented with i18n keys and locale translations
+Phase: 3 of 5 (Vote Clarity)
+Plan: 1 of 1 in current phase
+Status: Phase 3 Plan 01 complete — i18n keys and CSS classes for vote clarity added
+Last activity: 2026-03-09 — Phase 3 Plan 01 complete: hostVotingForGroup/voteFor i18n keys + vote card CSS classes
 
-Progress: [█████░░░░░] 60%
+Progress: [████████░░] 80%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: 6 min
-- Total execution time: 0.20 hours
+- Total plans completed: 4
+- Average duration: 5 min
+- Total execution time: 0.33 hours
 
 **By Phase:**
 
@@ -42,9 +42,10 @@ Progress: [█████░░░░░] 60%
 |-------|-------|-------|----------|
 | 01-selector-foundation | 2 | 12 min | 6 min |
 | 02-phase-clarity | 1 | 3 min | 3 min |
+| 03-vote-clarity | 1 | 2 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: 8 min, 4 min, 3 min
+- Last 5 plans: 8 min, 4 min, 3 min, 2 min
 - Trend: improving
 
 *Updated after each plan completion*
@@ -68,6 +69,8 @@ Recent decisions affecting current work:
 - [02-01]: phaseLabel and phaseGuidanceKey return i18n key strings (not translated text) — components call t() themselves to keep domain layer i18n-free
 - [02-01]: phaseGuidanceSlot is an internal Record<Phase, string>; phaseGuidanceKey composes it with role prefix — avoids duplicating slot map for host/player
 - [02-01]: ActionBoard.tsx updated to use new exports in this plan as Rule 3 auto-fix (broken phaseGuide import)
+- [03-01]: Inserted i18n keys after waitingForHostVote for logical grouping with vote-related keys
+- [03-01]: Used BEM-like naming (arcade-vote-card--selected, arcade-non-host-badge__icon) consistent with existing CSS conventions
 
 ### Pending Todos
 
@@ -81,6 +84,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-02
-Stopped at: Completed 02-01-PLAN.md — phaseLabel/phaseGuidanceKey with i18n keys, 4 locale files updated, 27 tests pass
+Last session: 2026-03-09
+Stopped at: Completed 03-01-PLAN.md — hostVotingForGroup/voteFor i18n keys in 4 locales + vote card and non-host badge CSS classes
 Resume file: None
