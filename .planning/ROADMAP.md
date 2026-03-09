@@ -66,7 +66,10 @@ Plans:
   1. When the Word Reveal popup closes, it displays a closing cue (e.g., "Word saved to your card") before dismissing
   2. The player's secret word is visually emphasized on their ViewerCard immediately after the popup closes (one-time pulse or highlight)
   3. During DISCUSSION and VOTING phases, a button or icon is visible on screen that lets any player view their secret word inline — without re-triggering the popup
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 04-01-PLAN.md — Foundation: i18n keys (closingCue, peekWord, wordMasked) in 4 locales + CSS classes (pulse, eye-btn, mini-popup) + WordRevealPopup closing cue
+- [ ] 04-02-PLAN.md — Wiring: GameScreen prop threading + ViewerCard eye icon, mini popup, word masking, pulse animation
 
 ### Phase 5: End Game Clarity
 **Goal**: Players understand who won, who the Spy was, and their personal result at a glance — without parsing a table
@@ -88,5 +91,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Selector Foundation | 2/2 | Complete | 2026-03-02 |
 | 2. Phase Clarity | 1/2 | In progress | - |
 | 3. Vote Clarity | 0/TBD | Not started | - |
-| 4. Word Discoverability | 0/TBD | Not started | - |
+| 4. Word Discoverability | 0/2 | Not started | - |
 | 5. End Game Clarity | 0/TBD | Not started | - |
