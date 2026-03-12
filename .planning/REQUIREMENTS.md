@@ -18,7 +18,7 @@
 ### Word Reveal
 
 - [x] **WORD-01**: Sau khi đóng Word Reveal popup, player có thể mở lại bất kỳ lúc nào qua icon/button nhỏ trên màn hình
-- [ ] **WORD-02**: Button xem lại từ bí mật visible trong suốt DISCUSSION và VOTING phase
+- [x] **WORD-02**: Button xem lại từ bí mật visible trong suốt DISCUSSION và VOTING phase
 
 ### End Game
 
@@ -60,7 +60,7 @@
 | VOTE-01 | Phase 3 | Complete |
 | VOTE-02 | Phase 3 | Complete |
 | WORD-01 | Phase 4 | Complete |
-| WORD-02 | Phase 4 | Pending |
+| WORD-02 | Phase 4 | Complete |
 | END-01 | Phase 5 | Pending |
 | END-02 | Phase 5 | Pending |
 | END-03 | Phase 5 | Pending |

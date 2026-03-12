@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Selector Foundation** - Extract shared game-state logic into `gameSelectors.ts` before any visible UI changes
 - [ ] **Phase 2: Phase Clarity** - Players see a human-readable phase label and contextual action guidance at all times
 - [ ] **Phase 3: Vote Clarity** - Non-host players see a clear locked state; host sees a proper two-step vote interface
-- [ ] **Phase 4: Word Discoverability** - Secret word is findable after the popup closes, with a closing cue that tells players where to look
+- [x] **Phase 4: Word Discoverability** - Secret word is findable after the popup closes, with a closing cue that tells players where to look (completed 2026-03-12)
 - [ ] **Phase 5: End Game Clarity** - End screen shows personal win/loss result prominently, Spy reveal, and winner reason
 
 ## Phase Details
@@ -91,5 +91,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Selector Foundation | 2/2 | Complete | 2026-03-02 |
 | 2. Phase Clarity | 1/2 | In progress | - |
 | 3. Vote Clarity | 0/TBD | Not started | - |
-| 4. Word Discoverability | 0/2 | Not started | - |
+| 4. Word Discoverability | 2/2 | Complete   | 2026-03-12 |
 | 5. End Game Clarity | 0/TBD | Not started | - |
