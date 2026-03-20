@@ -1,14 +1,15 @@
 import { useTranslation } from 'react-i18next';
-import { GameState, Player, Winner } from '@imposter/shared';
+import { GameState, Player, Role, Winner } from '@imposter/shared';
 import { Card, Button } from 'pixel-retroui';
 import { didPlayerWin, getRoleLabel, getRoleColorClass } from '../../domain/utils/gameSelectors';
 
 interface Props {
   gameState: GameState;
+  viewer: Player | undefined;
   onRestart?: () => void;
 }
 
-export const GameOverModal = ({ gameState, onRestart }: Props) => {
+export const GameOverModal = ({ gameState, viewer, onRestart }: Props) => {
   const { t } = useTranslation();
 
   const getWinnerTitle = () => {
@@ -61,11 +62,24 @@ export const GameOverModal = ({ gameState, onRestart }: Props) => {
             <tbody>
               {gameState.players.map((player) => {
                 const isWinner = didPlayerWin(player, gameState.winner);
+                const isViewer = player.id === viewer?.id;
+                const isSpy = player.role === Role.SPY;
+                const isWhite = player.role === Role.WHITE;
                 return (
-                  <tr key={player.id} className={isWinner ? 'row-winner' : 'row-loser'}>
-                    <td className="player-name">{player.name}</td>
+                  <tr
+                    key={player.id}
+                    className={[
+                      isWinner ? 'row-winner' : 'row-loser',
+                      isViewer ? 'row-viewer' : '',
+                      isSpy ? 'row-spy' : '',
+                      isWhite ? 'row-white' : '',
+                    ].filter(Boolean).join(' ')}
+                  >
+                    <td className="player-name">
+                      {isViewer ? t('game.youLabel', { name: player.name }) : player.name}
+                    </td>
                     <td className={`player-role ${getRoleColorClass(player.role)}`}>
-                      {getRoleLabel(player.role)}
+                      {isSpy && '🕵️ '}{getRoleLabel(player.role)}
                     </td>
                     <td className="player-status">
                       {isWinner ? (

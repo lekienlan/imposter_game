@@ -78,7 +78,9 @@
     "voteFor": "Vote loại",
     "exitGame": "Thoát game",
     "peekWord": "Xem lại từ bí mật",
-    "wordMasked": "***"
+    "wordMasked": "***",
+    "youLabel": "▶ Bạn({{name}})",
+    "continue": "TIẾP TỤC"
   },
   "app": {
     "reconnecting": "Đang kết nối lại..."

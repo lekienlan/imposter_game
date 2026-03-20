@@ -78,7 +78,9 @@
     "voteFor": "投票淘汰",
     "exitGame": "退出游戏",
     "peekWord": "查看你的单词",
-    "wordMasked": "***"
+    "wordMasked": "***",
+    "youLabel": "▶ 你({{name}})",
+    "continue": "继续"
   },
   "app": {
     "reconnecting": "重新连接中..."

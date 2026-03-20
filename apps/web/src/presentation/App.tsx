@@ -226,6 +226,7 @@ export const App = () => {
       {gameState?.phase === Phase.GAME_ENDED && !isRoleRevealOpen && (
         <GameOverModal
           gameState={gameState}
+          viewer={viewer}
           onRestart={() => gateway.resetGame({ roomId, playerId })}
         />
       )}

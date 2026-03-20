@@ -7,13 +7,13 @@
 
 ### Phase Indicator
 
-- [ ] **PHASE-01**: Người chơi thấy tên phase hiện tại rõ ràng (WAITING / WORD_REVEAL / DISCUSSION / VOTING / ENDED) dưới dạng badge/label
-- [ ] **PHASE-02**: Người chơi thấy hướng dẫn action tiếp theo phù hợp với phase và vai trò (host vs non-host)
+- [x] **PHASE-01**: Người chơi thấy tên phase hiện tại rõ ràng (WAITING / WORD_REVEAL / DISCUSSION / VOTING / ENDED) dưới dạng badge/label
+- [x] **PHASE-02**: Người chơi thấy hướng dẫn action tiếp theo phù hợp với phase và vai trò (host vs non-host)
 
 ### Vote UI
 
-- [x] **VOTE-01**: Non-host không thấy vote UI trong VOTING phase — chỉ thấy trạng thái "Đang chờ host vote..."
-- [x] **VOTE-02**: Host thấy danh sách players có thể vote và nút Submit (two-step: chọn → submit)
+- [ ] **VOTE-01**: Non-host không thấy vote UI trong VOTING phase — chỉ thấy trạng thái "Đang chờ host vote..."
+- [ ] **VOTE-02**: Host thấy danh sách players có thể vote và nút Submit (two-step: chọn → submit)
 
 ### Word Reveal
 
@@ -22,9 +22,9 @@
 
 ### End Game
 
-- [ ] **END-01**: Màn kết thúc hiển thị kết quả thắng/thua rõ ràng: "Citizens Win" hoặc "Spy Wins" với visual nổi bật
-- [ ] **END-02**: Màn kết thúc reveal role của tất cả người chơi (Spy / Citizen / White)
-- [ ] **END-03**: Màn kết thúc hiển thị win/lose status của từng player
+- [x] **END-01**: Màn kết thúc hiển thị kết quả thắng/thua rõ ràng: "Citizens Win" hoặc "Spy Wins" với visual nổi bật
+- [x] **END-02**: Màn kết thúc reveal role của tất cả người chơi (Spy / Citizen / White)
+- [x] **END-03**: Màn kết thúc hiển thị win/lose status của từng player
 
 ## v2 Requirements
 
@@ -55,22 +55,24 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PHASE-01 | Phase 2 | In Progress (02-01 done, 02-02 pending) |
-| PHASE-02 | Phase 2 | In Progress (02-01 done, 02-02 pending) |
-| VOTE-01 | Phase 3 | Complete |
-| VOTE-02 | Phase 3 | Complete |
+| PHASE-01 | Phase 2 | Complete |
+| PHASE-02 | Phase 2 | Complete |
+| VOTE-01 | Phase 6 (gap closure) | Pending |
+| VOTE-02 | Phase 6 (gap closure) | Pending |
 | WORD-01 | Phase 4 | Complete |
 | WORD-02 | Phase 4 | Complete |
-| END-01 | Phase 5 | Pending |
-| END-02 | Phase 5 | Pending |
-| END-03 | Phase 5 | Pending |
+| END-01 | Phase 5 | Complete |
+| END-02 | Phase 5 | Complete |
+| END-03 | Phase 5 | Complete |
 
 **Coverage:**
 - v1 requirements: 9 total
 - Mapped to phases: 9
+- Satisfied: 7
+- Pending (gap closure): 2 (VOTE-01, VOTE-02)
 - Unmapped: 0
 - Note: Phase 1 (Selector Foundation) is an architectural prerequisite with no direct v1 requirements — it enables safe implementation of Phase 5
 
 ---
 *Requirements defined: 2026-02-28*
-*Last updated: 2026-02-28 after roadmap creation (phases renumbered to 2-5; Phase 1 = selector foundation)*
+*Last updated: 2026-03-18 — gap closure phase 6 added for VOTE-01/VOTE-02*

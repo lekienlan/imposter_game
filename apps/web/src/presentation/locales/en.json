@@ -78,7 +78,9 @@
     "voteFor": "Vote out",
     "exitGame": "Exit Game",
     "peekWord": "Peek at your word",
-    "wordMasked": "***"
+    "wordMasked": "***",
+    "youLabel": "▶ You({{name}})",
+    "continue": "CONTINUE"
   },
   "app": {
     "reconnecting": "Reconnecting..."

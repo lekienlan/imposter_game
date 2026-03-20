@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-12T03:35:00.000Z"
+last_updated: "2026-03-18T05:05:24.307Z"
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 6
-  completed_plans: 6
+  total_phases: 5
+  completed_phases: 5
+  total_plans: 9
+  completed_plans: 9
 ---
 
 # Project State
@@ -18,14 +18,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-28)
 
 **Core value:** Người chơi nhìn vào màn hình là biết ngay mình đang ở phase nào, phải làm gì, và kết quả là gì — không cần hỏi.
-**Current focus:** Phase 4 — Word Discoverability
+**Current focus:** Phase 5 — End Game Clarity
 
 ## Current Position
 
-Phase: 4 of 4 (Word Discoverability)
+Phase: 5 of 5 (End Game Clarity) — ALL PLANS COMPLETE
 Plan: 2 of 2 in current phase — COMPLETE
-Status: Phase 4 Plan 02 complete — eye icon + mini word popup + word masking + pulse animation in ViewerCard
-Last activity: 2026-03-12 — Phase 4 Plan 02 complete: tap-to-reveal eye icon, mini popup (3s auto-dismiss), word masking ("***"), word block pulse
+Status: Phase 5 Plan 02 complete — GameOverModal enriched with viewer row highlight, spy emoji + red highlight, white neutral highlight, You(Name) label; viewer prop wired from App.tsx
+Last activity: 2026-03-18 — Phase 5 Plan 02 complete: scoreboard row highlights and viewer self-identification
 
 Progress: [██████████] 100%
 
@@ -44,6 +44,7 @@ Progress: [██████████] 100%
 | 02-phase-clarity | 1 | 3 min | 3 min |
 | 03-vote-clarity | 1 | 2 min | 2 min |
 | 04-word-discoverability | 2 | 3 min | 1.5 min |
+| 05-end-game-clarity | 2 | 3 min | 1.5 min |
 
 **Recent Trend:**
 - Last 5 plans: 4 min, 3 min, 2 min, 2 min
@@ -78,6 +79,13 @@ Recent decisions affecting current work:
 - [04-02]: wordJustRevealed state lives in GameScreen (owns popup close callback) and is threaded as prop to ViewerCard
 - [04-02]: Mini popup local state isMiniWordOpen is independent of GameScreen pulse logic
 - [04-02]: Pulse animation timeout is 1500ms to match CSS keyframe duration
+- [05-01]: VICTORY/DEFEAT blinking text shown first in step 1, role reveal second — matches locked plan decision
+- [05-01]: handleAdvance wrapped in useCallback so useEffect dependency array is stable and avoids infinite re-runs
+- [05-01]: Auto-advance timer (4000ms) and fade-out (200ms) both use clearTimeout cleanup to prevent state updates on unmount
+- [05-01]: Continue button calls handleAdvance (not onClose directly) so it also gets the 200ms fade effect
+- [05-02]: Role enum imported directly in GameOverModal for isSpy/isWhite comparison — avoids prop drilling boolean flags
+- [05-02]: viewer prop typed as Player | undefined — modal degrades gracefully when viewer is undefined (isViewer always false)
+- [05-02]: className array uses filter(Boolean).join(' ') pattern — consistent with voting UI idiom established earlier
 
 ### Pending Todos
 
@@ -91,6 +99,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12
-Stopped at: Completed 04-02-PLAN.md — eye icon + mini word popup + word masking + pulse animation wired in ViewerCard (awaiting human verify checkpoint)
+Last session: 2026-03-18
+Stopped at: Completed 05-02-PLAN.md — GameOverModal scoreboard enriched with viewer/spy/white row highlights and You(Name) label; milestone v1.0 COMPLETE
 Resume file: None

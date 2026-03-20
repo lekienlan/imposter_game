@@ -2,7 +2,8 @@
   "mode": "interactive",
   "depth": "quick",
   "parallelization": true,
-  "commit_docs": true,
+  "commit_docs": false,
+  "auto_commit": false,
   "model_profile": "balanced",
   "workflow": {
     "research": true,

@@ -170,3 +170,29 @@
 .arcade-vote-card:disabled {
   cursor: not-allowed;
 }
+
+/* ── Phase 5: End Game Clarity ───────────────────────────── */
+
+/* Viewer's own row — yellow left border accent */
+.row-viewer {
+  border-left: 4px solid var(--yellow-400);
+  background: color-mix(in srgb, var(--surface-primary) 75%, var(--yellow-900));
+}
+
+/* Spy row — red left border accent */
+.row-spy {
+  border-left: 4px solid var(--red-400);
+  background: color-mix(in srgb, var(--surface-primary) 75%, var(--red-900));
+}
+
+/* White role row — neutral left border accent */
+.row-white {
+  border-left: 4px solid var(--neutral-400);
+  background: color-mix(in srgb, var(--surface-primary) 85%, var(--neutral-900));
+}
+
+/* Fade-out transition for step 1 before onClose fires */
+.role-reveal-fade-out {
+  opacity: 0;
+  transition: opacity 200ms ease;
+}

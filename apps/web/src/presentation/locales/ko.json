@@ -77,7 +77,9 @@
     "voteFor": "투표",
     "exitGame": "게임 종료",
     "peekWord": "단어 엿보기",
-    "wordMasked": "***"
+    "wordMasked": "***",
+    "youLabel": "▶ 나({{name}})",
+    "continue": "계속"
   },
   "app": {
     "reconnecting": "재연결 중..."
